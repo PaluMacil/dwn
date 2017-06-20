@@ -1,0 +1,1 @@
+ng build --prod --aot --env=prod --base-href /app/
