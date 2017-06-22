@@ -33,6 +33,7 @@ func main() {
 	err = dwn.Db.Find("Role", dwn.RoleAdmin, &admins)
 	if err == storm.ErrNotFound {
 		fmt.Println("No admins detected.")
+		//TODO: Prompt user for admin info for first admin user
 	} else if err != nil {
 		log.Print(err)
 	}
