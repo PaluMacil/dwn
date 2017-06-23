@@ -1,8 +1,11 @@
 package dwn
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
+
+	"log"
 
 	"github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -13,14 +16,30 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	plainPassword := r.FormValue("password")
 	var user User
-	err := Db.One("email", email, &user)
+	err := Db.One("Email", email, &user)
 	if err != nil {
+		log.Println("could not load user to build session:", err)
 		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
+		return
 	}
-	if !CheckPasswordHash(plainPassword, user.Password) {
-		//TODO: create session, return token
+	if CheckPasswordHash(plainPassword, user.Password) {
+		session := Session{
+			Token:     uuid.NewV4(),
+			User:      user,
+			CreatedAt: time.Now(),
+			HeartBeat: time.Now(),
+		}
+		err = Db.Save(&session)
+		if err != nil {
+			log.Println("could not save session:", err)
+			http.Error(w, "could not save session", http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(session)
 	} else {
+		log.Println("incorrect password:", plainPassword, "for user:", user)
 		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
+		return
 	}
 }
 

@@ -32,6 +32,10 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	err = dwn.Db.Init(&dwn.Session{})
+	if err != nil {
+		log.Panic(err)
+	}
 
 	var admins []dwn.User
 	err = dwn.Db.Find("Role", dwn.RoleAdmin, &admins)
@@ -71,7 +75,7 @@ func main() {
 	fs := http.FileServer(http.Dir("dist"))
 	mux.Handle("/app/", http.StripPrefix("/app/", fs))
 	mux.HandleFunc("/api/", dwn.APIHandler)
-	mux.HandleFunc("/api/auth/token/", dwn.APIHandler)
+	mux.HandleFunc("/api/auth/token/", dwn.TokenHandler)
 	srv := &http.Server{
 		Addr:    ":1337",
 		Handler: mux,
