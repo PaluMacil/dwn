@@ -12,6 +12,7 @@ import (
 )
 
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	email := r.FormValue("email")
 	plainPassword := r.FormValue("password")
 	var user User
@@ -34,7 +35,6 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "could not save session", http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(session)
 	} else {
 		log.Println("incorrect password:", plainPassword, "for user:", user)
