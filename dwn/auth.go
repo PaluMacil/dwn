@@ -25,13 +25,14 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 const (
+	_         = iota
 	RoleAdmin = iota
 	RoleUser  = iota
 )
 
 type User struct {
 	ID        int    `storm:"id,increment"`
-	Role      string `storm:"index"`
+	Role      int    `storm:"index"`
 	Email     string `storm:"unique"`
 	Password  string
 	Name      string
