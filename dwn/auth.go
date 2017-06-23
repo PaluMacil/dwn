@@ -11,6 +11,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// TokenHandler takes in unencrypted credentials (email and password) via form values,
+// hashes the password with bcrypt, compares to the stored hash, and returns Unauthorized
+// or a token (uuid version 4) representing the session.
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	email := r.FormValue("email")
@@ -44,11 +47,14 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 const (
-	_         = iota
+	_ = iota
+	// RoleAdmin denaotes an administrator
 	RoleAdmin = iota
-	RoleUser  = iota
+	// RoleUser denotes an unpriviledged user
+	RoleUser = iota
 )
 
+// User represents and application user
 type User struct {
 	ID        int    `storm:"id,increment"`
 	Role      int    `storm:"index"`
@@ -58,6 +64,7 @@ type User struct {
 	CreatedAt time.Time
 }
 
+// Session represents a user session
 type Session struct {
 	Token     uuid.UUID `storm:"id"`
 	User      User      `storm:"index"`
@@ -65,11 +72,14 @@ type Session struct {
 	HeartBeat time.Time
 }
 
+// HashPassword takes a plaintext password string and returns a hash from bcrypt
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
 }
 
+// CheckPasswordHash compares the hash of a plain password with a stored
+// hash, returning a bool match result
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
