@@ -18,7 +18,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := Db.One("Email", email, &user)
 	if err != nil {
-		log.Println("could not load user to build session:", err)
+		log.Println("could not load user to build session:", err, "for email", email)
 		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
 		return
 	}
