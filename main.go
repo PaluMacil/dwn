@@ -75,7 +75,10 @@ func main() {
 	fs := http.FileServer(http.Dir("dist"))
 	mux.Handle("/app/", http.StripPrefix("/app/", fs))
 	mux.HandleFunc("/api/", dwn.APIHandler)
+	//no trailing slash in pattern for exact match
 	mux.HandleFunc("/api/auth/token", dwn.TokenHandler)
+	//TODO: mux.HandleFunc("/api/auth/user", dwn.UserHandler)
+	//TODO: mux.HandleFunc("/api/blog/post", dwn.PostHandler)
 	srv := &http.Server{
 		Addr:    ":1337",
 		Handler: mux,

@@ -84,3 +84,13 @@ func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+
+// InRole checks to see that an http request comes from a user in a specified role.
+func InRole(r *http.Request, role int) (bool, error) {
+	token := r.Header.Get("X-DWN-TOKEN")
+	var session Session
+	if err := Db.One("Token", token, &session); err != nil {
+		return false, err
+	}
+	return session.User.Role == role, nil
+}
