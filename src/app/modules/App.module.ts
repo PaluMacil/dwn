@@ -5,6 +5,7 @@ import { FormsModule }   from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // modules
 import { AlertModule } from 'ngx-bootstrap';
+import { RoutingModule } from './Routing.module';
 // services
 import { AccountAPI } from '../services/AccountAPI.service'
 import { BlogAPI } from '../services/BlogAPI.service'
