@@ -1,0 +1,8 @@
+ .default-banner {
+  background-image: url(/assets/happy-hair-400.png);
+  background-repeat: no-repeat;
+  background-size: 200px 200px;
+  background-position: center bottom;
+  width: 100%;
+  height: 215px;
+}
