@@ -76,7 +76,7 @@ func main() {
 	mux.Handle("/app/", http.StripPrefix("/app/", fs))
 	mux.HandleFunc("/api/", dwn.APIHandler)
 	//no trailing slash in pattern for exact match
-	mux.HandleFunc("/api/auth/token", dwn.TokenHandler)
+	mux.HandleFunc("/api/account/token", dwn.TokenHandler)
 	//TODO: mux.HandleFunc("/api/auth/user", dwn.UserHandler)
 	//TODO: mux.HandleFunc("/api/blog/post", dwn.PostHandler)
 	srv := &http.Server{
