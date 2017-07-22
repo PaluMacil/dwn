@@ -29,3 +29,9 @@ export interface User {
 	Name:      string;
 	CreatedAt: string;
 }
+
+export interface UserInfo {
+  ID:      number;
+  Name:    string;
+  IsAdmin: boolean;
+}
