@@ -20,9 +20,13 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/bootswatch/spacelab/bootstrap.min.css"
+        "../node_modules/bootswatch/united/bootstrap.min.css",
+        "../node_modules/font-awesome/css/font-awesome.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/bootstrap/js/bootstrap.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
@@ -30,11 +34,6 @@
       }
     }
   ],
-  "e2e": {
-    "protractor": {
-      "config": "./protractor.conf.js"
-    }
-  },
   "lint": [
     {
       "project": "src/tsconfig.app.json"
@@ -46,11 +45,6 @@
       "project": "e2e/tsconfig.e2e.json"
     }
   ],
-  "test": {
-    "karma": {
-      "config": "./karma.conf.js"
-    }
-  },
   "defaults": {
     "styleExt": "css",
     "component": {}
