@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountAPI } from '../../services/AccountAPI.service';
 
 @Component({
   selector: 'login',
@@ -6,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./Login.component.css']
 })
 export class LoginComponent implements OnInit { 
-  constructor() {}
+  constructor(private accountAPI: AccountAPI) {}
+
+  login() {
+    //TODO: Send token requirements from the form
+    this.accountAPI.Token('','').subscribe();
+    localStorage.setItem('dwn_token','');
+  }
 
   ngOnInit() {
   }
