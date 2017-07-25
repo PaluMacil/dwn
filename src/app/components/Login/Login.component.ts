@@ -9,10 +9,20 @@ import { AccountAPI } from '../../services/AccountAPI.service';
 export class LoginComponent implements OnInit { 
   constructor(private accountAPI: AccountAPI) {}
 
+  email: string;
+  password: string;
+
   login() {
-    //TODO: Send token requirements from the form
-    this.accountAPI.Token('','').subscribe();
-    localStorage.setItem('dwn_token','');
+    this.accountAPI.Token(this.email,this.password).subscribe(
+      data => {
+        localStorage.setItem('dwn_token',data.Token);
+        this.accountAPI.session = data;
+      },
+      err => {
+        console.log('Could not log in: ' + err);
+      }
+    );
+    
   }
 
   ngOnInit() {

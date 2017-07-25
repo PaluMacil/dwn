@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Observable';
 export class AccountAPI {
   constructor(private http: HttpClient) {}
 
+  session?: Session = null;
+
   public Token(email: string, password: string): Observable<Session> {
     let params = new HttpParams()
       .set('email', email)

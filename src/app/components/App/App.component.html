@@ -36,7 +36,9 @@
         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Go</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" data-toggle="modal" data-target="#login-modal"><i class="fa fa-sign-in"></i> Log In</a></li>
+        <li *ngIf="!accountAPI.session">
+          <a href="#" data-toggle="modal" data-target="#login-modal"><i class="fa fa-sign-in"></i> Log In</a>
+        </li>
       </ul>
     </div>
   </div>
