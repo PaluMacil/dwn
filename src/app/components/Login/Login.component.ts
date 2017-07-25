@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
         this.accountAPI.session = data;
       },
       err => {
-        console.log('Could not log in: ' + err);
+        console.log('Could not log in: ' + JSON.stringify(err));
       }
     );
     

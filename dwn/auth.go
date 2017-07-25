@@ -16,10 +16,16 @@ import (
 // or a token (uuid version 4) representing the session.
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	email := r.FormValue("email")
-	plainPassword := r.FormValue("password")
+	err := r.ParseForm()
+	if err != nil {
+		log.Println("could not parse login request form:", err)
+		http.Error(w, "could not parse login request form", http.StatusInternalServerError)
+		return
+	}
+	email := r.PostForm.Get("email")
+	plainPassword := r.PostForm.Get("password")
 	var user User
-	err := Db.One("Email", email, &user)
+	err = Db.One("Email", email, &user)
 	if err != nil {
 		log.Println("could not load user to build session:", err, "for email", email)
 		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
@@ -41,14 +47,14 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(session)
 	} else {
 		log.Println("incorrect password:", plainPassword, "for user:", user)
-		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
+		http.Error(w, "incorrect email or password", http.StatusBadRequest)
 		return
 	}
 }
 
 const (
 	_ = iota
-	// RoleAdmin denaotes an administrator
+	// RoleAdmin denotes an administrator
 	RoleAdmin = iota
 	// RoleUser denotes an unpriviledged user
 	RoleUser = iota
