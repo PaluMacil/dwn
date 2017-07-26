@@ -109,3 +109,19 @@ func InRole(r *http.Request, role int) (bool, error) {
 	}
 	return session.User.Role == role, nil
 }
+
+// LogoutHandler handles requests to log out. If the session exists, it is deleted.
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("X-DWN-TOKEN")
+	var session Session
+	if err := Db.One("Token", token, &session); err != nil {
+		http.Error(w, "Could not find session.", http.StatusBadRequest)
+		return
+	}
+	if err := Db.DeleteStruct(&session); err != nil {
+		log.Println("Could not delete session:", err)
+		http.Error(w, "Could not delete session.", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}

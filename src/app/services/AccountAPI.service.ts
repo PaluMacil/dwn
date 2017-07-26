@@ -11,6 +11,10 @@ export class AccountAPI {
   public Token(email: string, password: string): Observable<Session> {
     return this.http.post<Session>('/api/account/token', { email, password })
   }
+
+  public Logout(): Observable<null> {
+    return this.http.post<null>('/api/account/logout', null);
+  }
 }
 
 export interface Session {

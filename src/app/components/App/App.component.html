@@ -39,6 +39,9 @@
         <li *ngIf="!accountAPI.session">
           <a href="#" data-toggle="modal" data-target="#login-modal"><i class="fa fa-sign-in"></i> Log In</a>
         </li>
+        <li *ngIf="accountAPI.session">
+          <a (click)="logout()"><i class="fa fa-sign-out"></i> Log Out</a>
+        </li>
       </ul>
     </div>
   </div>
