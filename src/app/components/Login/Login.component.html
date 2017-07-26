@@ -5,6 +5,9 @@
       <form>
         <input type="text" name="email" [(ngModel)]="email" placeholder="Email">
         <input type="password" name="pass" [(ngModel)]="password" placeholder="Password">
+        <div *ngIf="loginErr" class="alert alert-warning">
+          {{loginErr}}
+        </div>
         <input type="submit" name="login" (click)="login()" class="login loginmodal-submit" value="Login">
       </form>
 
