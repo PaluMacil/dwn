@@ -31,7 +31,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	err = Db.One("Email", req.Email, &user)
 	if err != nil {
 		log.Println("could not load user to build session:", err, "for email", req.Email)
-		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
+		http.Error(w, "incorrect email or password", http.StatusBadRequest)
 		return
 	}
 	if CheckPasswordHash(req.Password, user.Password) {
