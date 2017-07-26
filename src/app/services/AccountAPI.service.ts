@@ -9,11 +9,7 @@ export class AccountAPI {
   session?: Session = null;
 
   public Token(email: string, password: string): Observable<Session> {
-    let params = new HttpParams()
-      .set('email', email)
-      .set('password', password);
-
-    return this.http.post<Session>('/api/account/token', {params})
+    return this.http.post<Session>('/api/account/token', { email, password })
   }
 }
 

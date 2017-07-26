@@ -7,6 +7,8 @@ import (
 
 	"log"
 
+	"io/ioutil"
+
 	"github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,22 +18,23 @@ import (
 // or a token (uuid version 4) representing the session.
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	err := r.ParseForm()
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Println("could not parse login request form:", err)
-		http.Error(w, "could not parse login request form", http.StatusInternalServerError)
+		log.Println("could not read login request json body:", err)
+		http.Error(w, "could not read login request json body", http.StatusInternalServerError)
 		return
 	}
-	email := r.PostForm.Get("email")
-	plainPassword := r.PostForm.Get("password")
+	var req TokenRequest
+	err = json.Unmarshal(body, &req)
+
 	var user User
-	err = Db.One("Email", email, &user)
+	err = Db.One("Email", req.Email, &user)
 	if err != nil {
-		log.Println("could not load user to build session:", err, "for email", email)
+		log.Println("could not load user to build session:", err, "for email", req.Email)
 		http.Error(w, "incorrect email or password", http.StatusUnauthorized)
 		return
 	}
-	if CheckPasswordHash(plainPassword, user.Password) {
+	if CheckPasswordHash(req.Password, user.Password) {
 		session := Session{
 			Token:     uuid.NewV4(),
 			User:      user,
@@ -46,7 +49,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(session)
 	} else {
-		log.Println("incorrect password:", plainPassword, "for user:", user)
+		log.Println("incorrect password:", req.Password, "for user:", user.Email)
 		http.Error(w, "incorrect email or password", http.StatusBadRequest)
 		return
 	}
@@ -76,6 +79,12 @@ type Session struct {
 	User      User      `storm:"index"`
 	CreatedAt time.Time
 	HeartBeat time.Time
+}
+
+// TokenRequest holds the incoming request for a token (session key)
+type TokenRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 // HashPassword takes a plaintext password string and returns a hash from bcrypt
