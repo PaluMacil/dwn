@@ -10,4 +10,11 @@ export class AppComponent {
   title = 'app';
 
   constructor(public accountAPI: AccountAPI){}
+
+  logout() {
+    this.accountAPI.Logout().subscribe(
+      () => { console.log('Logged out') },
+      (err) => { console.log('Could not log out. ' + err.message) }
+    );
+  }
 }

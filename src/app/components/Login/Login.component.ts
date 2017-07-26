@@ -30,15 +30,12 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  logout() {
-    localStorage.removeItem('dwn_token');
-    this.accountAPI.session = null;
-    this.accountAPI.Logout().subscribe(
-      () => { console.log('Logged out') },
-      (err) => { console.log('Could not log out. ' + err.message) }
-    );
-  }
-
   ngOnInit() {
+    let login = this;
+    $("#login-modal").on("hidden.bs.modal", function () {
+      login.email = '';
+      login.password = '';
+      login.loginErr = null;
+    });
   }
 }

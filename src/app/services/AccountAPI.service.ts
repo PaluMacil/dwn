@@ -13,6 +13,8 @@ export class AccountAPI {
   }
 
   public Logout(): Observable<null> {
+    localStorage.removeItem('dwn_token');
+    this.session = null;
     return this.http.post<null>('/api/account/logout', null);
   }
 }
