@@ -8,20 +8,36 @@ export class BlogAPI {
   constructor(private http: HttpClient) {}
 
   public GetPost(id: number): Observable<Post> {
-    return this.http.get<Post>(`/api/blog/post/${id}`)
+    let params = new HttpParams()
+      .set('ID', String(id));
+    return this.http.get<Post>('/api/blog/post', {params});
+  }
+
+  public GetBlogRoll(): Observable<BlogRoll> {
+    return this.http.get<BlogRoll>('/api/blog/roll');
   }
 }
 
 export interface BlogRoll {
   Posts:          Array<Post>;
-  StartIndex:     number
-  TotalAvailable: number
+  StartIndex:     number;
+  PageSize:       number;
+  TotalAvailable: number;
 }
 
 export interface Post {
-  ID:     number;
-  Title:  string;
-  Author: UserInfo;
-  Body:   string;
-  IsStub: boolean;
+  ID:       number;
+  Title:    string;
+  Slug:     string;
+  Author:   UserInfo;
+  Body:     string;
+  Format:   PostFormat;
+  IsStub:   boolean;
+  Modified: string;
+  Created:  string;
+}
+
+export const enum PostFormat {
+    PostFormatPlain = 1,
+    PostFormatMarkdown
 }
