@@ -73,6 +73,7 @@ type User struct {
 	CreatedAt time.Time
 }
 
+// UserInfo represents user information safe for showing to other users
 type UserInfo struct {
 	ID      int
 	Name    string
