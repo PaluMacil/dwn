@@ -73,6 +73,12 @@ type User struct {
 	CreatedAt time.Time
 }
 
+type UserInfo struct {
+	ID      int
+	Name    string
+	IsAdmin bool
+}
+
 // Session represents a user session
 type Session struct {
 	Token     uuid.UUID `storm:"id"`

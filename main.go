@@ -74,12 +74,15 @@ func main() {
 	})
 	fs := http.FileServer(http.Dir("dist"))
 	mux.Handle("/app/", http.StripPrefix("/app/", fs))
-	mux.HandleFunc("/api/", dwn.APIHandler)
 	//no trailing slash in pattern for exact match
 	mux.HandleFunc("/api/account/token", dwn.TokenHandler)
 	mux.HandleFunc("/api/account/logout", dwn.LogoutHandler)
-	//TODO: mux.HandleFunc("/api/auth/user", dwn.UserHandler)
-	//TODO: mux.HandleFunc("/api/blog/post", dwn.PostHandler)
+	//TODO: mux.HandleFunc("/api/account/profile", dwn.ProfileHandler)
+	//TODO: mux.HandleFunc("/api/admin/proxy", dwn.ProxyHandler)
+	//TODO: mux.HandleFunc("/api/admin/users", dwn.UsersHandler)
+	//TODO: mux.HandleFunc("/api/admin/user", dwn.UserHandler)
+	mux.HandleFunc("/api/blog/post", dwn.PostHandler)
+	mux.HandleFunc("/api/blog/roll", dwn.BlogRollHandler)
 	srv := &http.Server{
 		Addr:    ":1337",
 		Handler: mux,
