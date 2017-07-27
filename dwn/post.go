@@ -37,6 +37,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 // Post stores a blog post
 type Post struct {
 	ID       int `storm:"id,increment"`
+	Topic    Topic
 	Title    string
 	Slug     string
 	Author   UserInfo
@@ -46,6 +47,22 @@ type Post struct {
 	Modified time.Time
 	Created  time.Time `storm:"index"`
 }
+
+// Topic indicates the topic of a post
+type Topic int
+
+const (
+	// TopicAll indicates all topics
+	TopicAll Topic = iota
+	// TopicPersonal indicates personal topics
+	TopicPersonal
+	// TopicTech indicates tech and programming topics
+	TopicTech
+	// TopicFood indicates food and dining topics
+	TopicFood
+	// TopicFun indicates game and vacation topics
+	TopicFun
+)
 
 // PostFormat indicates the format of a post
 type PostFormat int

@@ -27,6 +27,7 @@ export interface BlogRoll {
 
 export interface Post {
   ID:       number;
+  Topic:    Topic;
   Title:    string;
   Slug:     string;
   Author:   UserInfo;
@@ -38,6 +39,14 @@ export interface Post {
 }
 
 export const enum PostFormat {
-    PostFormatPlain = 1,
+    PostFormatPlain = 0,
     PostFormatMarkdown
+}
+
+export const enum Topic {
+    TopicAll = 0,
+    TopicPersonal,
+    TopicTech,
+    TopicFood,
+    TopicFun
 }
