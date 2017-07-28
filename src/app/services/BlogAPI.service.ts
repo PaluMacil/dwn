@@ -13,6 +13,14 @@ export class BlogAPI {
     return this.http.get<Post>('/api/blog/post', {params});
   }
 
+  public PostPost(post: Post): Observable<void> {
+    return this.http.post<void>('/api/blog/post', post);
+  }
+
+  public PutPost(post: Post): Observable<void> {
+    return this.http.put<void>('/api/blog/post', post);
+  }
+
   public GetBlogRoll(): Observable<BlogRoll> {
     return this.http.get<BlogRoll>('/api/blog/roll');
   }
