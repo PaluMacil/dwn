@@ -16,21 +16,43 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	case "PUT":
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			log.Println("could not read put request json body:", err)
+			log.Println("PostHandler: could not read put request json body:", err)
 			http.Error(w, "could not read put request json body", http.StatusInternalServerError)
 			return
 		}
-		var req Post
-		err = json.Unmarshal(body, &req)
+		var post Post
+		err = json.Unmarshal(body, &post)
+		if err != nil {
+			log.Println("PostHandler: could not unmarshal put request json body:", err)
+			http.Error(w, "could not unmarshal put request json body", http.StatusInternalServerError)
+			return
+		}
+		err = Db.Save(&post)
+		if err != nil {
+			log.Println("PostHandler: could not save put request json body:", err)
+			http.Error(w, "could not save put request json body", http.StatusInternalServerError)
+			return
+		}
 	case "POST":
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			log.Println("could not read post request json body:", err)
+			log.Println("PostHandler: could not read post request json body:", err)
 			http.Error(w, "could not read post request json body", http.StatusInternalServerError)
 			return
 		}
-		var req Post
-		err = json.Unmarshal(body, &req)
+		var post Post
+		err = json.Unmarshal(body, &post)
+		if err != nil {
+			log.Println("PostHandler: could not unmarshal post request json body:", err)
+			http.Error(w, "could not unmarshal post request json body", http.StatusInternalServerError)
+			return
+		}
+		err = Db.Save(&post)
+		if err != nil {
+			log.Println("PostHandler: could not save post request json body:", err)
+			http.Error(w, "could not save post request json body", http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
