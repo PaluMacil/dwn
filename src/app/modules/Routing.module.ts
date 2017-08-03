@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { BlogPage } from '../pages/Blog/Blog.page';
+import { BlogPage, BlogMode } from '../pages/Blog/Blog.page';
 import { BlogEditorPage, EditorMode } from '../pages/BlogEditor/BlogEditor.page';
 
 const routes: Routes = [
@@ -17,15 +17,18 @@ const routes: Routes = [
   },
   {
     path: 'blog/post/:id/:title',
-    component: BlogPage
+    component: BlogPage,
+    data: { mode: BlogMode.SinglePost }
   },
   {
     path: 'blog/topic/:topicID/:topic',
-    component: BlogPage
+    component: BlogPage,
+    data: { mode: BlogMode.Topic }
   },
   {
     path: '',
-    component: BlogPage
+    component: BlogPage,
+    data: { mode: BlogMode.All }
   }
 ];
 

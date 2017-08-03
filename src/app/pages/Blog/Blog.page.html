@@ -3,3 +3,10 @@
     <i class="fa fa-plus"></i>
   </button>
   <div class="btn-circle-label">New post</div>
+</div>
+
+<div [ngSwitch]="mode">
+  <post *ngSwitchCase="SinglePost"></post>
+  <blog-roll *ngSwitchCase="Topic"></blog-roll>
+  <blog-roll *ngSwitchCase="All"></blog-roll>
+</div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'blog-page',
@@ -6,8 +7,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./Blog.page.css']
 })
 export class BlogPage implements OnInit { 
-  constructor() {}
+  mode: BlogMode;
+  BlogMode = BlogMode;
+
+  constructor(route: ActivatedRoute) { 
+    this.mode = route.snapshot.data.mode;
+  }
 
   ngOnInit() {
   }
+}
+
+export enum BlogMode {
+  SinglePost,
+  Topic,
+  All
 }
