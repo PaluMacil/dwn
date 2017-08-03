@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'blog-editor-page',
@@ -6,7 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./BlogEditor.page.css']
 })
 export class BlogEditorPage implements OnInit { 
-  constructor() {}
+  mode: EditorMode;
+  EditorMode = EditorMode;
+
+  constructor(route: ActivatedRoute) {
+    this.mode = route.snapshot.data.mode;
+  }
 
   ngOnInit() {
   }
