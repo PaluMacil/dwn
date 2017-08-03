@@ -21,7 +21,8 @@
       "styles": [
         "styles.css",
         "../node_modules/bootswatch/united/bootstrap.min.css",
-        "../node_modules/font-awesome/css/font-awesome.css"
+        "../node_modules/font-awesome/css/font-awesome.css",
+        "../node_modules/highlight.js/styles/atelier-dune-light.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
