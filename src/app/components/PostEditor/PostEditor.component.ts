@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'post-editor',
@@ -12,4 +13,9 @@ export class PostEditorComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  post = new FormGroup ({
+    topic: new FormControl(),
+    postMarkdown: new FormControl()
+  });
 }

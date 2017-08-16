@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'blog-page',
@@ -10,11 +10,15 @@ export class BlogPage implements OnInit {
   mode: BlogMode;
   BlogMode = BlogMode;
 
-  constructor(route: ActivatedRoute) { 
+  constructor(route: ActivatedRoute, private router: Router) { 
     this.mode = route.snapshot.data.mode;
   }
 
   ngOnInit() {
+  }
+
+  newPost() {
+    this.router.navigateByUrl("/blog/new/post");
   }
 }
 

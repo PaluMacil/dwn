@@ -16,6 +16,11 @@ const routes: Routes = [
     data: { mode: EditorMode.New }
   },
   {
+    path: 'blog/new/post',
+    component: BlogEditorPage,
+    data: { mode: EditorMode.New }
+  },
+  {
     path: 'blog/post/:id/:title',
     component: BlogPage,
     data: { mode: BlogMode.SinglePost }

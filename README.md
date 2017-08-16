@@ -12,7 +12,7 @@ go get github.com/palumacil/dwn
 
 ### Development
 
-I use VS Code with the popular [lukehoban.go](https://github.com/Microsoft/vscode-go). Once I hit F5 to run the Go application, I type `npm start` in the terminal.
+I use VS Code with the popular [lukehoban.go](https://github.com/Microsoft/vscode-go). Once I hit F5 to run the Go application, I type `npm start` in the terminal to run the Angular application.
 
 ### Production
 
