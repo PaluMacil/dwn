@@ -7,15 +7,15 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./PostEditor.component.css']
 })
 export class PostEditorComponent implements OnInit { 
-  postMarkdown: string;
+  post: FormGroup;
 
   constructor() {}
 
   ngOnInit() {
+    this.post = new FormGroup ({
+      topic: new FormControl(),
+      postMarkdown: new FormControl(),
+    });
   }
 
-  post = new FormGroup ({
-    topic: new FormControl(),
-    postMarkdown: new FormControl()
-  });
 }
