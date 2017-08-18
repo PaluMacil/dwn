@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 // modules
-import { AlertModule } from 'ngx-bootstrap';
 import { RoutingModule } from './Routing.module';
 import { MdRenderModule } from '@nvxme/ngx-md-render';
 // services
@@ -32,7 +31,6 @@ import { PostEditorComponent } from '../components/PostEditor/PostEditor.compone
     PostEditorComponent,
   ],
   imports: [
-    AlertModule.forRoot(),
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
