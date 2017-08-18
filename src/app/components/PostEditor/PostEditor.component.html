@@ -1,11 +1,11 @@
 <form [formGroup]="post" novalidate>
   <div class="form-group">
-    <label for="usr">Topic:</label>
+    <label for="topic">Topic:</label>
     <input formControlName="topic"
       type="text" class="form-control" #topic>
   </div>
   <div class="form-group">
-    <label for="comment">Content (Markdown):</label>
+    <label for="postMarkdown">Content (Markdown):</label>
     <textarea formControlName="postMarkdown"
       class="form-control" rows="20" #content>
     </textarea>
