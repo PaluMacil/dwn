@@ -4,16 +4,28 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 // PostHandler gets, creates, and updates posts
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	var post Post
 	switch r.Method {
 	case "GET":
+		var id int
+		qID := r.URL.Query().Get("ID")
+		id, err := strconv.Atoi(qID)
+		if err != nil {
+			http.Error(w, "Post ID not valid", http.StatusBadRequest)
+			return
+		}
+		if err := Db.One("ID", id, &post); err != nil {
+			http.Error(w, "Post not found", http.StatusNotFound)
+			return
+		}
 	case "PUT":
-		var post Post
 		err := json.NewDecoder(r.Body).Decode(&post)
 		if err != nil {
 			log.Println("PostHandler: could not unmarshal put request json body:", err)
@@ -27,7 +39,6 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "POST":
-		var post Post
 		err := json.NewDecoder(r.Body).Decode(&post)
 		if err != nil {
 			log.Println("PostHandler: could not unmarshal post request json body:", err)
