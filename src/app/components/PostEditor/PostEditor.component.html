@@ -1,7 +1,9 @@
-<form [formGroup]="post" novalidate>
+<form [formGroup]="postForm" 
+      (ngSubmit)="onSubmit()" 
+      novalidate>
   <div class="form-group">
-    <label for="topic">Topic:</label>
-    <input formControlName="topic"
+    <label for="topic">Title:</label>
+    <input formControlName="title"
       type="text" class="form-control" #topic>
   </div>
   <div class="form-group">
@@ -10,4 +12,5 @@
       class="form-control" rows="20" #content>
     </textarea>
   </div>
+  <button type="submit" class="btn btn-default">Submit</button>
 </form>
