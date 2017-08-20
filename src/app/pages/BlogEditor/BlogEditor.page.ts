@@ -12,7 +12,6 @@ export class BlogEditorPage implements OnInit {
 
   constructor(route: ActivatedRoute) {
     this.mode = route.snapshot.data.mode;
-    console.log(route);
   }
 
   ngOnInit() {
