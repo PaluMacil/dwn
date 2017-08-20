@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { BlogAPI, Post } from '../../services/BlogAPI.service'
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'post-editor',
@@ -7,15 +9,29 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./PostEditor.component.css']
 })
 export class PostEditorComponent implements OnInit { 
-  post: FormGroup;
+  postForm: FormGroup;
 
-  constructor() {}
+  constructor(private blogAPI: BlogAPI) {}
 
   ngOnInit() {
-    this.post = new FormGroup ({
-      topic: new FormControl(),
+    this.postForm = new FormGroup ({
+      title: new FormControl(),
       postMarkdown: new FormControl(),
     });
+  }
+
+  onSubmit() {
+    const formModel = this.postForm.value;
+    let post: Post = formModel.map((f) => {
+      return {
+        Title: f.title,
+        Body: f.postMarkdown
+      };
+    })
+    this.blogAPI.PostPost(post).subscribe(
+      () => {console.log("post saved")},
+      (err) => {console.log(err.message)}
+    );
   }
 
 }
