@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BlogAPI, Post } from '../../services/BlogAPI.service'
-import 'rxjs/add/operator/map';
+import { BlogAPI, Post, PostFormat } from '../../services/BlogAPI.service'
 
 @Component({
   selector: 'post-editor',
@@ -22,12 +21,12 @@ export class PostEditorComponent implements OnInit {
 
   onSubmit() {
     const formModel = this.postForm.value;
-    let post: Post = formModel.map((f) => {
-      return {
-        Title: f.title,
-        Body: f.postMarkdown
+    let post: Post = {
+        Title: <string>formModel.title,
+        Topic: 0,
+        Body: <string>formModel.postMarkdown,
+        Format: PostFormat.PostFormatMarkdown
       };
-    })
     this.blogAPI.PostPost(post).subscribe(
       () => {console.log("post saved")},
       (err) => {console.log(err.message)}

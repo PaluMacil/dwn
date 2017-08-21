@@ -34,16 +34,16 @@ export interface BlogRoll {
 }
 
 export interface Post {
-  ID:       number;
-  Topic:    Topic;
-  Title:    string;
-  Slug:     string;
-  Author:   UserInfo;
-  Body:     string;
-  Format:   PostFormat;
-  IsStub:   boolean;
-  Modified: string;
-  Created:  string;
+  ID?:       number;
+  Topic:     Topic;
+  Title:     string;
+  Slug?:     string;
+  Author?:   UserInfo;
+  Body:      string;
+  Format:    PostFormat;
+  IsStub?:   boolean;
+  Modified?: string;
+  Created?:  string;
 }
 
 export const enum PostFormat {
