@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { BlogPage, BlogMode } from '../pages/Blog/Blog.page';
+import { BlogPage } from '../pages/Blog/Blog.page';
 import { BlogEditorPage, EditorMode } from '../pages/BlogEditor/BlogEditor.page';
+
+import { BlogMode } from '../services/BlogAPI.service'
 
 const routes: Routes = [
   {

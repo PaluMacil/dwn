@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BlogMode } from '../../services/BlogAPI.service';
 
 @Component({
   selector: 'blog-page',
@@ -20,10 +21,4 @@ export class BlogPage implements OnInit {
   newPost() {
     this.router.navigateByUrl("/blog/new/post");
   }
-}
-
-export enum BlogMode {
-  SinglePost,
-  Topic,
-  All
 }

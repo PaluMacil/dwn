@@ -58,3 +58,9 @@ export const enum Topic {
     TopicFood,
     TopicFun
 }
+
+export enum BlogMode {
+  SinglePost,
+  Topic,
+  All
+}

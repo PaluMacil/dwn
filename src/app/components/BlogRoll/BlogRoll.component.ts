@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { BlogMode } from '../../services/BlogAPI.service';
 
 @Component({
   selector: 'blog-roll',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./BlogRoll.component.css']
 })
 export class BlogRollComponent implements OnInit { 
+  @Input('mode') mode: BlogMode;
+
   constructor() {}
 
   ngOnInit() {
