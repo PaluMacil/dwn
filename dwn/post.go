@@ -56,8 +56,8 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 
 // Post stores a blog post
 type Post struct {
-	ID       int `storm:"id,increment"`
-	Topic    Topic
+	ID       int   `storm:"id,increment"`
+	Topic    Topic `storm:"index"`
 	Title    string
 	Slug     string
 	Author   UserInfo
