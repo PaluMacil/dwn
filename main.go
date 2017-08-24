@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"fmt"
@@ -70,10 +71,15 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "dist/index.html")
+		fs := http.FileServer(http.Dir("dist"))
+		pathParts := strings.Split(r.URL.Path, `/`)
+		lastPart := pathParts[len(pathParts)-1]
+		if strings.Contains(lastPart, ".") {
+			fs.ServeHTTP(w, r)
+		} else {
+			http.ServeFile(w, r, "dist/index.html")
+		}
 	})
-	fs := http.FileServer(http.Dir("dist"))
-	mux.Handle("/app/", http.StripPrefix("/app/", fs))
 	//no trailing slash in pattern for exact match
 	mux.HandleFunc("/api/account/token", dwn.TokenHandler)
 	mux.HandleFunc("/api/account/logout", dwn.LogoutHandler)
