@@ -14,7 +14,7 @@ func BlogRollHandler(w http.ResponseWriter, r *http.Request) {
 	err := Db.All(&posts)
 	if err != nil {
 		log.Println("could not get all posts:", err)
-		http.Error(w, "ould not get all posts", http.StatusInternalServerError)
+		http.Error(w, "could not get all posts", http.StatusInternalServerError)
 		return
 	}
 	blogroll := BlogRoll{
