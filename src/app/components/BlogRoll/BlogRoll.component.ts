@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BlogMode } from '../../services/BlogAPI.service';
+import { BlogMode, BlogRoll, Post, BlogAPI } from '../../services/BlogAPI.service';
 
 @Component({
   selector: 'blog-roll',
@@ -8,9 +8,17 @@ import { BlogMode } from '../../services/BlogAPI.service';
 })
 export class BlogRollComponent implements OnInit { 
   @Input('mode') mode: BlogMode;
+  public posts = new Array<Post>();
 
-  constructor() {}
+  constructor(public blogAPI: BlogAPI) {}
 
   ngOnInit() {
+    this.blogAPI.GetBlogRoll().subscribe(
+      (r)=>{
+        this.posts = r.Posts;
+      },
+      (err)=>{},
+      ()=>{},
+    );
   }
 }
