@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MdRenderService } from '@nvxme/ngx-md-render';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Post } from '../../services/BlogAPI.service';
 
 @Component({
   selector: 'post',
@@ -8,14 +9,14 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrls: ['./Post.component.css']
 })
 export class PostComponent implements OnInit { 
-  @Input('source') source: string;
+  @Input('source') source: Post;
   rendered: SafeHtml;
 
   constructor(private sanitizer: DomSanitizer,
               private mdRender: MdRenderService) {}
 
   ngOnInit() {
-    const html = this.mdRender.render(this.source);
+    const html = this.mdRender.render(this.source.Body);
     this.rendered = this.sanitizer.bypassSecurityTrustHtml(html);
   }
 }
