@@ -1,5 +1,5 @@
 <h1>
-  Post Title<small>author</small>
+  {{ source.Title }}<small>{{ source.Author }}</small>
 </h1>
-<p>DATE</p>
+<p>{{ source.Created }}</p>
 <div [innerHtml]="rendered"></div>
