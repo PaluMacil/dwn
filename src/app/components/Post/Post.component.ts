@@ -9,7 +9,7 @@ import { Post } from '../../services/BlogAPI.service';
   styleUrls: ['./Post.component.css']
 })
 export class PostComponent implements OnInit { 
-  @Input('source') source: Post;
+  @Input('source') source = <Post>null;
   rendered: SafeHtml;
 
   constructor(private sanitizer: DomSanitizer,
