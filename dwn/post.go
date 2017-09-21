@@ -45,6 +45,10 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "could not unmarshal post request json body", http.StatusInternalServerError)
 			return
 		}
+		// If Author didn't override creation time, set to now.
+		if post.Created.IsZero() {
+			post.Created = time.Now()
+		}
 		err = Db.Save(&post)
 		if err != nil {
 			log.Println("PostHandler: could not save post request json body:", err)
