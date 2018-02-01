@@ -2,6 +2,8 @@
 
 This repo contains source code for my personal website which I try to add to in tiny regular increments. While I don't intend to focus upon only features that will be used by a wider audience, I will respond to issues, assist in understanding code, and (once I have something functional) consider splitting off smaller packages that are meant to be reused as libraries or separate applications--such as the blog itself.
 
+The contents of this document should be taken with only light consideration as I am in the process of reworking the 
+
 ## Install
 
 ```
