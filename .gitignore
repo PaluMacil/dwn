@@ -1,27 +1,18 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# data
-*.db
-*.db.lock
-
-# compiled output
-/dist
-/tmp
-/out-tsc
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
 debug
 
-# dependencies
-/node_modules
-/vendor
+# Test binary, build with `go test -c`
+*.test
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
+.glide/
 
 # IDE - VSCode
 .vscode/*
@@ -30,19 +21,5 @@ debug
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-testem.log
-/typings
-
-# e2e
-/e2e/*.js
-/e2e/*.map
-
-# System Files
-.DS_Store
-Thumbs.db
+# Logs
+log.txt

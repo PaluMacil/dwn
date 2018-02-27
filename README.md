@@ -1,31 +1,54 @@
-# DanWolf.NET
+# danwolf.net
 
-This repo contains source code for my personal website which I try to add to in tiny regular increments. While I don't intend to focus upon only features that will be used by a wider audience, I will respond to issues, assist in understanding code, and (once I have something functional) consider splitting off smaller packages that are meant to be reused as libraries or separate applications--such as the blog itself.
+Website source for danwolf.net which is my personal homepage.
 
-The contents of this document should be taken with only light consideration as I am in the process of reworking the 
+# Roadmap
 
-## Install
+This project will begin as a simple Go static webserver with barebones content and stick to a code and content layout that will make it relatively easy to migrate to Rhyvu once it is stable.
+
+# Build
 
 ```
-go get github.com/palumacil/dwn
+go build
 ```
 
-## Run
+# Run
 
-### Development
+If Windows, you'll need to add the `.exe` to the end.
 
-I use VS Code with the popular [lukehoban.go](https://github.com/Microsoft/vscode-go). Once I hit F5 to run the Go application, I type `npm start` in the terminal to run the Angular application.
+```
+.\dwn
+```
 
-### Production
+# Install
 
-The deployment version of this project will be built in Docker. I need to complete the Dockerfile by adding a volume for the existing database, copying the Angular files to the image, and I will also need to add the docker run command to the build.ps1 file.
+To install as a service (assuming Ubuntu 16.04 and Systemd) you will need to first run `chmod u+x /path/to/dwn/dwn` and create the file below:
 
-## Issues
+**/etc/systemd/system/dwn.service**:
 
- - This project is not yet fully functional after login.
- - Replace the Bootstrap login modal with something more Angular-friendly.
- - The first-run code which prompts to create a user if no admin user exists is clunky and needs to be replaced with a setup page that is accessible when the application is run with a `-setup` flag.
+```
+[Unit]
+Description=dwn service
+StartLimitBurst=5
 
-## License
+[Service]
+WorkingDirectory=/path/to/dwn/
+ExecStart=/path/to/dwn/dwn
+Restart=always
+RestartSec=3
 
-This project bears an MIT license, allowing permissive use. If you do something clever, please consider mentioning it to me so that I am able to consider implementing it here or in the future version of this project which will be more meant for public consumption.
+[Install]
+WantedBy=multi-user.target
+```
+
+Start it: `sudo systemctl start dwn`
+
+Enable it to run at boot (should create a symlink in `/etc/systemd/system/multi-user.target.wants/`): `sudo systemctl enable dwn`
+
+Stop it: `sudo systemctl stop dwn`
+
+Soft reload Systemd dependencies: `sudo systemctl daemon-reload`
+
+# License
+
+This project is available under an MIT license. Dependencies might carry other licenses.
