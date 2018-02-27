@@ -97,14 +97,14 @@ func main() {
 		}
 	})
 	srv := &http.Server{
-		Addr:    ":3033",
+		Addr:    ":3035",
 		Handler: mux,
 		//time from when the connection is accepted to when the request body is fully read
 		ReadTimeout: 5 * time.Second,
 		//time from the end of the request header read to the end of the response write
 		WriteTimeout: 10 * time.Second,
 	}
-	log.Println("Now serving on port 3033")
+	log.Println("Now serving on port 3035")
 	log.Println(srv.ListenAndServe())
 }
 
