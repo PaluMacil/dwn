@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 )
@@ -178,11 +179,19 @@ func buildNav(pages Pages) Nav {
 		URL:  template.URL("/"),
 	}
 	menu = append(menu, homeItem)
-	for t := range pages {
-		if t != "home" {
+	// Get sorted keys of page map
+	pageNames := make([]string, len(pages))
+	i := 0
+	for k := range pages {
+		pageNames[i] = k
+		i++
+	}
+	sort.Strings(pageNames)
+	for _, n := range pageNames {
+		if n != "home" {
 			item := NavItem{
-				Text: kebabToTitle(t),
-				URL:  template.URL("/" + t),
+				Text: kebabToTitle(n),
+				URL:  template.URL("/" + n),
 			}
 			menu = append(menu, item)
 		}

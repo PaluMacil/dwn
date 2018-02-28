@@ -69,6 +69,15 @@
             $li.addClass("active");
           }
         });
+        // Force scrollbar on very short pages to keep consistency in centered graphics
+        var bodyHeight = $("body").outerHeight();
+        if (bodyHeight < window.innerHeight) {
+          var $main = $("main");
+          var currentMargin = parseInt($main.css('padding-bottom'));
+          $main.css({
+            'padding-bottom' : currentMargin + window.innerHeight - bodyHeight +1
+          });
+        }
       });
     </script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
