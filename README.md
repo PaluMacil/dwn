@@ -26,7 +26,7 @@ To install as a service (assuming Ubuntu 16.04 and Systemd) you will need to fir
 
 **/etc/systemd/system/dwn.service**:
 
-```
+```toml
 [Unit]
 Description=dwn service
 StartLimitBurst=5
