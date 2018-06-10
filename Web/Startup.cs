@@ -28,10 +28,11 @@ namespace Dwn.Web
         {
             var conn = Configuration.GetConnectionString("Ry");
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(conn)
+                options.UseNpgsql(conn, pgOptions => 
+                    pgOptions.MigrationsAssembly("Dwn.Data"))
             );
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             services.AddAuthentication().AddGoogle(googleOptions =>
@@ -51,7 +52,6 @@ namespace Dwn.Web
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }

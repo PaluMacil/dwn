@@ -16,7 +16,7 @@ namespace Dwn.Cli.Commands
         private string PrimarySubject;
         private string SecondarySubject;
         private UserManager<ApplicationUser> UserManager;
-        private RoleManager<IdentityRole> RoleManager;
+        private RoleManager<ApplicationRole> RoleManager;
         private static IEnumerable<string> ServiceNames;
         
 
@@ -25,7 +25,7 @@ namespace Dwn.Cli.Commands
             string primarySubject, 
             string secondarySubject, 
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<ApplicationRole> roleManager,
             IEnumerable<string> serviceNames)
         {
             Db = db;

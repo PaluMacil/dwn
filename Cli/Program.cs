@@ -22,7 +22,7 @@ namespace Dwn.Cli
 
             var db = provider.GetService<ApplicationDbContext>();
             var userManager = provider.GetService<UserManager<ApplicationUser>>();
-            var roleManager = provider.GetService<RoleManager<IdentityRole>>();
+            var roleManager = provider.GetService<RoleManager<ApplicationRole>>();
 
             if (args.Length == 1)
             {
@@ -55,7 +55,7 @@ namespace Dwn.Cli
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(conn)
             );
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             Services = services;

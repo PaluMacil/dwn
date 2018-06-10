@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Dwn.Data.Models.Identity
 {
-    public class ApplicationRole : IdentityRole<int>
+    public class ApplicationRole : IdentityRole<Guid>
     {
     }
 }
