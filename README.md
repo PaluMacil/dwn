@@ -1,29 +1,18 @@
-### &#8730; TODO
- - CLI Tool
-   - user
-     - list
-     - add-role [role] [user]
-   - role
-     - list
-     - add-user [user] [role]
- - Proxy capability (log in as any user if admin)
- - Email sender (SendGrid)
- - Expand registration form and user model (name, website, nickname)
- - SMS Two Factor (Bandwidth?)
-   - Require for admin users
- - Profile picture? (after email registration)
- - Angular 6
- - Bootstrap 4
- - Font Awesome 5
- - Admin API
-   - (proxy, see above)
-   - User / Role Management
-   - SMTP settings
-   - SMTP testbed? (fake SMTP relay which acts as inbox to see all outbound emails which aren't actually sent to a real relay)
-   - Menu config
-   - Homepage (per role? how are multiple roles handled? also overall site setting?)
+## Roadmap
+- Friends linked to friend role if appearing in Facebook friends
+- Movie list: people in friends role should be able to vote for movies they want to see (to plan movie parties)
+- Admins should be able to do some things on behalf of others (mark that someone wants to see a movie even if they don't have an account)
+- Rent module: tenants should be able to place tickets
+- Tom's visit site
+- photo album
+- blog
+- downloads
 
-Reasons for targetting .Net Standard 2.0:
- - Quartz.NET 3
- - JSON.net 11
- - Microsoft.Data.Sqlite
+Improve:
+- get from env config: `TokenName:   "dwn-token"`
+- Make sure certain keys (e.g. email) are not case sensitive
+- document use of environmental variables
+- when routing, first trim off base url (if base url isn't '/', then currently routing will be misaligned when split and break)
+
+Google Configure
+- Go to https://console.developers.google.com/apis/credentials and click the oauth client

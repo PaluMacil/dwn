@@ -1,18 +1,19 @@
-*.csproj.user
-/.vs
-bin/
-obj/
-
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+# data
+*.db
+*.db.lock
+data-test/
+data/
 
 # compiled output
-dist/
-dist-server/
-tmp/
-out-tsc/
+/dist
+/tmp
+/out-tsc
+debug
+debug.test
 
 # dependencies
-node_modules/
+/node_modules
+/vendor
 
 # IDEs and editors
 /.idea
@@ -36,7 +37,6 @@ node_modules/
 /coverage
 /libpeerconnection.log
 npm-debug.log
-yarn-error.log
 testem.log
 /typings
 
