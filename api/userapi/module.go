@@ -2,6 +2,7 @@ package userapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -30,6 +31,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if err := json.NewEncoder(w).Encode(cur); err != nil {
+			log.Println(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}

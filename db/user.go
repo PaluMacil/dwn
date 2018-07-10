@@ -25,7 +25,6 @@ type User struct {
 	LastLogin        time.Time `json:"last_login"`
 	ModifiedDate     time.Time `json:"modified_date"`
 	CreatedDate      time.Time `json:"created_date"`
-	Can              func() bool
 }
 
 func (u User) Key() []byte {
