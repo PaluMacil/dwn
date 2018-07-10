@@ -2,13 +2,12 @@ package app
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
 	"github.com/PaluMacil/dwn/db"
 )
 
-func NewApp() App {
+func New() App {
 	return App{
 		Protocol:    os.Getenv("DWN_PROTOCOL"),
 		Host:        os.Getenv("DWN_HOST"),
@@ -43,9 +42,4 @@ func (app App) HomePage() string {
 	}
 	return fmt.Sprintf("%s://%s:%s%s",
 		app.Protocol, app.Host, port, app.BaseURL)
-}
-
-func (app App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintf(w, "hello, you've hit %s\n", r.URL.Path)
 }

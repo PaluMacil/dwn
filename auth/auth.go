@@ -149,6 +149,44 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type Current struct {
 	User    db.User
 	Session db.Session
+	db      *db.Db
+}
+
+func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {
+	token := r.Header.Get("dwn-token")
+	if token == "" {
+		return nil, nil
+	}
+	session, err := db.Sessions.Get(token)
+	if err != nil {
+		return nil, err
+	}
+	user, err := db.Users.Get(session.Email)
+	if err != nil {
+		return nil, err
+	}
+	return &Current{
+		User:    user,
+		Session: session,
+		db:      db,
+	}, nil
+}
+
+func (c *Current) Can(permission string) (bool, error) {
+	groups, err := c.db.Groups.GroupsFor(c.User.Email)
+	if err != nil {
+		return false, err
+	}
+	for _, g := range groups {
+		if g.HasPermission(permission) {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (c *Current) Is(groupName string) (bool, error) {
+	return c.db.UserGroups.Exists(c.User.Email, groupName)
 }
 
 var (

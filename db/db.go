@@ -48,15 +48,14 @@ func New(dir string) *Db {
 		panic(err)
 	}
 	database := &Db{
-		func() {
+		Close: func() {
 			bgr.Close()
 		},
-		SessionProvider{bgr},
-		UserProvider{bgr},
-		GroupProvider{bgr},
-		UserGroupProvider{bgr},
 	}
-
+	database.Sessions = SessionProvider{bgr, database}
+	database.Users = UserProvider{bgr, database}
+	database.Groups = GroupProvider{bgr, database}
+	database.UserGroups = UserGroupProvider{bgr, database}
 	return database
 }
 

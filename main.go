@@ -5,23 +5,26 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/PaluMacil/dwn/api/groupapi"
+	"github.com/PaluMacil/dwn/api/userapi"
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/auth"
 	"github.com/PaluMacil/dwn/spa"
 )
 
 func main() {
-	appModule := app.NewApp()
+	appModule := app.New()
 	spaModule := spa.New(&appModule)
 	authModule := auth.New(&appModule)
 
+	userapi := userapi.New(&appModule)
+	groupapi := groupapi.New(&appModule)
+
 	mux := http.NewServeMux()
 	mux.Handle("/", spaModule)
-
-	mux.Handle("/test", appModule)
 	mux.Handle("/oauth/", authModule)
-	//mux.HandleFunc("/oauth/google/login", app.HandleGoogleLogin)
-	//mux.HandleFunc("/oauth/google/callback", app.HandleGoogleCallback)
+	mux.Handle("/api/user/", userapi)
+	mux.Handle("/api/group/", groupapi)
 
 	srv := &http.Server{
 		Addr:    ":" + appModule.Port,

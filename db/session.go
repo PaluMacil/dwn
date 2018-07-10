@@ -26,6 +26,7 @@ func (s Session) Prefix() []byte {
 
 type SessionProvider struct {
 	bgr *badger.DB
+	Db  *Db
 }
 
 func (p *SessionProvider) Get(token string) (Session, error) {

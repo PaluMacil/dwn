@@ -32,20 +32,32 @@ func (g Group) Prefix() []byte {
 	return []byte(groupPrefix)
 }
 
-/*
 func (p *GroupProvider) GroupsFor(email string) ([]Group, error) {
 	var items []DbItem
-	err := all(p.bgr, Group{}.Prefix(), &items, true)
-	groups := make([]Group, len(items))
+	extendedPrefix := append(UserGroup{}.Prefix(), []byte(email)...)
+	err := all(p.bgr, extendedPrefix, &items, true)
+	if err != nil {
+		return nil, err
+	}
+	userGroups := make([]UserGroup, len(items))
 	for i, v := range items {
-		groups[i] = v.(Group)
+		userGroups[i] = v.(UserGroup)
+	}
+
+	groups := make([]Group, len(items))
+	for i, ug := range userGroups {
+		groups[i], err = p.Get(ug.GroupName)
+		if err != nil {
+			return groups, err
+		}
 	}
 
 	return groups, err
-}*/
+}
 
 type GroupProvider struct {
 	bgr *badger.DB
+	Db  *Db
 }
 
 func (p *GroupProvider) Get(name string) (Group, error) {
@@ -86,4 +98,13 @@ func (p *GroupProvider) All() ([]Group, error) {
 
 func (p GroupProvider) Delete(name string) error {
 	return delete(p.bgr, Group{Name: name})
+}
+
+func (g Group) HasPermission(permission string) bool {
+	for _, p := range g.Permissions {
+		if p == permission {
+			return true
+		}
+	}
+	return false
 }

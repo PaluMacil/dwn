@@ -38,6 +38,7 @@ func (u User) Prefix() []byte {
 
 type UserProvider struct {
 	bgr *badger.DB
+	Db  *Db
 }
 
 func (p *UserProvider) Get(email string) (User, error) {
