@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/PaluMacil/dwn/api/groupapi"
@@ -35,6 +38,22 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
 	}
-	log.Println("Now serving on port", appModule.Port)
-	log.Println(srv.ListenAndServe())
+	stop := make(chan os.Signal)
+	signal.Notify(stop, os.Interrupt)
+	go func() {
+		log.Println("Now serving on port", appModule.Port)
+		log.Println(srv.ListenAndServe())
+	}()
+	<-stop
+
+	log.Printf("shutting down ...\n")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal(err)
+	}
+	appModule.Db.Close()
+	log.Printf("Badger: database stopped\n")
 }
