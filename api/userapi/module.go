@@ -8,6 +8,7 @@ import (
 
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/auth"
+	"github.com/PaluMacil/dwn/db"
 )
 
 type Module struct {
@@ -30,7 +31,18 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
-		if err := json.NewEncoder(w).Encode(cur); err != nil {
+		groups, err := mod.Db.Groups.GroupsFor(cur.User.Email)
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+		me := struct {
+			auth.Current
+			Groups []db.Group
+		}{
+			*cur,
+			groups,
+		}
+		if err := json.NewEncoder(w).Encode(me); err != nil {
 			log.Println(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
