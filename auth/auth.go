@@ -115,6 +115,13 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			user, err := mod.Db.Users.Get(claims.Email)
 			if err == badger.ErrKeyNotFound {
 				user = claims.CreateUser()
+				if claims.Email == mod.Setup.InitialAdmin {
+					//TODO: handle err below and add other users to User group
+					mod.Db.UserGroups.Set(db.UserGroup{
+						Email:     claims.Email,
+						GroupName: db.BuiltInGroupAdmin,
+					})
+				}
 			} else if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return

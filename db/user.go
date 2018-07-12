@@ -58,7 +58,10 @@ func (p *UserProvider) Get(email string) (User, error) {
 
 func (p *UserProvider) Exists(email string) (bool, error) {
 	_, err := p.Get(email)
-	return err != badger.ErrKeyNotFound, err
+	if err == badger.ErrKeyNotFound {
+		return false, nil
+	}
+	return true, err
 }
 
 func (p *UserProvider) Set(user User) error {

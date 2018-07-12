@@ -20,6 +20,7 @@ const (
 	BuiltInGroupSpouse   = "SPOUSE"
 	BuiltInGroupResident = "RESIDENT"
 	BuiltInGroupFriend   = "FRIEND"
+	BuiltInGroupLandlord = "LANDLORD"
 	BuiltInGroupTenant   = "TENANT"
 	BuiltInGroupUser     = "USER"
 )
@@ -78,7 +79,10 @@ func (p *GroupProvider) Get(name string) (Group, error) {
 
 func (p *GroupProvider) Exists(name string) (bool, error) {
 	_, err := p.Get(name)
-	return err != badger.ErrKeyNotFound, err
+	if err == badger.ErrKeyNotFound {
+		return false, nil
+	}
+	return true, err
 }
 
 func (p *GroupProvider) Set(group Group) error {

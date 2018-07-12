@@ -12,11 +12,19 @@ import (
 	"github.com/PaluMacil/dwn/api/userapi"
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/auth"
+	"github.com/PaluMacil/dwn/setup"
 	"github.com/PaluMacil/dwn/spa"
 )
 
 func main() {
 	appModule := app.New()
+	setupModule := setup.New(&appModule)
+	if err := setupModule.Ensure(); err != nil {
+		appModule.Db.Close()
+		log.Fatalln("could not ensure app setup:", err)
+		return
+	}
+
 	spaModule := spa.New(&appModule)
 	authModule := auth.New(&appModule)
 

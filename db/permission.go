@@ -1,11 +1,26 @@
 package db
 
 const (
-	PermissionEditUser          = "EDIT_USERS"
+	PermissionResetUserPassword   = "RESET_USER_PASSWORD"
+	PermissionSetAdmin            = "SET_ADMIN"
+	PermissionProxyAsUser         = "PROXY_AS_USER"
+	PermissionViewAppSettings     = "VIEW_APP_SETTINGS"
+	PermissionManageAppDeployment = "MANAGE_APP_DEPLOYMENT"
+)
+
+const (
+	PermissionPostComments      = "POST_COMMENTS"
+	PermissionEditUserInfo      = "EDIT_USER_INFO"
+	PermissionUnlockUser        = "UNLOCK_USER"
 	PermissionViewUsers         = "VIEW_USERS"
 	PermissionEditGroups        = "EDIT_GROUPS"
 	PermissionViewGroups        = "VIEW_GROUPS"
-	PermissionSetAdmin          = "SET_ADMIN"
-	PermissionViewAppSettings   = "VIEW_APP_SETTINGS"
 	PermissionEditAllVisitPages = "EDIT_ALL_VISIT_PAGES"
+	PermissionManageIOTDevices  = "MANAGE_IOT_DEVICES"
+)
+
+// Rental Module
+const (
+	PermissionViewAllTenantInfo = "VIEW_ALL_TENANT_INFO"
+	PermissionManageAllTenants  = "MANAGE_ALL_TENANTS"
 )

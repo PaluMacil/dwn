@@ -15,6 +15,7 @@ const (
 	groupPrefix      = "GROUP:"
 	permissionPrefix = "PERMISSION:"
 	userGroupPrefix  = "USERGROUP:"
+	setupInfoPrefix  = "SETUPINFO:"
 )
 
 func registerGobs() {
@@ -22,6 +23,7 @@ func registerGobs() {
 	gob.Register(User{})
 	gob.Register(Group{})
 	gob.Register(UserGroup{})
+	gob.Register(SetupInfo{})
 }
 
 type DbItem interface {
@@ -35,9 +37,9 @@ type Db struct {
 	Users      UserProvider
 	Groups     GroupProvider
 	UserGroups UserGroupProvider
+	SetupInfo  SetupInfoProvider
 }
 
-//TODO: if I embed *badger.DB in Db, I can probably move provider wire-up to a call right after
 func New(dir string) *Db {
 	registerGobs()
 	opts := badger.DefaultOptions
@@ -56,6 +58,7 @@ func New(dir string) *Db {
 	database.Users = UserProvider{bgr, database}
 	database.Groups = GroupProvider{bgr, database}
 	database.UserGroups = UserGroupProvider{bgr, database}
+	database.SetupInfo = SetupInfoProvider{bgr, database}
 	return database
 }
 

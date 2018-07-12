@@ -52,7 +52,10 @@ func (p *UserGroupProvider) Get(email, groupName string) (UserGroup, error) {
 
 func (p *UserGroupProvider) Exists(email, groupName string) (bool, error) {
 	_, err := p.Get(email, groupName)
-	return err != badger.ErrKeyNotFound, err
+	if err == badger.ErrKeyNotFound {
+		return false, nil
+	}
+	return true, err
 }
 
 func (p *UserGroupProvider) Set(userGroup UserGroup) error {

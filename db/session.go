@@ -47,7 +47,10 @@ func (p *SessionProvider) Get(token string) (Session, error) {
 
 func (p *SessionProvider) Exists(token string) (bool, error) {
 	_, err := p.Get(token)
-	return err != badger.ErrKeyNotFound, err
+	if err == badger.ErrKeyNotFound {
+		return false, nil
+	}
+	return true, err
 }
 
 func (p *SessionProvider) Set(session Session) error {
