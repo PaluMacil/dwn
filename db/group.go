@@ -9,10 +9,10 @@ import (
 )
 
 type Group struct {
-	Name         string
-	Permissions  []string
-	ModifiedBy   string
-	ModifiedDate time.Time
+	Name         string    `json:"name"`
+	Permissions  []string  `json:"permissions"`
+	ModifiedBy   string    `json:"modifiedBy"`
+	ModifiedDate time.Time `json:"modifiedDate"`
 }
 
 const (

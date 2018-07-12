@@ -10,10 +10,10 @@ import (
 )
 
 type Session struct {
-	Token     string
-	Email     string
-	Created   time.Time
-	Heartbeat time.Time
+	Token       string    `json:"token"`
+	Email       string    `json:"email"`
+	CreatedDate time.Time `json:"createdDate"`
+	Heartbeat   time.Time `json:"heartbeat"`
 }
 
 func (s Session) Key() []byte {
@@ -60,10 +60,10 @@ func (p *SessionProvider) Set(session Session) error {
 func (p *SessionProvider) GenerateFor(email string) Session {
 	t := uuid.Must(uuid.NewV4())
 	session := Session{
-		Token:     t.String(),
-		Email:     email,
-		Created:   time.Now(),
-		Heartbeat: time.Now(),
+		Token:       t.String(),
+		Email:       email,
+		CreatedDate: time.Now(),
+		Heartbeat:   time.Now(),
 	}
 	return session
 }

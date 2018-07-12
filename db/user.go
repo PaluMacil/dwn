@@ -9,22 +9,22 @@ import (
 )
 
 type User struct {
-	GoogleID         string    `json:"google_id"`
-	GoogleImportDate time.Time `json:"google_import_date"`
+	GoogleID         string    `json:"googleId"`
+	GoogleImportDate time.Time `json:"googleImportDate"`
 	Email            string    `json:"email"`
 	PasswordHash     []byte    `json:"-"`
-	VerifiedEmail    bool      `json:"verified_email"`
+	VerifiedEmail    bool      `json:"verifiedEmail"`
 	Locked           bool      `json:"locked"`
-	DisplayName      string    `json:"display_name"`
-	GivenName        string    `json:"given_name"`
-	FamilyName       string    `json:"family_name"`
+	DisplayName      string    `json:"displayName"`
+	GivenName        string    `json:"givenName"`
+	FamilyName       string    `json:"familyName"`
 	Link             string    `json:"link"`
 	Picture          string    `json:"picture"`
 	Gender           string    `json:"gender"`
 	Locale           string    `json:"locale"`
-	LastLogin        time.Time `json:"last_login"`
-	ModifiedDate     time.Time `json:"modified_date"`
-	CreatedDate      time.Time `json:"created_date"`
+	LastLogin        time.Time `json:"lastLogin"`
+	ModifiedDate     time.Time `json:"modifiedDate"`
+	CreatedDate      time.Time `json:"createdDate"`
 }
 
 func (u User) Key() []byte {
