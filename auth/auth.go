@@ -154,9 +154,9 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type Current struct {
-	User    db.User
-	Session db.Session
-	db      *db.Db
+	User    db.User    `json:"user"`
+	Session db.Session `json:"session"`
+	db      *db.Db     `json:"-"`
 }
 
 func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {

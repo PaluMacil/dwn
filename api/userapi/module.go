@@ -37,7 +37,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		me := struct {
 			auth.Current
-			Groups []db.Group
+			Groups []db.Group `json:"groups"`
 		}{
 			*cur,
 			groups,
