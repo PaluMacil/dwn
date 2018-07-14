@@ -10,7 +10,7 @@ import (
 
 func TestGetFakeUser(t *testing.T) {
 	_, err := Db.Users.Get("123@example.com")
-	if !strings.Contains(err.Error(), badger.ErrKeyNotFound.Error()) {
+	if !db.IsKeyNotFoundErr(err) {
 		t.Fatalf(`Expected '%s', but got '%s' error`, badger.ErrKeyNotFound, err)
 	}
 }
@@ -48,7 +48,17 @@ func TestUserExists(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error creating user: %s", err)
 	}
-	Db.Users.Exists("exists@example.com")
+	exists, err := Db.Users.Exists("exists@example.com")
+	if !exists || err != nil {
+		t.Fatalf("Expected (true, nil), got (%v, %s)", exists, err)
+	}
+}
+
+func TestUserNotExists(t *testing.T) {
+	exists, err := Db.Users.Exists("notexists@example.com")
+	if exists || err != nil {
+		t.Fatalf("Expected (false, nil), got (%v, %s)", exists, err)
+	}
 }
 
 func TestGetExistingUser(t *testing.T) {

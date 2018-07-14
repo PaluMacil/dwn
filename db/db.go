@@ -59,11 +59,8 @@ func retry(dir string, originalOpts badger.Options) (*Db, error) {
 	}
 	retryOpts := originalOpts
 	retryOpts.Truncate = true
-	if bgr, err := badger.Open(retryOpts); err == nil {
-		return &Db{bgr: bgr}, nil
-	} else {
-		return nil, err
-	}
+	bgr, err := badger.Open(retryOpts)
+	return &Db{bgr: bgr}, err
 }
 
 func New(dir string) (*Db, error) {
@@ -180,4 +177,11 @@ func (db *Db) count(pfx []byte) (int, error) {
 	var items []DbItem
 	err := db.all(pfx, &items, false)
 	return len(items), err
+}
+
+func IsKeyNotFoundErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	return strings.Contains(err.Error(), badger.ErrKeyNotFound.Error())
 }

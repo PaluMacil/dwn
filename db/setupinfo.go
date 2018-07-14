@@ -3,8 +3,6 @@ package db
 import (
 	"fmt"
 	"time"
-
-	"github.com/dgraph-io/badger"
 )
 
 type SetupInfo struct {
@@ -38,7 +36,7 @@ func (p *SetupInfoProvider) Get() (SetupInfo, error) {
 
 func (p *SetupInfoProvider) Completed() (bool, error) {
 	_, err := p.Get()
-	if err == badger.ErrKeyNotFound {
+	if IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

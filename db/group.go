@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"time"
-
-	"github.com/dgraph-io/badger"
 )
 
 type Group struct {
@@ -78,7 +76,7 @@ func (p *GroupProvider) Get(name string) (Group, error) {
 
 func (p *GroupProvider) Exists(name string) (bool, error) {
 	_, err := p.Get(name)
-	if err == badger.ErrKeyNotFound {
+	if IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

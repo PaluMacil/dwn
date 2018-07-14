@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"time"
-
-	"github.com/dgraph-io/badger"
 )
 
 type UserGroup struct {
@@ -51,7 +49,7 @@ func (p *UserGroupProvider) Get(email, groupName string) (UserGroup, error) {
 
 func (p *UserGroupProvider) Exists(email, groupName string) (bool, error) {
 	_, err := p.Get(email, groupName)
-	if err == badger.ErrKeyNotFound {
+	if IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

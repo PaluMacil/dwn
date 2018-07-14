@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"time"
-
-	"github.com/dgraph-io/badger"
 )
 
 type User struct {
@@ -55,9 +53,10 @@ func (p *UserProvider) Get(email string) (User, error) {
 	return user, err
 }
 
+//TODO: exists can be pushed into a db method
 func (p *UserProvider) Exists(email string) (bool, error) {
 	_, err := p.Get(email)
-	if err == badger.ErrKeyNotFound {
+	if IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

@@ -12,7 +12,6 @@ import (
 
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/db"
-	"github.com/dgraph-io/badger"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -113,7 +112,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			//if user exists in database, save session, update last login
 			user, err := mod.Db.Users.Get(claims.Email)
-			if err == badger.ErrKeyNotFound {
+			if db.IsKeyNotFoundErr(err) {
 				user = claims.CreateUser()
 				if claims.Email == mod.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group

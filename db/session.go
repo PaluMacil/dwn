@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgraph-io/badger"
 	"github.com/satori/go.uuid"
 )
 
@@ -46,7 +45,7 @@ func (p *SessionProvider) Get(token string) (Session, error) {
 
 func (p *SessionProvider) Exists(token string) (bool, error) {
 	_, err := p.Get(token)
-	if err == badger.ErrKeyNotFound {
+	if IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err
