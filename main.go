@@ -17,12 +17,14 @@ import (
 )
 
 func main() {
-	appModule := app.New()
+	appModule, err := app.New()
+	if err != nil {
+		log.Fatalln("could not start app:", err)
+	}
 	setupModule := setup.New(&appModule)
 	if err := setupModule.Ensure(); err != nil {
 		appModule.Db.Close()
 		log.Fatalln("could not ensure app setup:", err)
-		return
 	}
 
 	spaModule := spa.New(&appModule)

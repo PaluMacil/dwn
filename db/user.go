@@ -36,8 +36,7 @@ func (u User) Prefix() []byte {
 }
 
 type UserProvider struct {
-	bgr *badger.DB
-	Db  *Db
+	Db *Db
 }
 
 func (p *UserProvider) Get(email string) (User, error) {
@@ -45,7 +44,7 @@ func (p *UserProvider) Get(email string) (User, error) {
 	if email == "" {
 		return user, errors.New("UserProvider.Get requires an email but got an empty string")
 	}
-	item, err := get(p.bgr, &user)
+	item, err := p.Db.get(&user)
 	if err != nil {
 		return user, err
 	}
@@ -65,16 +64,16 @@ func (p *UserProvider) Exists(email string) (bool, error) {
 }
 
 func (p *UserProvider) Set(user User) error {
-	return set(p.bgr, &user)
+	return p.Db.set(&user)
 }
 
 func (p *UserProvider) Count() (int, error) {
-	return count(p.bgr, User{}.Prefix())
+	return p.Db.count(User{}.Prefix())
 }
 
 func (p *UserProvider) All() ([]User, error) {
 	var items []DbItem
-	err := all(p.bgr, User{}.Prefix(), &items, true)
+	err := p.Db.all(User{}.Prefix(), &items, true)
 	users := make([]User, len(items))
 	for i, v := range items {
 		users[i] = v.(User)
@@ -84,7 +83,7 @@ func (p *UserProvider) All() ([]User, error) {
 }
 
 func (p UserProvider) Delete(email string) error {
-	return delete(p.bgr, User{Email: email})
+	return p.Db.delete(User{Email: email})
 }
 
 func (p UserProvider) PurgeAll() error {

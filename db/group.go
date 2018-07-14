@@ -36,7 +36,7 @@ func (g Group) Prefix() []byte {
 func (p *GroupProvider) GroupsFor(email string) ([]Group, error) {
 	var items []DbItem
 	extendedPrefix := append(UserGroup{}.Prefix(), []byte(email)...)
-	err := all(p.bgr, extendedPrefix, &items, true)
+	err := p.Db.all(extendedPrefix, &items, true)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,7 @@ func (p *GroupProvider) GroupsFor(email string) ([]Group, error) {
 }
 
 type GroupProvider struct {
-	bgr *badger.DB
-	Db  *Db
+	Db *Db
 }
 
 func (p *GroupProvider) Get(name string) (Group, error) {
@@ -66,7 +65,7 @@ func (p *GroupProvider) Get(name string) (Group, error) {
 	if name == "" {
 		return group, errors.New("GroupProvider.Get requires a name but got an empty string")
 	}
-	item, err := get(p.bgr, &group)
+	item, err := p.Db.get(&group)
 	if err != nil {
 		return group, err
 	}
@@ -86,12 +85,12 @@ func (p *GroupProvider) Exists(name string) (bool, error) {
 }
 
 func (p *GroupProvider) Set(group Group) error {
-	return set(p.bgr, &group)
+	return p.Db.set(&group)
 }
 
 func (p *GroupProvider) All() ([]Group, error) {
 	var items []DbItem
-	err := all(p.bgr, Group{}.Prefix(), &items, true)
+	err := p.Db.all(Group{}.Prefix(), &items, true)
 	groups := make([]Group, len(items))
 	for i, v := range items {
 		groups[i] = v.(Group)
@@ -101,7 +100,7 @@ func (p *GroupProvider) All() ([]Group, error) {
 }
 
 func (p GroupProvider) Delete(name string) error {
-	return delete(p.bgr, Group{Name: name})
+	return p.Db.delete(Group{Name: name})
 }
 
 func (g Group) HasPermission(permission string) bool {

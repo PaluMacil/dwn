@@ -3,11 +3,14 @@ package db
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/dgraph-io/badger"
 )
-
-type Prefix string
 
 const (
 	sessionPrefix    = "SESSION:"
@@ -26,13 +29,9 @@ func registerGobs() {
 	gob.Register(SetupInfo{})
 }
 
-type DbItem interface {
-	Key() []byte
-	Prefix() []byte
-}
-
 type Db struct {
-	Close      func()
+	bgr *badger.DB
+
 	Sessions   SessionProvider
 	Users      UserProvider
 	Groups     GroupProvider
@@ -40,31 +39,64 @@ type Db struct {
 	SetupInfo  SetupInfoProvider
 }
 
-func New(dir string) *Db {
+func (db *Db) WithProviders() {
+	db.Sessions = SessionProvider{db}
+	db.Users = UserProvider{db}
+	db.Groups = GroupProvider{db}
+	db.UserGroups = UserGroupProvider{db}
+	db.SetupInfo = SetupInfoProvider{db}
+}
+
+type DbItem interface {
+	Key() []byte
+	Prefix() []byte
+}
+
+func retry(dir string, originalOpts badger.Options) (*Db, error) {
+	lockPath := filepath.Join(dir, "LOCK")
+	if err := os.Remove(lockPath); err != nil {
+		return nil, fmt.Errorf(`removing "LOCK": %s`, err)
+	}
+	retryOpts := originalOpts
+	retryOpts.Truncate = true
+	if bgr, err := badger.Open(retryOpts); err == nil {
+		return &Db{bgr: bgr}, nil
+	} else {
+		return nil, err
+	}
+}
+
+func New(dir string) (*Db, error) {
 	registerGobs()
 	opts := badger.DefaultOptions
 	opts.Dir = dir
 	opts.ValueDir = dir
 	bgr, err := badger.Open(opts)
 	if err != nil {
-		panic(err)
+		if strings.Contains(err.Error(), "LOCK") {
+			log.Println("database locked, probably due to improper shutdown")
+			if db, err := retry(dir, opts); err == nil {
+				log.Println("database unlocked, value log truncated")
+				db.WithProviders()
+				return db, nil
+			}
+			log.Println("could not unlock database:", err)
+
+		}
+		return nil, err
 	}
-	database := &Db{
-		Close: func() {
-			bgr.Close()
-		},
-	}
-	database.Sessions = SessionProvider{bgr, database}
-	database.Users = UserProvider{bgr, database}
-	database.Groups = GroupProvider{bgr, database}
-	database.UserGroups = UserGroupProvider{bgr, database}
-	database.SetupInfo = SetupInfoProvider{bgr, database}
-	return database
+	database := &Db{bgr: bgr}
+	database.WithProviders()
+	return database, nil
 }
 
-func get(bgr *badger.DB, obj DbItem) (DbItem, error) {
+func (db Db) Close() error {
+	return db.bgr.Close()
+}
+
+func (db *Db) get(obj DbItem) (DbItem, error) {
 	var rawBytes []byte
-	err := bgr.View(func(txn *badger.Txn) error {
+	err := db.bgr.View(func(txn *badger.Txn) error {
 		item, err := txn.Get(obj.Key())
 		if err != nil {
 			return err
@@ -78,7 +110,7 @@ func get(bgr *badger.DB, obj DbItem) (DbItem, error) {
 		return nil
 	})
 	if err != nil {
-		return obj, err
+		return obj, fmt.Errorf(`getting "%s" (%T): %s`, string(obj.Key()), obj, err)
 	}
 	var buf bytes.Buffer
 	_, err = buf.Write(rawBytes)
@@ -93,30 +125,30 @@ func get(bgr *badger.DB, obj DbItem) (DbItem, error) {
 	return obj, nil
 }
 
-func set(bgr *badger.DB, obj DbItem) error {
+func (db *Db) set(obj DbItem) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 	err := enc.Encode(&obj)
 	if err != nil {
 		return err
 	}
-	return bgr.Update(func(txn *badger.Txn) error {
+	return db.bgr.Update(func(txn *badger.Txn) error {
 		err := txn.Set(obj.Key(), buf.Bytes())
 		if err != nil {
-			return err
+			return fmt.Errorf(`setting "%s" (%T): %s`, string(obj.Key()), obj, err)
 		}
 		return nil
 	})
 }
 
-func delete(bgr *badger.DB, obj DbItem) error {
-	return bgr.Update(func(txn *badger.Txn) error {
+func (db *Db) delete(obj DbItem) error {
+	return db.bgr.Update(func(txn *badger.Txn) error {
 		return txn.Delete(obj.Key())
 	})
 }
 
-func all(bgr *badger.DB, pfx []byte, out *[]DbItem, preload bool) error {
-	err := bgr.View(func(txn *badger.Txn) error {
+func (db *Db) all(pfx []byte, out *[]DbItem, preload bool) error {
+	err := db.bgr.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
 
@@ -144,8 +176,8 @@ func all(bgr *badger.DB, pfx []byte, out *[]DbItem, preload bool) error {
 	return err
 }
 
-func count(bgr *badger.DB, pfx []byte) (int, error) {
+func (db *Db) count(pfx []byte) (int, error) {
 	var items []DbItem
-	err := all(bgr, pfx, &items, false)
+	err := db.all(pfx, &items, false)
 	return len(items), err
 }

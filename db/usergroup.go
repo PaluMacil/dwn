@@ -24,8 +24,7 @@ func (u UserGroup) Prefix() []byte {
 }
 
 type UserGroupProvider struct {
-	bgr *badger.DB
-	Db  *Db
+	Db *Db
 }
 
 func (p *UserGroupProvider) Get(email, groupName string) (UserGroup, error) {
@@ -39,7 +38,7 @@ func (p *UserGroupProvider) Get(email, groupName string) (UserGroup, error) {
 	if groupName == "" {
 		return userGroup, errors.New("UserGroupProvider.Get requires a groupName but got an empty string")
 	}
-	item, err := get(p.bgr, &userGroup)
+	item, err := p.Db.get(&userGroup)
 	if err != nil {
 		return userGroup, err
 	}
@@ -62,12 +61,12 @@ func (p *UserGroupProvider) Set(userGroup UserGroup) error {
 	if userGroup.CreatedDate.IsZero() {
 		userGroup.CreatedDate = time.Now()
 	}
-	return set(p.bgr, &userGroup)
+	return p.Db.set(&userGroup)
 }
 
 func (p *UserGroupProvider) All() ([]UserGroup, error) {
 	var items []DbItem
-	err := all(p.bgr, UserGroup{}.Prefix(), &items, true)
+	err := p.Db.all(UserGroup{}.Prefix(), &items, true)
 	userGroups := make([]UserGroup, len(items))
 	for i, v := range items {
 		userGroups[i] = v.(UserGroup)
@@ -77,7 +76,7 @@ func (p *UserGroupProvider) All() ([]UserGroup, error) {
 }
 
 func (p UserGroupProvider) Delete(email, groupName string) error {
-	return delete(p.bgr, UserGroup{
+	return p.Db.delete(UserGroup{
 		Email:     email,
 		GroupName: groupName,
 	})

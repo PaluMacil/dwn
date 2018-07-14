@@ -14,7 +14,11 @@ var Db *db.Db
 func TestMain(m *testing.M) {
 	const testDir = "data-test"
 	purgeDb(testDir)
-	Db = db.New(testDir)
+	var err error
+	Db, err = db.New(testDir)
+	if err != nil {
+		log.Fatalln("could not create db:", err)
+	}
 	retCode := m.Run()
 	Db.Close()
 	os.Exit(retCode)

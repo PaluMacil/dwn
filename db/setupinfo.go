@@ -20,13 +20,12 @@ func (s SetupInfo) Prefix() []byte {
 }
 
 type SetupInfoProvider struct {
-	bgr *badger.DB
-	Db  *Db
+	Db *Db
 }
 
 func (p *SetupInfoProvider) Get() (SetupInfo, error) {
 	var setupInfo = SetupInfo{}
-	item, err := get(p.bgr, &setupInfo)
+	item, err := p.Db.get(&setupInfo)
 	if err != nil {
 		return setupInfo, err
 	}
@@ -46,9 +45,9 @@ func (p *SetupInfoProvider) Completed() (bool, error) {
 }
 
 func (p *SetupInfoProvider) Set(setupInfo SetupInfo) error {
-	return set(p.bgr, &setupInfo)
+	return p.Db.set(&setupInfo)
 }
 
 func (p SetupInfoProvider) Delete() error {
-	return delete(p.bgr, SetupInfo{})
+	return p.Db.delete(SetupInfo{})
 }

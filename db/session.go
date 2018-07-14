@@ -25,8 +25,7 @@ func (s Session) Prefix() []byte {
 }
 
 type SessionProvider struct {
-	bgr *badger.DB
-	Db  *Db
+	Db *Db
 }
 
 func (p *SessionProvider) Get(token string) (Session, error) {
@@ -34,7 +33,7 @@ func (p *SessionProvider) Get(token string) (Session, error) {
 	if token == "" {
 		return session, errors.New("SessionProvider.Get requires a token but got an empty string")
 	}
-	item, err := get(p.bgr, &session)
+	item, err := p.Db.get(&session)
 	if err != nil {
 		return session, err
 	}
@@ -54,7 +53,7 @@ func (p *SessionProvider) Exists(token string) (bool, error) {
 }
 
 func (p *SessionProvider) Set(session Session) error {
-	return set(p.bgr, &session)
+	return p.Db.set(&session)
 }
 
 func (p *SessionProvider) GenerateFor(email string) Session {
@@ -70,7 +69,7 @@ func (p *SessionProvider) GenerateFor(email string) Session {
 
 func (p *SessionProvider) All() ([]Session, error) {
 	var items []DbItem
-	err := all(p.bgr, Session{}.Prefix(), &items, true)
+	err := p.Db.all(Session{}.Prefix(), &items, true)
 	sessions := make([]Session, len(items))
 	for i, v := range items {
 		sessions[i] = v.(Session)
@@ -80,7 +79,7 @@ func (p *SessionProvider) All() ([]Session, error) {
 }
 
 func (p SessionProvider) Delete(token string) error {
-	return delete(p.bgr, Session{Token: token})
+	return p.Db.delete(Session{Token: token})
 }
 
 func (p SessionProvider) PurgeAll() error {

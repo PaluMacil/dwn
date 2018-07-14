@@ -10,9 +10,8 @@ import (
 
 func TestGetFakeUser(t *testing.T) {
 	_, err := Db.Users.Get("123@example.com")
-
-	if err != badger.ErrKeyNotFound {
-		t.Fatalf("Expected %s, getting fake user but got %s error", badger.ErrKeyNotFound, err)
+	if !strings.Contains(err.Error(), badger.ErrKeyNotFound.Error()) {
+		t.Fatalf(`Expected '%s', but got '%s' error`, badger.ErrKeyNotFound, err)
 	}
 }
 
