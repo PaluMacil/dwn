@@ -178,13 +178,15 @@ func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {
 	}, nil
 }
 
+// Can asks if a user can do something. It returns whether a user is in a group with
+// the specified permission. Admins always return true because they can do anything.
 func (c *Current) Can(permission string) (bool, error) {
 	groups, err := c.db.Groups.GroupsFor(c.User.Email)
 	if err != nil {
 		return false, err
 	}
 	for _, g := range groups {
-		if g.HasPermission(permission) {
+		if g.Name == db.BuiltInGroupAdmin || g.HasPermission(permission) {
 			return true, nil
 		}
 	}
@@ -214,7 +216,7 @@ var loginCallbackPage = `
     <title>Logging in...</title>
   </head>
   <body>
-	Logging in now...
+	<h3>Logging in now...</h3>
   	<script>
 		localStorage.setItem('{{.TokenName}}', '{{.Token}}');
 		location = '{{.RedirectURL}}'

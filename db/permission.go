@@ -1,5 +1,6 @@
 package db
 
+// Elevated permissions
 const (
 	PermissionResetUserPassword   = "RESET_USER_PASSWORD"
 	PermissionSetAdmin            = "SET_ADMIN"
@@ -17,6 +18,11 @@ const (
 	PermissionViewGroups        = "VIEW_GROUPS"
 	PermissionEditAllVisitPages = "EDIT_ALL_VISIT_PAGES"
 	PermissionManageIOTDevices  = "MANAGE_IOT_DEVICES"
+)
+
+// Visit module
+const (
+	PermissionSetDefaultParty = "SET_DEFAULT_PARTY"
 )
 
 // Rental Module

@@ -1,14 +1,10 @@
 package userapi
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
-	"strings"
 
+	"github.com/PaluMacil/dwn/api"
 	"github.com/PaluMacil/dwn/app"
-	"github.com/PaluMacil/dwn/auth"
-	"github.com/PaluMacil/dwn/db"
 )
 
 type Module struct {
@@ -21,32 +17,20 @@ func New(app *app.App) *Module {
 	}
 }
 
-func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	cur, _ := auth.GetCurrent(r, mod.Db)
+type UserRoute api.Route
 
-	route := strings.Split(r.URL.Path, "/")
-	switch endpoint := route[3]; endpoint {
+func (ur UserRoute) API() api.Route {
+	return api.Route(ur)
+}
+
+func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	route := UserRoute(api.GetRoute(w, r, mod.Db))
+	switch route.Endpoint {
 	case "me":
-		if cur == nil {
-			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-			return
-		}
-		groups, err := mod.Db.Groups.GroupsFor(cur.User.Email)
-		if err != nil {
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
-		me := struct {
-			auth.Current
-			Groups []db.Group `json:"groups"`
-		}{
-			*cur,
-			groups,
-		}
-		if err := json.NewEncoder(w).Encode(me); err != nil {
-			log.Println(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-		return
+		route.handleMe()
+	case "all":
+		route.handleAll()
+	default:
+		route.handleUser()
 	}
 }
