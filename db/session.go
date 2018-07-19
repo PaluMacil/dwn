@@ -11,6 +11,7 @@ import (
 type Session struct {
 	Token       string    `json:"token"`
 	Email       string    `json:"email"`
+	IP          string    `json:"ip"`
 	CreatedDate time.Time `json:"createdDate"`
 	Heartbeat   time.Time `json:"heartbeat"`
 }
@@ -55,11 +56,12 @@ func (p *SessionProvider) Set(session Session) error {
 	return p.Db.set(&session)
 }
 
-func (p *SessionProvider) GenerateFor(email string) Session {
+func (p *SessionProvider) GenerateFor(email, ip string) Session {
 	t := uuid.Must(uuid.NewV4())
 	session := Session{
 		Token:       t.String(),
 		Email:       email,
+		IP:          ip,
 		CreatedDate: time.Now(),
 		Heartbeat:   time.Now(),
 	}

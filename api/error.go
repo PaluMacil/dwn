@@ -23,3 +23,9 @@ func (rt Route) ServeInternalServerError(err error) {
 	http.Error(rt.W, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	return
 }
+
+func (rt Route) ServeBadRequest() {
+	//TODO: log once I have a verbose log level
+	http.Error(rt.W, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	return
+}

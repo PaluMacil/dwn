@@ -104,7 +104,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		if claims.VerifiedEmail {
 			//var session db.Session
-			session := mod.Db.Sessions.GenerateFor(claims.Email)
+			session := mod.Db.Sessions.GenerateFor(claims.Email, r.RemoteAddr)
 			err := mod.Db.Sessions.Set(session)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
