@@ -2,8 +2,8 @@ package groupapi
 
 import (
 	"net/http"
-	"strings"
 
+	"github.com/PaluMacil/dwn/api"
 	"github.com/PaluMacil/dwn/app"
 )
 
@@ -17,9 +17,19 @@ func New(app *app.App) *Module {
 	}
 }
 
+type GroupRoute api.Route
+
+func (r GroupRoute) API() api.Route {
+	return api.Route(r)
+}
+
+// api/group/...
 func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	route := strings.Split(r.URL.Path, "/")
-	switch endpoint := route[1]; endpoint {
-	case "":
+	route := GroupRoute(api.GetRoute(w, r, mod.Db))
+	switch route.Endpoint {
+	case "all":
+		route.handleAll()
+	default:
+		route.handleGroup()
 	}
 }

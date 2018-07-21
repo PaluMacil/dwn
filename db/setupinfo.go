@@ -6,7 +6,7 @@ import (
 )
 
 type SetupInfo struct {
-	InitializedDate time.Time
+	InitializedDate time.Time `json:"initializedDate"`
 }
 
 func (s SetupInfo) Key() []byte {

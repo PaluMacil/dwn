@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/api/groupapi"
+	"github.com/PaluMacil/dwn/api/infoapi"
 	"github.com/PaluMacil/dwn/api/userapi"
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/auth"
@@ -30,14 +31,16 @@ func main() {
 	spaModule := spa.New(&appModule)
 	authModule := auth.New(&appModule)
 
-	userapi := userapi.New(&appModule)
-	groupapi := groupapi.New(&appModule)
+	userModule := userapi.New(&appModule)
+	groupModule := groupapi.New(&appModule)
+	infoModule := infoapi.New(&appModule)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", spaModule)
 	mux.Handle("/oauth/", authModule)
-	mux.Handle("/api/user/", userapi)
-	mux.Handle("/api/group/", groupapi)
+	mux.Handle("/api/user/", userModule)
+	mux.Handle("/api/group/", groupModule)
+	mux.Handle("/api/info/", infoModule)
 
 	srv := &http.Server{
 		Addr:    ":" + appModule.Port,

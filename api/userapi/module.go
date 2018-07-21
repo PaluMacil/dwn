@@ -23,6 +23,7 @@ func (ur UserRoute) API() api.Route {
 	return api.Route(ur)
 }
 
+// api/user/...
 func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	route := UserRoute(api.GetRoute(w, r, mod.Db))
 	switch route.Endpoint {

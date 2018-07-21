@@ -8,6 +8,7 @@ import (
 	"github.com/PaluMacil/dwn/db"
 )
 
+// api/user/me
 func (rt *UserRoute) handleMe() {
 	if rt.Current == nil {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)

@@ -27,17 +27,17 @@ func New() (App, error) {
 }
 
 type Setup struct {
-	InitialAdmin string
+	InitialAdmin string `json:"initialAdmin"`
 }
 
 type App struct {
-	Protocol    string
-	Host        string
-	Port        string
-	BaseURL     string
-	UIProxyPort string
-	Db          *db.Db
-	Setup       Setup
+	Protocol    string `json:"protocol"`
+	Host        string `json:"host"`
+	Port        string `json:"port"`
+	BaseURL     string `json:"baseURL"`
+	UIProxyPort string `json:"uiProxyPort"`
+	Db          *db.Db `json:"-"`
+	Setup       Setup  `json:"setup"`
 }
 
 func (app App) HomePage() string {

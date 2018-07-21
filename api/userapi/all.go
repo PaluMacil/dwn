@@ -7,6 +7,7 @@ import (
 	"github.com/PaluMacil/dwn/db"
 )
 
+// api/user/all
 func (rt *UserRoute) handleAll() {
 	if rt.API().ServeCannot(db.PermissionViewUsers) {
 		return
