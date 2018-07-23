@@ -15,7 +15,7 @@ func TestMain(m *testing.M) {
 	const testDir = "data-test"
 	purgeDb(testDir)
 	var err error
-	Db, err = db.New(testDir)
+	Db, err = db.New(testDir, false)
 	if err != nil {
 		log.Fatalln("could not create db:", err)
 	}

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/dgraph-io/badger"
+	"github.com/dgraph-io/badger/options"
 )
 
 const (
@@ -63,11 +64,16 @@ func retry(dir string, originalOpts badger.Options) (*Db, error) {
 	return &Db{bgr: bgr}, err
 }
 
-func New(dir string) (*Db, error) {
+func New(dir string, useMMAP bool) (*Db, error) {
 	registerGobs()
 	opts := badger.DefaultOptions
 	opts.Dir = dir
 	opts.ValueDir = dir
+	if useMMAP {
+		opts.ValueLogLoadingMode = options.MemoryMap
+	} else {
+		opts.ValueLogLoadingMode = options.FileIO
+	}
 	bgr, err := badger.Open(opts)
 	if err != nil {
 		if strings.Contains(err.Error(), "LOCK") {

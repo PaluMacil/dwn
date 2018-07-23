@@ -7,6 +7,7 @@ const (
 	PermissionProxyAsUser         = "PROXY_AS_USER"
 	PermissionViewAppSettings     = "VIEW_APP_SETTINGS"
 	PermissionManageAppDeployment = "MANAGE_APP_DEPLOYMENT"
+	PermissionStopServer          = "STOP_SERVER"
 )
 
 const (

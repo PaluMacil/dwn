@@ -19,8 +19,8 @@ func New(app *app.App) *Module {
 
 type InfoRoute api.Route
 
-func (r InfoRoute) API() api.Route {
-	return api.Route(r)
+func (rt InfoRoute) API() api.Route {
+	return api.Route(rt)
 }
 
 // api/info/...
