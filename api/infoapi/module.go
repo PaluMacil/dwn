@@ -29,5 +29,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch route.Endpoint {
 	case "server":
 		route.handleServerInfo(mod.App)
+	case "permissions":
+		route.handlePermissions()
 	}
 }

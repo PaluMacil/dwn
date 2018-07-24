@@ -31,3 +31,26 @@ const (
 	PermissionViewAllTenantInfo = "VIEW_ALL_TENANT_INFO"
 	PermissionManageAllTenants  = "MANAGE_ALL_TENANTS"
 )
+
+var Permissions = []string{
+	PermissionResetUserPassword,
+	PermissionSetAdmin,
+	PermissionProxyAsUser,
+	PermissionViewAppSettings,
+	PermissionManageAppDeployment,
+	PermissionStopServer,
+
+	PermissionPostComments,
+	PermissionEditUserInfo,
+	PermissionUnlockUser,
+	PermissionViewUsers,
+	PermissionEditGroups,
+	PermissionViewGroups,
+	PermissionEditAllVisitPages,
+	PermissionManageIOTDevices,
+
+	PermissionSetDefaultParty,
+
+	PermissionViewAllTenantInfo,
+	PermissionManageAllTenants,
+}
