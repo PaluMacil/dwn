@@ -181,6 +181,9 @@ func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {
 // Can asks if a user can do something. It returns whether a user is in a group with
 // the specified permission. Admins always return true because they can do anything.
 func (c *Current) Can(permission string) (bool, error) {
+	if c == nil {
+		return false, nil
+	}
 	groups, err := c.db.Groups.GroupsFor(c.User.Email)
 	if err != nil {
 		return false, err
@@ -194,6 +197,9 @@ func (c *Current) Can(permission string) (bool, error) {
 }
 
 func (c *Current) Is(groupName string) (bool, error) {
+	if c == nil {
+		return false, nil
+	}
 	return c.db.UserGroups.Exists(c.User.Email, groupName)
 }
 

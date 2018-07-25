@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// api/user/{groupname}
+// api/group/{groupname}
 func (rt *GroupRoute) handleGroup() {
 	if rt.Current == nil {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)

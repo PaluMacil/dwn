@@ -7,7 +7,7 @@ import (
 	"github.com/PaluMacil/dwn/db"
 )
 
-// api/user/all
+// api/group/all
 func (rt *GroupRoute) handleAll() {
 	if rt.Current == nil {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)

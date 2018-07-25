@@ -19,8 +19,8 @@ func New(app *app.App) *Module {
 
 type GroupRoute api.Route
 
-func (r GroupRoute) API() api.Route {
-	return api.Route(r)
+func (rt GroupRoute) API() api.Route {
+	return api.Route(rt)
 }
 
 // api/group/...
@@ -29,6 +29,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch route.Endpoint {
 	case "all":
 		route.handleAll()
+	case "permission":
+		route.handlePermission()
 	default:
 		route.handleGroup()
 	}
