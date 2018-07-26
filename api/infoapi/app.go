@@ -6,6 +6,7 @@ import (
 
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/db"
+	"runtime"
 )
 
 // api/info/server
@@ -25,7 +26,7 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 			return
 		}
 
-		resp := InfoResponse{app, info}
+		resp := InfoResponse{app, info, runtime.Version()}
 
 		if err := json.NewEncoder(rt.W).Encode(resp); err != nil {
 			rt.API().ServeInternalServerError(err)
@@ -39,4 +40,5 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 type InfoResponse struct {
 	*app.App
 	db.SetupInfo
+	GoVersion string `json:"goVersion"`
 }
