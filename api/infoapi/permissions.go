@@ -1,9 +1,9 @@
 package infoapi
 
 import (
-		"net/http"
-	"github.com/PaluMacil/dwn/db"
 	"encoding/json"
+	"github.com/PaluMacil/dwn/db"
+	"net/http"
 )
 
 // api/info/permissions

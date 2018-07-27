@@ -1,8 +1,8 @@
 package groupapi
 
 import (
-	"github.com/PaluMacil/dwn/db"
 	"encoding/json"
+	"github.com/PaluMacil/dwn/db"
 	"net/url"
 )
 

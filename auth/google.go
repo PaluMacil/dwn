@@ -19,15 +19,18 @@ type GoogleClaims struct {
 	Locale        string `json:"locale"`
 }
 
-func (g *GoogleClaims) CreateUser() db.User {
+func (g *GoogleClaims) CreateUser(displayName db.DisplayName) db.User {
+	// TODO: must check if displayname as tag exists once bleve search is up
 	return db.User{
 		GoogleID:         g.ID,
 		GoogleImportDate: time.Now(),
 		Email:            g.Email,
+		Tag:              displayName.Tag(),
+		PreviousTags:     []string{},
 		PasswordHash:     []byte{},
 		VerifiedEmail:    g.VerifiedEmail,
 		Locked:           false,
-		DisplayName:      g.GivenName + " " + g.FamilyName,
+		DisplayName:      displayName,
 		GivenName:        g.GivenName,
 		FamilyName:       g.FamilyName,
 		Link:             g.Link,

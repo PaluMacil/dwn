@@ -113,7 +113,12 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			//if user exists in database, save session, update last login
 			user, err := mod.Db.Users.Get(claims.Email)
 			if db.IsKeyNotFoundErr(err) {
-				user = claims.CreateUser()
+				displayName, err := generateDisplayName(claims.GivenName)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				user = claims.CreateUser(displayName)
 				if claims.Email == mod.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
 					mod.Db.UserGroups.Set(db.UserGroup{
