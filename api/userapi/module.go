@@ -33,6 +33,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		route.handleAll()
 	case "sessions":
 		route.handleSessionDetails()
+	case "logout":
+		route.handleLogout()
 	default:
 		route.handleUser()
 	}
