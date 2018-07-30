@@ -172,6 +172,11 @@ func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {
 	if err != nil {
 		return nil, err
 	}
+	session.Heartbeat = time.Now()
+	session.IP = r.RemoteAddr
+	if err = db.Sessions.Set(session); err != nil {
+		return nil, err
+	}
 	user, err := db.Users.Get(session.Email)
 	if err != nil {
 		return nil, err

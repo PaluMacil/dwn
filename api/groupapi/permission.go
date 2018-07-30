@@ -2,8 +2,10 @@ package groupapi
 
 import (
 	"encoding/json"
-	"github.com/PaluMacil/dwn/db"
 	"net/url"
+	"time"
+
+	"github.com/PaluMacil/dwn/db"
 )
 
 // api/group/permission/{groupName}?permission={permission}
@@ -25,6 +27,8 @@ func (rt *GroupRoute) handlePermission() {
 	case "PUT": //TODO: Check for elevated permissions
 		if !group.HasPermission(permission) {
 			group.Permissions = append(group.Permissions, permission)
+			group.ModifiedBy = rt.Current.User.Email
+			group.ModifiedDate = time.Now()
 			err := rt.Db.Groups.Set(group)
 			if err != nil {
 				rt.API().ServeInternalServerError(err)
@@ -34,6 +38,8 @@ func (rt *GroupRoute) handlePermission() {
 	case "DELETE":
 		if group.HasPermission(permission) {
 			group.Permissions = remove(group.Permissions, permission)
+			group.ModifiedBy = rt.Current.User.Email
+			group.ModifiedDate = time.Now()
 			err := rt.Db.Groups.Set(group)
 			if err != nil {
 				rt.API().ServeInternalServerError(err)
