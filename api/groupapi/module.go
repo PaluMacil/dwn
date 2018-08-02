@@ -31,6 +31,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		route.handleAll()
 	case "permission":
 		route.handlePermission()
+	case "users-for":
+		route.handleUsersForGroup()
 	default:
 		route.handleGroup()
 	}

@@ -11,6 +11,7 @@ import (
 	"github.com/PaluMacil/dwn/api/groupapi"
 	"github.com/PaluMacil/dwn/api/infoapi"
 	"github.com/PaluMacil/dwn/api/userapi"
+	"github.com/PaluMacil/dwn/api/usergroupapi"
 	"github.com/PaluMacil/dwn/app"
 	"github.com/PaluMacil/dwn/auth"
 	"github.com/PaluMacil/dwn/setup"
@@ -33,6 +34,7 @@ func main() {
 
 	userModule := userapi.New(&appModule)
 	groupModule := groupapi.New(&appModule)
+	usergroupModule := usergroupapi.New(&appModule)
 	infoModule := infoapi.New(&appModule)
 
 	mux := http.NewServeMux()
@@ -40,6 +42,7 @@ func main() {
 	mux.Handle("/oauth/", authModule)
 	mux.Handle("/api/user/", userModule)
 	mux.Handle("/api/group/", groupModule)
+	mux.Handle("/api/usergroup/", usergroupModule)
 	mux.Handle("/api/info/", infoModule)
 
 	srv := &http.Server{

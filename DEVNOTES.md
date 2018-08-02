@@ -13,6 +13,14 @@ start db, panic
 start db, truncate, panic
 now badger should complain that pointer is to beginning of database, which means whole thing is corrupt
 
+Game library
+  scoring tools
+  list of games
+  mark want to play (unmarked when played)
+  mark favorites (stays marked)
+  mark as played
+  save wishlist
+  respond to wishlist
 
 Alerts
   Expiration

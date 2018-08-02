@@ -35,6 +35,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		route.handleSessionDetails()
 	case "logout":
 		route.handleLogout()
+	case "groups-for":
+		route.handleGroupsForUser()
 	default:
 		route.handleUser()
 	}

@@ -46,6 +46,24 @@ type UserProvider struct {
 	Db *Db
 }
 
+func (p *UserProvider) UsersFor(groupName string) ([]User, error) {
+	userGroups, err := p.Db.UserGroups.All()
+	if err != nil {
+		return nil, err
+	}
+	var users []User
+	for _, ug := range userGroups {
+		if ug.GroupName == groupName {
+			u, err := p.Get(ug.Email)
+			if err != nil {
+				return nil, err
+			}
+			users = append(users, u)
+		}
+	}
+	return users, nil
+}
+
 func (p *UserProvider) Get(email string) (User, error) {
 	var user = User{Email: email}
 	if email == "" {
