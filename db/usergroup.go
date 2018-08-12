@@ -7,9 +7,9 @@ import (
 )
 
 type UserGroup struct {
-	Email       string
-	GroupName   string
-	CreatedDate time.Time
+	Email       string    `json:"email"`
+	GroupName   string    `json:"groupName"`
+	CreatedDate time.Time `json:"createdDate"`
 }
 
 func (u UserGroup) Key() []byte {

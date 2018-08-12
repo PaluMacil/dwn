@@ -44,7 +44,9 @@ func (u User) Prefix() []byte {
 
 type UserProvider struct {
 	Db *Db
+	Search search.UserIndex
 }
+
 
 func (p *UserProvider) UsersFor(groupName string) ([]User, error) {
 	userGroups, err := p.Db.UserGroups.All()

@@ -31,7 +31,8 @@ func registerGobs() {
 }
 
 type Db struct {
-	bgr *badger.DB
+	bgr     *badger.DB
+	dataDir string
 
 	Sessions   SessionProvider
 	Users      UserProvider
@@ -40,8 +41,13 @@ type Db struct {
 	SetupInfo  SetupInfoProvider
 }
 
+func (db Db) Dir() string {
+	return db.dataDir
+}
+
 func (db *Db) WithProviders() {
 	db.Sessions = SessionProvider{db}
+	userSearch := NewUserIndex()
 	db.Users = UserProvider{db}
 	db.Groups = GroupProvider{db}
 	db.UserGroups = UserGroupProvider{db}
@@ -61,7 +67,7 @@ func retry(dir string, originalOpts badger.Options) (*Db, error) {
 	retryOpts := originalOpts
 	retryOpts.Truncate = true
 	bgr, err := badger.Open(retryOpts)
-	return &Db{bgr: bgr}, err
+	return &Db{bgr: bgr, dataDir: dir}, err
 }
 
 func New(dir string, useMMAP bool) (*Db, error) {
@@ -88,7 +94,7 @@ func New(dir string, useMMAP bool) (*Db, error) {
 		}
 		return nil, err
 	}
-	database := &Db{bgr: bgr}
+	database := &Db{bgr: bgr, dataDir: dir}
 	database.WithProviders()
 	return database, nil
 }

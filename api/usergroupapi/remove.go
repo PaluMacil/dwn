@@ -30,4 +30,8 @@ func (rt *UserGroupRoute) handleRemove() {
 		rt.API().ServeInternalServerError(err)
 		return
 	}
+	if err := json.NewEncoder(rt.W).Encode(ug); err != nil {
+		rt.API().ServeInternalServerError(err)
+		return
+	}
 }
