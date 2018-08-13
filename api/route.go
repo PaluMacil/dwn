@@ -6,14 +6,14 @@ import (
 	"strings"
 
 	"github.com/PaluMacil/dwn/auth"
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/database"
 )
 
 func routeSplitter(c rune) bool {
 	return c == '/'
 }
 
-func GetRoute(w http.ResponseWriter, r *http.Request, db *db.Db) Route {
+func GetRoute(w http.ResponseWriter, r *http.Request, db database.Database) Route {
 	segments := strings.FieldsFunc(r.URL.Path, routeSplitter)
 	cur, _ := auth.GetCurrent(r, db)
 	var s1, s2, s3 string
@@ -44,7 +44,7 @@ type Route struct {
 	Endpoint string
 	ID       string
 	Current  *auth.Current
-	Db       *db.Db
+	Db       database.Database
 }
 
 type API interface {

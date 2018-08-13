@@ -5,12 +5,12 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/group/permission/{groupName}?permission={permission}
 func (rt *GroupRoute) handlePermission() {
-	if rt.API().ServeCannot(db.PermissionEditGroups) {
+	if rt.API().ServeCannot(dwn.PermissionEditGroups) {
 		return
 	}
 	group, err := rt.Db.Groups.Get(rt.ID)

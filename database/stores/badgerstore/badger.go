@@ -1,4 +1,4 @@
-package db
+package badgerstore
 
 import (
 	"bytes"
@@ -9,57 +9,18 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/PaluMacil/dwn/dwn"
+
 	"github.com/dgraph-io/badger"
 	"github.com/dgraph-io/badger/options"
 )
 
-const (
-	sessionPrefix    = "SESSION:"
-	userPrefix       = "USER:"
-	groupPrefix      = "GROUP:"
-	permissionPrefix = "PERMISSION:"
-	userGroupPrefix  = "USERGROUP:"
-	setupInfoPrefix  = "SETUPINFO:"
-)
-
-func registerGobs() {
-	gob.Register(Session{})
-	gob.Register(User{})
-	gob.Register(Group{})
-	gob.Register(UserGroup{})
-	gob.Register(SetupInfo{})
-}
-
-type Db struct {
+type BadgerStore struct {
 	bgr     *badger.DB
 	dataDir string
-
-	Sessions   SessionProvider
-	Users      UserProvider
-	Groups     GroupProvider
-	UserGroups UserGroupProvider
-	SetupInfo  SetupInfoProvider
 }
 
-func (db Db) Dir() string {
-	return db.dataDir
-}
-
-func (db *Db) WithProviders() {
-	db.Sessions = SessionProvider{db}
-	userSearch := NewUserIndex()
-	db.Users = UserProvider{db}
-	db.Groups = GroupProvider{db}
-	db.UserGroups = UserGroupProvider{db}
-	db.SetupInfo = SetupInfoProvider{db}
-}
-
-type DbItem interface {
-	Key() []byte
-	Prefix() []byte
-}
-
-func retry(dir string, originalOpts badger.Options) (*Db, error) {
+func retry(dir string, originalOpts badger.Options) (*BadgerStore, error) {
 	lockPath := filepath.Join(dir, "LOCK")
 	if err := os.Remove(lockPath); err != nil {
 		return nil, fmt.Errorf(`removing "LOCK": %s`, err)
@@ -67,11 +28,10 @@ func retry(dir string, originalOpts badger.Options) (*Db, error) {
 	retryOpts := originalOpts
 	retryOpts.Truncate = true
 	bgr, err := badger.Open(retryOpts)
-	return &Db{bgr: bgr, dataDir: dir}, err
+	return &BadgerStore{bgr: bgr, dataDir: dir}, err
 }
 
-func New(dir string, useMMAP bool) (*Db, error) {
-	registerGobs()
+func New(dir string, useMMAP bool) (*BadgerStore, error) {
 	opts := badger.DefaultOptions
 	opts.Dir = dir
 	opts.ValueDir = dir
@@ -84,28 +44,26 @@ func New(dir string, useMMAP bool) (*Db, error) {
 	if err != nil {
 		if strings.Contains(err.Error(), "LOCK") {
 			log.Println("database locked, probably due to improper shutdown")
-			if db, err := retry(dir, opts); err == nil {
+			if bgr, err := retry(dir, opts); err == nil {
 				log.Println("database unlocked, value log truncated")
-				db.WithProviders()
-				return db, nil
+				return bgr, nil
 			}
 			log.Println("could not unlock database:", err)
 
 		}
 		return nil, err
 	}
-	database := &Db{bgr: bgr, dataDir: dir}
-	database.WithProviders()
-	return database, nil
+	bs := &BadgerStore{bgr: bgr, dataDir: dir}
+	return bs, nil
 }
 
-func (db Db) Close() error {
-	return db.bgr.Close()
+func (bs BadgerStore) Close() error {
+	return bs.bgr.Close()
 }
 
-func (db *Db) get(obj DbItem) (DbItem, error) {
+func (bs *BadgerStore) Get(obj dwn.DbItem) (dwn.DbItem, error) {
 	var rawBytes []byte
-	err := db.bgr.View(func(txn *badger.Txn) error {
+	err := bs.bgr.View(func(txn *badger.Txn) error {
 		item, err := txn.Get(obj.Key())
 		if err != nil {
 			return err
@@ -134,14 +92,14 @@ func (db *Db) get(obj DbItem) (DbItem, error) {
 	return obj, nil
 }
 
-func (db *Db) set(obj DbItem) error {
+func (bs *BadgerStore) Set(obj dwn.DbItem) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 	err := enc.Encode(&obj)
 	if err != nil {
 		return err
 	}
-	return db.bgr.Update(func(txn *badger.Txn) error {
+	return bs.bgr.Update(func(txn *badger.Txn) error {
 		err := txn.Set(obj.Key(), buf.Bytes())
 		if err != nil {
 			return fmt.Errorf(`setting "%s" (%T): %s`, string(obj.Key()), obj, err)
@@ -150,14 +108,14 @@ func (db *Db) set(obj DbItem) error {
 	})
 }
 
-func (db *Db) delete(obj DbItem) error {
-	return db.bgr.Update(func(txn *badger.Txn) error {
+func (bs *BadgerStore) Delete(obj dwn.DbItem) error {
+	return bs.bgr.Update(func(txn *badger.Txn) error {
 		return txn.Delete(obj.Key())
 	})
 }
 
-func (db *Db) all(pfx []byte, out *[]DbItem, preload bool) error {
-	err := db.bgr.View(func(txn *badger.Txn) error {
+func (bs *BadgerStore) All(pfx []byte, out *[]dwn.DbItem, preload bool) error {
+	err := bs.bgr.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
 
@@ -168,7 +126,7 @@ func (db *Db) all(pfx []byte, out *[]DbItem, preload bool) error {
 				return err
 			}
 			var buf bytes.Buffer
-			var outItem DbItem
+			var outItem dwn.DbItem
 			_, err = buf.Write(v)
 			if err != nil {
 				return err
@@ -185,15 +143,8 @@ func (db *Db) all(pfx []byte, out *[]DbItem, preload bool) error {
 	return err
 }
 
-func (db *Db) count(pfx []byte) (int, error) {
-	var items []DbItem
-	err := db.all(pfx, &items, false)
+func (bs *BadgerStore) Count(pfx []byte) (int, error) {
+	var items []dwn.DbItem
+	err := bs.All(pfx, &items, false)
 	return len(items), err
-}
-
-func IsKeyNotFoundErr(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), badger.ErrKeyNotFound.Error())
 }

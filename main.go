@@ -23,19 +23,19 @@ func main() {
 	if err != nil {
 		log.Fatalln("could not start app:", err)
 	}
-	setupModule := setup.New(&appModule)
+	setupModule := setup.New(appModule)
 	if err := setupModule.Ensure(); err != nil {
 		appModule.Db.Close()
 		log.Fatalln("could not ensure app setup:", err)
 	}
 
-	spaModule := spa.New(&appModule)
-	authModule := auth.New(&appModule)
+	spaModule := spa.New(appModule)
+	authModule := auth.New(appModule)
 
-	userModule := userapi.New(&appModule)
-	groupModule := groupapi.New(&appModule)
-	usergroupModule := usergroupapi.New(&appModule)
-	infoModule := infoapi.New(&appModule)
+	userModule := userapi.New(appModule)
+	groupModule := groupapi.New(appModule)
+	usergroupModule := usergroupapi.New(appModule)
+	infoModule := infoapi.New(appModule)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", spaModule)
