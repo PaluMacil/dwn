@@ -160,10 +160,10 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type Current struct {
 	User    dwn.User     `json:"user"`
 	Session dwn.Session  `json:"session"`
-	db      database.Database `json:"-"`
+	db      *database.Database `json:"-"`
 }
 
-func GetCurrent(r *http.Request, db database.Database) (*Current, error) {
+func GetCurrent(r *http.Request, db *database.Database) (*Current, error) {
 	token := r.Header.Get("dwn-token")
 	if token == "" {
 		return nil, nil

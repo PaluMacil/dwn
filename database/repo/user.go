@@ -10,11 +10,11 @@ import (
 
 type UserRepo struct {
 	store dwn.DataStorer
-	db    database.Database
+	db    *database.Database
 	dwn.UserSearcher
 }
 
-func NewUserRepo(store dwn.DataStorer, db database.Database, search dwn.UserSearcher) *UserRepo {
+func NewUserRepo(store dwn.DataStorer, db *database.Database, search dwn.UserSearcher) *UserRepo {
 	return &UserRepo{store, db, search}
 }
 

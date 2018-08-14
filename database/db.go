@@ -4,8 +4,8 @@ import (
 	"github.com/PaluMacil/dwn/dwn"
 )
 
-func New(store dwn.DataStorer) Database {
-	return Database{store: store}
+func New(store dwn.DataStorer) *Database {
+	return &Database{store: store}
 }
 
 type Database struct {

@@ -37,18 +37,18 @@ func New() (*App, error) {
 	}, nil
 }
 
-func defaultDatabase(dataDir string) (database.Database, error) {
+func defaultDatabase(dataDir string) (*database.Database, error) {
 	// initialize store
 	store, err := badgerstore.New(dataDir, true)
 	if err != nil {
-		return database.Database{}, fmt.Errorf(`initializing datastore in directory "%s": %s`, dataDir, err)
+		return nil, fmt.Errorf(`initializing datastore in directory "%s": %s`, dataDir, err)
 	}
 	db := database.New(store)
 
 	// initialize searchers from indexes
 	userIndex, err := search.NewUserIndex(db, dataDir)
 	if err != nil {
-		return database.Database{}, fmt.Errorf(`initializing user index with dataDir "%s": %s`, dataDir, err)
+		return nil, fmt.Errorf(`initializing user index with dataDir "%s": %s`, dataDir, err)
 	}
 
 	// initialize providers from repo package
@@ -67,14 +67,14 @@ type Setup struct {
 }
 
 type App struct {
-	Protocol        string            `json:"protocol"`
-	Host            string            `json:"host"`
-	Port            string            `json:"port"`
-	BaseURL         string            `json:"baseURL"`
-	UIProxyPort     string            `json:"uiProxyPort"`
-	ValueLogUseMMAP bool              `json:"valueLogUseMMAP"`
-	Db              database.Database `json:"-"`
-	Setup           Setup             `json:"setup"`
+	Protocol        string             `json:"protocol"`
+	Host            string             `json:"host"`
+	Port            string             `json:"port"`
+	BaseURL         string             `json:"baseURL"`
+	UIProxyPort     string             `json:"uiProxyPort"`
+	ValueLogUseMMAP bool               `json:"valueLogUseMMAP"`
+	Db              *database.Database `json:"-"`
+	Setup           Setup              `json:"setup"`
 }
 
 func (app App) HomePage() string {

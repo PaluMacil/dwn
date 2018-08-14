@@ -10,10 +10,10 @@ import (
 
 type GroupRepo struct {
 	store dwn.DataStorer
-	db    database.Database
+	db    *database.Database
 }
 
-func NewGroupRepo(store dwn.DataStorer, db database.Database) *GroupRepo {
+func NewGroupRepo(store dwn.DataStorer, db *database.Database) *GroupRepo {
 	return &GroupRepo{store, db}
 }
 

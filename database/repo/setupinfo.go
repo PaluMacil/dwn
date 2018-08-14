@@ -9,10 +9,10 @@ import (
 
 type SetupInfoRepo struct {
 	store dwn.DataStorer
-	db    database.Database
+	db    *database.Database
 }
 
-func NewSetupInfoRepo(store dwn.DataStorer, db database.Database) *SetupInfoRepo {
+func NewSetupInfoRepo(store dwn.DataStorer, db *database.Database) *SetupInfoRepo {
 	return &SetupInfoRepo{store, db}
 }
 

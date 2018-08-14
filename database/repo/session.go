@@ -12,10 +12,10 @@ import (
 
 type SessionRepo struct {
 	store dwn.DataStorer
-	db    database.Database
+	db    *database.Database
 }
 
-func NewSessionRepo(store dwn.DataStorer, db database.Database) *SessionRepo {
+func NewSessionRepo(store dwn.DataStorer, db *database.Database) *SessionRepo {
 	return &SessionRepo{store, db}
 }
 

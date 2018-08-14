@@ -11,10 +11,10 @@ import (
 
 type UserGroupRepo struct {
 	store dwn.DataStorer
-	db    database.Database
+	db    *database.Database
 }
 
-func NewUserGroupRepo(store dwn.DataStorer, db database.Database) *UserGroupRepo {
+func NewUserGroupRepo(store dwn.DataStorer, db *database.Database) *UserGroupRepo {
 	return &UserGroupRepo{store, db}
 }
 
