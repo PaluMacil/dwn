@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 type GoogleClaims struct {
@@ -19,9 +19,9 @@ type GoogleClaims struct {
 	Locale        string `json:"locale"`
 }
 
-func (g *GoogleClaims) CreateUser(displayName db.DisplayName) db.User {
+func (g *GoogleClaims) CreateUser(displayName dwn.DisplayName) dwn.User {
 	// TODO: must check if displayname as tag exists once bleve search is up
-	return db.User{
+	return dwn.User{
 		GoogleID:         g.ID,
 		GoogleImportDate: time.Now(),
 		Email:            g.Email,

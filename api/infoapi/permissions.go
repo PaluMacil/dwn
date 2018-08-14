@@ -2,8 +2,9 @@ package infoapi
 
 import (
 	"encoding/json"
-	"github.com/PaluMacil/dwn/db"
 	"net/http"
+
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/info/permissions
@@ -14,7 +15,7 @@ func (rt *InfoRoute) handlePermissions() {
 	}
 	switch rt.R.Method {
 	case "GET":
-		if err := json.NewEncoder(rt.W).Encode(db.Permissions); err != nil {
+		if err := json.NewEncoder(rt.W).Encode(dwn.Permissions); err != nil {
 			rt.API().ServeInternalServerError(err)
 			return
 		}

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/PaluMacil/dwn/app"
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 	"runtime"
 )
 
@@ -15,7 +15,7 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
-	if rt.API().ServeCannot(db.PermissionViewAppSettings) {
+	if rt.API().ServeCannot(dwn.PermissionViewAppSettings) {
 		return
 	}
 	switch rt.R.Method {
@@ -39,6 +39,6 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 
 type InfoResponse struct {
 	*app.App
-	db.SetupInfo
+	dwn.SetupInfo
 	GoVersion string `json:"goVersion"`
 }

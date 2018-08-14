@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"sort"
 
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/group/users-for/{groupname}
 func (rt *GroupRoute) handleUsersForGroup() {
-	if rt.API().ServeCannot(db.PermissionViewGroups) {
+	if rt.API().ServeCannot(dwn.PermissionViewGroups) {
 		return
 	}
 	users, err := rt.Db.Users.UsersFor(rt.ID)

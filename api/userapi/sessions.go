@@ -2,12 +2,13 @@ package userapi
 
 import (
 	"encoding/json"
-	"github.com/PaluMacil/dwn/db"
+
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/user/sessions
 func (rt *UserRoute) handleSessionDetails() {
-	if rt.API().ServeCannot(db.PermissionViewUsers) {
+	if rt.API().ServeCannot(dwn.PermissionViewUsers) {
 		return
 	}
 	sessions, err := rt.Db.Sessions.All()
@@ -33,6 +34,6 @@ func (rt *UserRoute) handleSessionDetails() {
 }
 
 type SessionDetails struct {
-	User    db.User    `json:"user"`
-	Session db.Session `json:"session"`
+	User    dwn.User    `json:"user"`
+	Session dwn.Session `json:"session"`
 }

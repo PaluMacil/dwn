@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
-func generateDisplayName(givenName string) (db.DisplayName, error) {
+func generateDisplayName(givenName string) (dwn.DisplayName, error) {
 	//TODO: generate alternatives and check for repeats
-	return db.DisplayName(givenName), nil
+	return dwn.DisplayName(givenName), nil
 }

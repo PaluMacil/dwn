@@ -11,7 +11,8 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/app"
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/database"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -103,7 +104,6 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if claims.VerifiedEmail {
-			//var session db.Session
 			session := mod.Db.Sessions.GenerateFor(claims.Email, r.RemoteAddr)
 			err := mod.Db.Sessions.Set(session)
 			if err != nil {
@@ -112,7 +112,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			//if user exists in database, save session, update last login
 			user, err := mod.Db.Users.Get(claims.Email)
-			if db.IsKeyNotFoundErr(err) {
+			if mod.Db.Util.IsKeyNotFoundErr(err) {
 				displayName, err := generateDisplayName(claims.GivenName)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -121,9 +121,9 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				user = claims.CreateUser(displayName)
 				if claims.Email == mod.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
-					mod.Db.UserGroups.Set(db.UserGroup{
+					mod.Db.UserGroups.Set(dwn.UserGroup{
 						Email:     claims.Email,
-						GroupName: db.BuiltInGroupAdmin,
+						GroupName: dwn.BuiltInGroupAdmin,
 					})
 				}
 			} else if err != nil {
@@ -158,12 +158,12 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type Current struct {
-	User    db.User    `json:"user"`
-	Session db.Session `json:"session"`
-	db      *db.Db     `json:"-"`
+	User    dwn.User     `json:"user"`
+	Session dwn.Session  `json:"session"`
+	db      *database.Database `json:"-"`
 }
 
-func GetCurrent(r *http.Request, db *db.Db) (*Current, error) {
+func GetCurrent(r *http.Request, db *database.Database) (*Current, error) {
 	token := r.Header.Get("dwn-token")
 	if token == "" {
 		return nil, nil
@@ -199,7 +199,7 @@ func (c *Current) Can(permission string) (bool, error) {
 		return false, err
 	}
 	for _, g := range groups {
-		if g.Name == db.BuiltInGroupAdmin || g.HasPermission(permission) {
+		if g.Name == dwn.BuiltInGroupAdmin || g.HasPermission(permission) {
 			return true, nil
 		}
 	}

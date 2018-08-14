@@ -3,12 +3,12 @@ package usergroupapi
 import (
 	"encoding/json"
 
-	"github.com/PaluMacil/dwn/db"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/usergroup/remove
 func (rt *UserGroupRoute) handleRemove() {
-	if rt.API().ServeCannot(db.PermissionEditGroups) {
+	if rt.API().ServeCannot(dwn.PermissionEditGroups) {
 		return
 	}
 	if rt.R.Method != "POST" {
@@ -19,7 +19,7 @@ func (rt *UserGroupRoute) handleRemove() {
 		rt.API().ServeBadRequest()
 		return
 	}
-	var ug db.UserGroup
+	var ug dwn.UserGroup
 	err := json.NewDecoder(rt.R.Body).Decode(&ug)
 	if err != nil {
 		rt.API().ServeInternalServerError(err)
@@ -27,6 +27,10 @@ func (rt *UserGroupRoute) handleRemove() {
 	}
 	err = rt.Db.UserGroups.Delete(ug.Email, ug.GroupName)
 	if err != nil {
+		rt.API().ServeInternalServerError(err)
+		return
+	}
+	if err := json.NewEncoder(rt.W).Encode(ug); err != nil {
 		rt.API().ServeInternalServerError(err)
 		return
 	}
