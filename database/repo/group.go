@@ -9,16 +9,16 @@ import (
 )
 
 type GroupRepo struct {
-	store dwn.DataStorer
+	store database.Storer
 	db    *database.Database
 }
 
-func NewGroupRepo(store dwn.DataStorer, db *database.Database) *GroupRepo {
+func NewGroupRepo(store database.Storer, db *database.Database) *GroupRepo {
 	return &GroupRepo{store, db}
 }
 
 func (p GroupRepo) GroupsFor(email string) ([]dwn.Group, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	extendedPrefix := append(dwn.UserGroup{}.Prefix(), []byte(email)...)
 	err := p.store.All(extendedPrefix, &items, true)
 	if err != nil {
@@ -69,7 +69,7 @@ func (p GroupRepo) Set(group dwn.Group) error {
 }
 
 func (p GroupRepo) All() ([]dwn.Group, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	err := p.store.All(dwn.Group{}.Prefix(), &items, true)
 	groups := make([]dwn.Group, len(items))
 	for i, v := range items {

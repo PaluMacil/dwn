@@ -9,12 +9,12 @@ import (
 )
 
 type UserRepo struct {
-	store dwn.DataStorer
+	store database.Storer
 	db    *database.Database
 	dwn.UserSearcher
 }
 
-func NewUserRepo(store dwn.DataStorer, db *database.Database, search dwn.UserSearcher) *UserRepo {
+func NewUserRepo(store database.Storer, db *database.Database, search dwn.UserSearcher) *UserRepo {
 	return &UserRepo{store, db, search}
 }
 
@@ -62,6 +62,10 @@ func (p UserRepo) Exists(email string) (bool, error) {
 }
 
 func (p UserRepo) Set(user dwn.User) error {
+	err := p.Index(user)
+	if err != nil {
+		return err
+	}
 	return p.store.Set(&user)
 }
 
@@ -70,7 +74,7 @@ func (p UserRepo) Count() (int, error) {
 }
 
 func (p UserRepo) All() ([]dwn.User, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	err := p.store.All(dwn.User{}.Prefix(), &items, true)
 	users := make([]dwn.User, len(items))
 	for i, v := range items {
@@ -81,7 +85,12 @@ func (p UserRepo) All() ([]dwn.User, error) {
 }
 
 func (p UserRepo) Delete(email string) error {
-	return p.store.Delete(dwn.User{Email: email})
+	u := dwn.User{Email: email}
+	err := p.Deindex(u)
+	if err != nil {
+		return err
+	}
+	return p.store.Delete(u)
 }
 
 func (p UserRepo) PurgeAll() error {

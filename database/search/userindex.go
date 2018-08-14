@@ -1,11 +1,12 @@
 package search
 
 import (
-	"github.com/PaluMacil/dwn/dwn"
-	"github.com/PaluMacil/dwn/database"
-	"github.com/blevesearch/bleve"
-	"path"
 	"fmt"
+	"path"
+
+	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/dwn"
+	"github.com/blevesearch/bleve"
 )
 
 type UserIndex struct {
@@ -13,7 +14,7 @@ type UserIndex struct {
 	db  *database.Database
 }
 
-func (ui UserIndex) ReIndex() error {
+func (ui UserIndex) Reindex() error {
 	users, err := ui.db.Users.All()
 	if err != nil {
 		return err
@@ -29,6 +30,14 @@ func (ui UserIndex) ReIndex() error {
 
 func (ui UserIndex) Index(u dwn.User) error {
 	err := ui.idx.Index(u.Email, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ui UserIndex) Deindex(u dwn.User) error {
+	err := ui.idx.Delete(u.Email)
 	if err != nil {
 		return err
 	}
@@ -51,5 +60,22 @@ func NewUserIndex(db *database.Database, dataDir string) (*UserIndex, error) {
 }
 
 func (ui UserIndex) CompletionSuggestions(query string) ([]dwn.User, error) {
-	return []dwn.User{}, nil
+	queryWithoutPrefix := bleve.NewPrefixQuery(query)
+	queryWithPrefix := bleve.NewPrefixQuery("@" + query)
+	searchQuery := bleve.NewDisjunctionQuery(queryWithoutPrefix, queryWithPrefix)
+	search := bleve.NewSearchRequest(searchQuery)
+	result, err := ui.idx.Search(search)
+	if err != nil {
+		return []dwn.User{}, err
+	}
+	users := make([]dwn.User, len(result.Hits))
+	for i, res := range result.Hits {
+		email := res.ID
+		u, err := ui.db.Users.Get(email)
+		if err != nil {
+			return users, err
+		}
+		users[i] = u
+	}
+	return users, nil
 }

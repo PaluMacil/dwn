@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/database"
 
 	"github.com/dgraph-io/badger"
 	"github.com/dgraph-io/badger/options"
@@ -61,7 +61,7 @@ func (bs BadgerStore) Close() error {
 	return bs.bgr.Close()
 }
 
-func (bs *BadgerStore) Get(obj dwn.DbItem) (dwn.DbItem, error) {
+func (bs *BadgerStore) Get(obj database.Item) (database.Item, error) {
 	var rawBytes []byte
 	err := bs.bgr.View(func(txn *badger.Txn) error {
 		item, err := txn.Get(obj.Key())
@@ -92,7 +92,7 @@ func (bs *BadgerStore) Get(obj dwn.DbItem) (dwn.DbItem, error) {
 	return obj, nil
 }
 
-func (bs *BadgerStore) Set(obj dwn.DbItem) error {
+func (bs *BadgerStore) Set(obj database.Item) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 	err := enc.Encode(&obj)
@@ -108,13 +108,13 @@ func (bs *BadgerStore) Set(obj dwn.DbItem) error {
 	})
 }
 
-func (bs *BadgerStore) Delete(obj dwn.DbItem) error {
+func (bs *BadgerStore) Delete(obj database.Item) error {
 	return bs.bgr.Update(func(txn *badger.Txn) error {
 		return txn.Delete(obj.Key())
 	})
 }
 
-func (bs *BadgerStore) All(pfx []byte, out *[]dwn.DbItem, preload bool) error {
+func (bs *BadgerStore) All(pfx []byte, out *[]database.Item, preload bool) error {
 	err := bs.bgr.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
@@ -126,7 +126,7 @@ func (bs *BadgerStore) All(pfx []byte, out *[]dwn.DbItem, preload bool) error {
 				return err
 			}
 			var buf bytes.Buffer
-			var outItem dwn.DbItem
+			var outItem database.Item
 			_, err = buf.Write(v)
 			if err != nil {
 				return err
@@ -144,7 +144,7 @@ func (bs *BadgerStore) All(pfx []byte, out *[]dwn.DbItem, preload bool) error {
 }
 
 func (bs *BadgerStore) Count(pfx []byte) (int, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	err := bs.All(pfx, &items, false)
 	return len(items), err
 }

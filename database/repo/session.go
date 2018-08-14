@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/PaluMacil/dwn/dwn"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/dwn"
 	"github.com/satori/go.uuid"
 )
 
 type SessionRepo struct {
-	store dwn.DataStorer
+	store database.Storer
 	db    *database.Database
 }
 
-func NewSessionRepo(store dwn.DataStorer, db *database.Database) *SessionRepo {
+func NewSessionRepo(store database.Storer, db *database.Database) *SessionRepo {
 	return &SessionRepo{store, db}
 }
 
@@ -60,7 +60,7 @@ func (p SessionRepo) GenerateFor(email, ip string) dwn.Session {
 }
 
 func (p SessionRepo) All() ([]dwn.Session, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	pfx := dwn.Session{}.Prefix()
 	err := p.store.All(pfx, &items, true)
 	sessions := make([]dwn.Session, len(items))

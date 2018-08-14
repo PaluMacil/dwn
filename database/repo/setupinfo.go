@@ -8,11 +8,11 @@ import (
 )
 
 type SetupInfoRepo struct {
-	store dwn.DataStorer
+	store database.Storer
 	db    *database.Database
 }
 
-func NewSetupInfoRepo(store dwn.DataStorer, db *database.Database) *SetupInfoRepo {
+func NewSetupInfoRepo(store database.Storer, db *database.Database) *SetupInfoRepo {
 	return &SetupInfoRepo{store, db}
 }
 

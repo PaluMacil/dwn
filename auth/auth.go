@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/app"
-	"github.com/PaluMacil/dwn/dwn"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/dwn"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -24,7 +24,7 @@ type Module struct {
 }
 
 func New(app *app.App) *Module {
-	home, err := url.Parse(app.HomePage())
+	home, err := url.Parse(app.Config.WebServer.HomePage())
 	if err != nil {
 		panic("Cannot parse home URL: " + err.Error())
 	}
@@ -119,7 +119,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				user = claims.CreateUser(displayName)
-				if claims.Email == mod.Setup.InitialAdmin {
+				if claims.Email == mod.Config.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
 					mod.Db.UserGroups.Set(dwn.UserGroup{
 						Email:     claims.Email,
@@ -145,7 +145,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				loginCallbackData{
 					TokenName:   "dwn-token",
 					Token:       session.Token,
-					RedirectURL: mod.HomePage(), //TODO: Check to see if a different redirect is requested and if it is safe
+					RedirectURL: mod.Config.WebServer.HomePage(), //TODO: Check to see if a different redirect is requested and if it is safe
 				})
 			return
 		} else {
@@ -158,8 +158,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 type Current struct {
-	User    dwn.User     `json:"user"`
-	Session dwn.Session  `json:"session"`
+	User    dwn.User           `json:"user"`
+	Session dwn.Session        `json:"session"`
 	db      *database.Database `json:"-"`
 }
 

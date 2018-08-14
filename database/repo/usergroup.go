@@ -10,11 +10,11 @@ import (
 )
 
 type UserGroupRepo struct {
-	store dwn.DataStorer
+	store database.Storer
 	db    *database.Database
 }
 
-func NewUserGroupRepo(store dwn.DataStorer, db *database.Database) *UserGroupRepo {
+func NewUserGroupRepo(store database.Storer, db *database.Database) *UserGroupRepo {
 	return &UserGroupRepo{store, db}
 }
 
@@ -56,7 +56,7 @@ func (p UserGroupRepo) Set(userGroup dwn.UserGroup) error {
 }
 
 func (p UserGroupRepo) All() ([]dwn.UserGroup, error) {
-	var items []dwn.DbItem
+	var items []database.Item
 	err := p.store.All(dwn.UserGroup{}.Prefix(), &items, true)
 	userGroups := make([]dwn.UserGroup, len(items))
 	for i, v := range items {

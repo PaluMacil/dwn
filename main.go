@@ -46,7 +46,7 @@ func main() {
 	mux.Handle("/api/info/", infoModule)
 
 	srv := &http.Server{
-		Addr:    ":" + appModule.Port,
+		Addr:    ":" + appModule.Config.WebServer.Port,
 		Handler: mux,
 		//time from when the connection is accepted to when the request body is fully read
 		ReadTimeout: 5 * time.Second,
@@ -57,7 +57,7 @@ func main() {
 	stop := make(chan os.Signal)
 	signal.Notify(stop, os.Interrupt)
 	go func() {
-		log.Println("Now serving on port", appModule.Port)
+		log.Println("Now serving on port", appModule.Config.WebServer.Port)
 		log.Println(srv.ListenAndServe())
 	}()
 	<-stop

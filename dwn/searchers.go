@@ -2,6 +2,7 @@ package dwn
 
 type UserSearcher interface {
 	Index(u User) error
-	ReIndex() error
+	Deindex(u User) error
+	Reindex() error
 	CompletionSuggestions(query string) ([]User, error)
 }
