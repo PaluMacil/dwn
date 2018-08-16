@@ -8,6 +8,7 @@ const (
 	PermissionViewAppSettings     = "VIEW_APP_SETTINGS"
 	PermissionManageAppDeployment = "MANAGE_APP_DEPLOYMENT"
 	PermissionStopServer          = "STOP_SERVER"
+	PermissionManageIndexes       = "MANAGE_INDEXES"
 )
 
 const (
@@ -39,6 +40,7 @@ var Permissions = []string{
 	PermissionViewAppSettings,
 	PermissionManageAppDeployment,
 	PermissionStopServer,
+	PermissionManageIndexes,
 
 	PermissionPostComments,
 	PermissionEditUserInfo,
