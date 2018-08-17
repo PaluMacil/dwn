@@ -1,4 +1,4 @@
-package usergroupapi
+package typeaheadapi
 
 import (
 	"net/http"
@@ -17,21 +17,17 @@ func New(db *database.Database) *Module {
 	}
 }
 
-type UserGroupRoute api.Route
+type TypeaheadRoute api.Route
 
-func (rt UserGroupRoute) API() api.Route {
+func (rt TypeaheadRoute) API() api.Route {
 	return api.Route(rt)
 }
 
-// api/usergroup/...
+// api/typeahead/...
 func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	route := UserGroupRoute(api.GetRoute(w, r, mod.Db))
+	route := TypeaheadRoute(api.GetRoute(w, r, mod.Db))
 	switch route.Endpoint {
-	case "add":
-		route.handleAdd()
-	case "remove":
-		route.handleRemove()
-	default:
-		http.NotFound(w, r)
+	case "user":
+		route.handleUser()
 	}
 }

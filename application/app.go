@@ -1,4 +1,4 @@
-package app
+package application
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"github.com/PaluMacil/dwn/database/repo"
 	"github.com/PaluMacil/dwn/database/search"
 	"github.com/PaluMacil/dwn/database/stores/badgerstore"
+	"github.com/PaluMacil/dwn/webserver"
 )
 
 func New() (*App, error) {
@@ -17,9 +18,11 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf(`initializing default database: %s`, err)
 	}
+	web := webserver.New(db, config)
 	return &App{
 		Config: config,
 		Db:     db,
+		Web:    web,
 	}, nil
 }
 
@@ -51,4 +54,5 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 type App struct {
 	Config configuration.Configuration `json:"config"`
 	Db     *database.Database          `json:"-"`
+	Web    *webserver.WebServer        `json:"-"`
 }

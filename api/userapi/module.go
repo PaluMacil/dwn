@@ -4,23 +4,23 @@ import (
 	"net/http"
 
 	"github.com/PaluMacil/dwn/api"
-	"github.com/PaluMacil/dwn/app"
+	"github.com/PaluMacil/dwn/database"
 )
 
 type Module struct {
-	*app.App
+	Db *database.Database
 }
 
-func New(app *app.App) *Module {
+func New(db *database.Database) *Module {
 	return &Module{
-		App: app,
+		Db: db,
 	}
 }
 
 type UserRoute api.Route
 
-func (ur UserRoute) API() api.Route {
-	return api.Route(ur)
+func (rt UserRoute) API() api.Route {
+	return api.Route(rt)
 }
 
 // api/user/...

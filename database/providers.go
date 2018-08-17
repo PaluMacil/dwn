@@ -3,6 +3,8 @@ package database
 import "github.com/PaluMacil/dwn/dwn"
 
 type UserProvider interface {
+	UserSearcher
+
 	UsersFor(groupName string) ([]dwn.User, error)
 	Get(email string) (dwn.User, error)
 	Exists(email string) (bool, error)

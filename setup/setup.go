@@ -4,17 +4,17 @@ import (
 	"log"
 	"time"
 
-	"github.com/PaluMacil/dwn/app"
+	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/dwn"
 )
 
 type Module struct {
-	*app.App
+	Db *database.Database
 }
 
-func New(app *app.App) *Module {
+func New(db *database.Database) *Module {
 	return &Module{
-		App: app,
+		Db: db,
 	}
 }
 

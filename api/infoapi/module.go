@@ -3,17 +3,21 @@ package infoapi
 import (
 	"net/http"
 
+	"github.com/PaluMacil/dwn/configuration"
+
 	"github.com/PaluMacil/dwn/api"
-	"github.com/PaluMacil/dwn/app"
+	"github.com/PaluMacil/dwn/database"
 )
 
 type Module struct {
-	*app.App
+	Config configuration.Configuration
+	Db     *database.Database
 }
 
-func New(app *app.App) *Module {
+func New(db *database.Database, config configuration.Configuration) *Module {
 	return &Module{
-		App: app,
+		Db:     db,
+		Config: config,
 	}
 }
 
@@ -28,7 +32,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	route := InfoRoute(api.GetRoute(w, r, mod.Db))
 	switch route.Endpoint {
 	case "server":
-		route.handleServerInfo(mod.App)
+		route.handleServerInfo(mod.Config)
 	case "permissions":
 		route.handlePermissions()
 	}

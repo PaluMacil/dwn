@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/PaluMacil/dwn/app"
-	"github.com/PaluMacil/dwn/dwn"
 	"runtime"
+
+	"github.com/PaluMacil/dwn/configuration"
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/info/server
-func (rt *InfoRoute) handleServerInfo(app *app.App) {
+func (rt *InfoRoute) handleServerInfo(config configuration.Configuration) {
 	if rt.Current == nil {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
@@ -26,7 +27,7 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 			return
 		}
 
-		resp := InfoResponse{app, info, runtime.Version()}
+		resp := InfoResponse{config, info, runtime.Version()}
 
 		if err := json.NewEncoder(rt.W).Encode(resp); err != nil {
 			rt.API().ServeInternalServerError(err)
@@ -38,7 +39,7 @@ func (rt *InfoRoute) handleServerInfo(app *app.App) {
 }
 
 type InfoResponse struct {
-	*app.App
+	Config configuration.Configuration `json:"config"`
 	dwn.SetupInfo
 	GoVersion string `json:"goVersion"`
 }
