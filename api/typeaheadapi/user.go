@@ -3,12 +3,17 @@ package typeaheadapi
 import (
 	"encoding/json"
 	"net/url"
+
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 // api/typeahead/user?query=searchstring
 func (rt *TypeaheadRoute) handleUser() {
 	switch rt.R.Method {
 	case "GET":
+		if rt.API().ServeCannot(dwn.PermissionViewUsers) {
+			return
+		}
 		qry, err := url.QueryUnescape(rt.R.URL.Query().Get("query"))
 		if len(qry) < 2 || err != nil {
 			rt.API().ServeBadRequest()

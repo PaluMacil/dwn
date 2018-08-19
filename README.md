@@ -1,4 +1,27 @@
+# DanWolf.NET
+
+## Install
+
+This section needs a lot of work (and the whole readme in general) but in general, you clone, set environmental variables, and run. It will.
+
+## Licensing
+
+The license for this project is MIT but some dependencies might have Apache or similar licenses. General reuse isn't necessarily intended and APIs might break, but it is permissible.
+
 ## Roadmap
+
+### Section Priorities
+- game
+- file
+- visit
+- (then comment docs, tests, and README)
+- download
+- photo
+- blog
+- backup
+- landlord
+
+### Unsorted Thoughts 
 - Friends linked to friend role if appearing in Facebook friends
 - Movie list: people in friends role should be able to vote for movies they want to see (to plan movie parties)
 - Admins should be able to do some things on behalf of others (mark that someone wants to see a movie even if they don't have an account)
