@@ -1,17 +1,19 @@
 package database
 
+import (
+	"github.com/PaluMacil/dwn/sections/gamelibrary"
+	"github.com/PaluMacil/dwn/sections/shopping"
+)
+
 func New(store Storer) *Database {
 	return &Database{store: store}
 }
 
 type Database struct {
-	store      Storer
-	Sessions   SessionProvider
-	Users      UserProvider
-	Groups     GroupProvider
-	UserGroups UserGroupProvider
-	SetupInfo  SetupInfoProvider
-	Util       UtilityProvider
+	store Storer
+	CoreProviders
+	GameLibrary gamelibrary.Providers
+	Shopping    shopping.Providers
 }
 
 func (db Database) Close() error {

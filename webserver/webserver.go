@@ -17,6 +17,7 @@ import (
 	"github.com/PaluMacil/dwn/auth"
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/sections/shopping/shoppingapi"
 	"github.com/PaluMacil/dwn/spa"
 )
 
@@ -36,6 +37,8 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	searchModule := searchapi.New(db)
 	typeaheadModule := typeaheadapi.New(db)
 
+	shoppingModule := shoppingapi.New(db)
+
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
 		mux: http.NewServeMux(),
@@ -48,6 +51,8 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	ws.mux.Handle("/api/info/", infoModule)
 	ws.mux.Handle("/api/search/", searchModule)
 	ws.mux.Handle("/api/typeahead/", typeaheadModule)
+
+	ws.mux.Handle("/api/shopping/", shoppingModule)
 
 	return ws
 }

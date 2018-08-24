@@ -7,7 +7,7 @@ import (
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/dwn"
-	"github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type SessionRepo struct {

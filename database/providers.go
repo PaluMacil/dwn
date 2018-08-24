@@ -2,6 +2,15 @@ package database
 
 import "github.com/PaluMacil/dwn/dwn"
 
+type CoreProviders struct {
+	Sessions   SessionProvider
+	Users      UserProvider
+	Groups     GroupProvider
+	UserGroups UserGroupProvider
+	SetupInfo  SetupInfoProvider
+	Util       UtilityProvider
+}
+
 type UserProvider interface {
 	UserSearcher
 

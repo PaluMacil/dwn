@@ -10,6 +10,8 @@ import (
 	"github.com/PaluMacil/dwn/database/search"
 	"github.com/PaluMacil/dwn/database/stores/badgerstore"
 	"github.com/PaluMacil/dwn/webserver"
+
+	"github.com/PaluMacil/dwn/sections/shopping/shoppingrepo"
 )
 
 func New() (*App, error) {
@@ -47,6 +49,8 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.UserGroups = repo.NewUserGroupRepo(store, db)
 	db.SetupInfo = repo.NewSetupInfoRepo(store, db)
 	db.Util = &badgerstore.Utility{}
+
+	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
 
 	return db, nil
 }
