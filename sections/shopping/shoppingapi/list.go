@@ -7,8 +7,8 @@ import (
 	"github.com/PaluMacil/dwn/dwn"
 )
 
-// api/shopping/all
-func (rt *ShoppingRoute) handleAll() {
+// api/shopping/list
+func (rt *ShoppingRoute) handleList() {
 	if spouse, err := rt.API().Current.Is(dwn.BuiltInGroupSpouse); err != nil {
 		rt.API().ServeInternalServerError(err)
 		return

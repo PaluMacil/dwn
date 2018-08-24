@@ -1,6 +1,9 @@
 package shoppingrepo
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/sections/shopping"
 )
@@ -28,4 +31,24 @@ func (p ItemRepo) All() ([]shopping.Item, error) {
 
 func (p ItemRepo) Delete(name string) error {
 	return p.store.Delete(shopping.Item{Name: name})
+}
+
+func (p ItemRepo) Get(name string) (shopping.Item, error) {
+	var shoppingItem = shopping.Item{Name: name}
+	if name == "" {
+		return shoppingItem, errors.New("ItemRepo.Get requires a name but got an empty string")
+	}
+	item, err := p.store.Get(&shoppingItem)
+	if err != nil {
+		return shoppingItem, err
+	}
+	shoppingItem, ok := item.(shopping.Item)
+	if !ok {
+		return shoppingItem, fmt.Errorf("got data of type %T but wanted shopping.Item", shoppingItem)
+	}
+	return shoppingItem, err
+}
+
+func (p ItemRepo) Set(item shopping.Item) error {
+	return p.store.Set(&item)
 }

@@ -27,10 +27,10 @@ func (rt ShoppingRoute) API() api.Route {
 func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	route := ShoppingRoute(api.GetRoute(w, r, mod.Db))
 	switch route.Endpoint {
-	case "all":
-		route.handleAll()
-	case "remove":
-		route.handleRemove()
+	case "list":
+		route.handleList()
+	case "item":
+		route.handleItem()
 	default:
 		http.NotFound(w, r)
 	}

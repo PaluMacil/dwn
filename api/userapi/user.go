@@ -32,7 +32,7 @@ func (rt *UserRoute) handleUser() {
 			rt.API().ServeBadRequest()
 			return
 		}
-		rt.Db.Users.Set(user)
+		rt.Db.Users.Set(user) // TODO: Handle each of these errors
 	case "POST": //TODO: check for conflict (exists) before setting
 		if rt.API().ServeCannot(dwn.PermissionEditUserInfo) {
 			return
