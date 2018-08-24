@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/PaluMacil/dwn/dwn"
 	"github.com/PaluMacil/dwn/sections/shopping"
@@ -29,6 +30,8 @@ func (rt *ShoppingRoute) handleItem() {
 			rt.API().ServeBadRequest()
 			return
 		}
+		item.Added = time.Now()
+		item.AddedBy = rt.Current.User.DisplayName
 		err = rt.Db.Shopping.Items.Set(item)
 		if err != nil {
 			rt.API().ServeInternalServerError(err)

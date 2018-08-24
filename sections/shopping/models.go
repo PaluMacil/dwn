@@ -2,6 +2,8 @@ package shopping
 
 import (
 	"time"
+
+	"github.com/PaluMacil/dwn/dwn"
 )
 
 const (
@@ -9,11 +11,11 @@ const (
 )
 
 type Item struct {
-	Name     string    `json:"name"`
-	Quantity int       `json:"quantity"`
-	Note     string    `json:"note"`
-	AddedBy  string    `json:"addedBy"`
-	Added    time.Time `json:"added"`
+	Name     string          `json:"name"`
+	Quantity int             `json:"quantity"`
+	Note     string          `json:"note"`
+	AddedBy  dwn.DisplayName `json:"addedBy"`
+	Added    time.Time       `json:"added"`
 }
 
 func (i Item) Key() []byte {
