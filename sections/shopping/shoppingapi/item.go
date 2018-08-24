@@ -3,6 +3,7 @@ package shoppingapi
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	"github.com/PaluMacil/dwn/dwn"
 	"github.com/PaluMacil/dwn/sections/shopping"
@@ -34,13 +35,12 @@ func (rt *ShoppingRoute) handleItem() {
 			return
 		}
 	case "DELETE":
-		var item shopping.Item
-		err := json.NewDecoder(rt.R.Body).Decode(&item)
-		if err != nil {
-			rt.API().ServeInternalServerError(err)
+		qry, err := url.QueryUnescape(rt.R.URL.Query().Get("name"))
+		if len(qry) == 0 || err != nil {
+			rt.API().ServeBadRequest()
 			return
 		}
-		err = rt.Db.Shopping.Items.Delete(item.Name)
+		err = rt.Db.Shopping.Items.Delete(qry)
 		if err != nil {
 			rt.API().ServeInternalServerError(err)
 			return
