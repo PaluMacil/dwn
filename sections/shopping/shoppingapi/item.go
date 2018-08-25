@@ -37,6 +37,10 @@ func (rt *ShoppingRoute) handleItem() {
 			rt.API().ServeInternalServerError(err)
 			return
 		}
+		if err := json.NewEncoder(rt.W).Encode(item); err != nil {
+			rt.API().ServeInternalServerError(err)
+			return
+		}
 	case "DELETE":
 		qry, err := url.QueryUnescape(rt.R.URL.Query().Get("name"))
 		if len(qry) == 0 || err != nil {

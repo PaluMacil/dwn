@@ -19,7 +19,7 @@ func (rt Route) ServeCannot(permissions ...string) bool {
 }
 
 func (rt Route) ServeInternalServerError(err error) {
-	log.Println("serving route", rt.Name, err) // TODO: once I fix up stringer for route, update this
+	log.Printf("serving route %s: %s", rt.Name, err) // TODO: once I fix up stringer for route, update this
 	http.Error(rt.W, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	return
 }
