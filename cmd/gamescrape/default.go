@@ -11,9 +11,6 @@ import (
 func defaultCmd(config *Config) {
 	scrapeGames(config)
 
-	log.Println("First visit", config.GeekURL(1))
-	config.InitialCollector.Visit(config.GeekURL(1))
-
 	config.InitialCollector.OnHTML("#main_content", func(e *colly.HTMLElement) {
 		pages := config.GetTotalPages()
 		if pages == 0 {
@@ -29,10 +26,9 @@ func defaultCmd(config *Config) {
 			}
 		}
 	})
-
-	config.MainCollector.OnRequest(func(r *colly.Request) {
-		log.Println("Visiting", r.URL)
-	})
+	
+	log.Println("First visit", config.GeekURL(1))
+	config.InitialCollector.Visit(config.GeekURL(1))
 }
 
 func coalesceInt(nums ...int) int {

@@ -3,6 +3,7 @@
 *.db.lock
 data-test/
 data/
+*-bak.txt
 
 # compiled output
 /dist

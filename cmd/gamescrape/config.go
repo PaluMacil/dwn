@@ -4,6 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -16,17 +20,18 @@ type Config struct {
 	LimitFlag        int
 	GameList         *FileManager
 	Errors           ErrorList
-	totalPages       *uint32
+	totalPages       uint32
 	MainCollector    *colly.Collector
 	InitialCollector *colly.Collector
 }
 
 func (c *Config) GetTotalPages() int {
-	return int(atomic.LoadUint32(c.totalPages))
+
+	return int(atomic.LoadUint32(&c.totalPages))
 }
 
 func (c *Config) SetTotalPages(pages int) {
-	atomic.StoreUint32(c.totalPages, uint32(pages))
+	atomic.StoreUint32(&c.totalPages, uint32(pages))
 }
 
 func (c *Config) GeekURL(num int) string {
@@ -34,6 +39,7 @@ func (c *Config) GeekURL(num int) string {
 }
 
 func NewConfig() *Config {
+	os.Mkdir("data", 0777)
 	var (
 		waitSeconds int
 		limitFlag   int
@@ -44,7 +50,9 @@ func NewConfig() *Config {
 	config := &Config{
 		WaitSeconds: waitSeconds,
 		LimitFlag:   limitFlag,
-		GameList:    &FileManager{filename: "games.txt"},
+		GameList:    &FileManager{filename: filepath.Join("data", "games.txt")},
+		Errors:      ErrorList{},
+		totalPages:  0,
 		MainCollector: colly.NewCollector(
 			colly.Async(true),
 		),
@@ -66,11 +74,18 @@ func NewConfig() *Config {
 	}
 
 	// set error handling
+	re := regexp.MustCompile("page/([0-9]*):")
 	responseHandler := func(r *colly.Response) {
 		if r.StatusCode != 200 {
+			pageString := re.FindString(r.Request.URL.String())
+			page, err := strconv.Atoi(pageString)
+			if err != nil {
+				log.Println("parsing page string", err)
+			}
 			e := HttpResponseError{
 				Code: r.StatusCode,
 				Body: string(r.Body),
+				Page: page,
 			}
 			log.Println("Error", e.Code, e.Body)
 			config.Errors.Add(e)
@@ -79,10 +94,13 @@ func NewConfig() *Config {
 	config.InitialCollector.OnResponse(responseHandler)
 	config.MainCollector.OnResponse(responseHandler)
 	errHandler := func(r *colly.Response, err error) {
+		pageString := re.FindString(r.Request.URL.String())
+		page, err := strconv.Atoi(pageString)
 		e := HttpResponseError{
 			Code:  r.StatusCode,
 			Body:  string(r.Body),
 			Error: err.Error(),
+			Page:  page,
 		}
 		log.Println("Error", e.Code, e.Error)
 		config.Errors.Add(e)

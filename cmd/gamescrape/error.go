@@ -4,30 +4,45 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"path/filepath"
 	"sync"
 )
 
 type ErrorList []HttpResponseError
 
-func (errorList ErrorList) WriteFile() error {
-	errorData, err := json.MarshalIndent(errorList, "", "\t")
+func (el ErrorList) WriteFile() error {
+	errorData, err := json.MarshalIndent(el, "", "\t")
 	if err != nil {
 		log.Fatalf("marshalling errorList: %s", err)
 	}
-	err = ioutil.WriteFile("errors.json", errorData, 0666)
+	err = ioutil.WriteFile(filepath.Join("data", "errors.json"), errorData, 0666)
 	return err
 }
 
-func (errorList ErrorList) Add(e HttpResponseError) {
+func (el ErrorList) FromFile() ErrorList {
+	var e ErrorList
+	file, err := ioutil.ReadFile("./config.json")
+	if err != nil {
+		log.Fatalf("File error: %v\n", err)
+	}
+	err = json.Unmarshal(file, &e)
+	if err != nil {
+		log.Fatalf("unmarshalling error file: %v\n", err)
+	}
+	return e
+}
+
+func (el *ErrorList) Add(e HttpResponseError) {
 	errorLock.Lock()
 	defer errorLock.Unlock()
-	errorList = append(errorList, e)
+	*el = append(*el, e)
 }
 
 var errorLock sync.Mutex
 
 type HttpResponseError struct {
 	Code  int
+	Page  int
 	Body  string
 	Error string
 }
