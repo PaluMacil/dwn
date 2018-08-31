@@ -20,7 +20,7 @@ func main() {
 
 	config.MainCollector.Wait()
 
-	log.Println("Complete,", config.GetTotalPages()-len(config.Errors), "games saved.")
+	log.Println("Complete,", config.GetTotalPages()-len(config.Errors), "game pages saved.")
 	err := config.Errors.WriteFile()
 	if err != nil {
 		log.Fatalf("writing error.json: %s", err)

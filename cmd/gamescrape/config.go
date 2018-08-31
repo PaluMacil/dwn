@@ -74,10 +74,10 @@ func NewConfig() *Config {
 	}
 
 	// set error handling
-	re := regexp.MustCompile("page/([0-9]*):")
+	re := regexp.MustCompile("page/([0-9]*)(?:|$)")
 	responseHandler := func(r *colly.Response) {
 		if r.StatusCode != 200 {
-			pageString := re.FindString(r.Request.URL.String())
+			pageString := re.FindStringSubmatch(r.Request.URL.String())[1]
 			page, err := strconv.Atoi(pageString)
 			if err != nil {
 				log.Println("parsing page string", err)
@@ -93,13 +93,17 @@ func NewConfig() *Config {
 	}
 	config.InitialCollector.OnResponse(responseHandler)
 	config.MainCollector.OnResponse(responseHandler)
-	errHandler := func(r *colly.Response, err error) {
-		pageString := re.FindString(r.Request.URL.String())
+	errHandler := func(r *colly.Response, responseErr error) {
+		pageString := re.FindStringSubmatch(r.Request.URL.String())[1]
 		page, err := strconv.Atoi(pageString)
+		if err != nil {
+			fmt.Println("error parsing '", pageString, "' from url", r.Request.URL.String())
+			return
+		}
 		e := HttpResponseError{
 			Code:  r.StatusCode,
 			Body:  string(r.Body),
-			Error: err.Error(),
+			Error: responseErr.Error(),
 			Page:  page,
 		}
 		log.Println("Error", e.Code, e.Error)

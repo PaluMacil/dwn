@@ -21,7 +21,7 @@ func (el ErrorList) WriteFile() error {
 
 func (el ErrorList) FromFile() ErrorList {
 	var e ErrorList
-	file, err := ioutil.ReadFile("./config.json")
+	file, err := ioutil.ReadFile(filepath.Join("data", "errors.json"))
 	if err != nil {
 		log.Fatalf("File error: %v\n", err)
 	}
