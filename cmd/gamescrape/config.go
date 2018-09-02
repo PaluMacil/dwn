@@ -54,7 +54,7 @@ func NewConfig() *Config {
 		Errors:      ErrorList{},
 		totalPages:  0,
 		MainCollector: colly.NewCollector(
-			colly.Async(true),
+			colly.Async(waitSeconds == 0),
 		),
 		InitialCollector: colly.NewCollector(),
 	}
