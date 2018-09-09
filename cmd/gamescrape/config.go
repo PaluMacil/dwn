@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -71,6 +72,14 @@ func NewConfig() *Config {
 			Parallelism: 20,
 			DomainGlob:  "*",
 		})
+		// Some hints on transport tweaks for scraping
+		// http://tleyden.github.io/blog/2016/11/21/tuning-the-go-http-client-library-for-load-testing/
+		defaultRoundTripper := http.DefaultTransport
+		defaultRoundTripperPointer := defaultRoundTripper.(*http.Transport)
+		t := *defaultRoundTripperPointer // deref to get copy
+		t.MaxIdleConns = 0
+		t.MaxIdleConnsPerHost = 1000
+		config.MainCollector.WithTransport(&t)
 	}
 
 	// set error handling
