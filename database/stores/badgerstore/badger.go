@@ -12,39 +12,29 @@ import (
 	"github.com/PaluMacil/dwn/database"
 
 	"github.com/dgraph-io/badger"
-	"github.com/dgraph-io/badger/options"
 )
 
 type BadgerStore struct {
-	bgr     *badger.DB
-	dataDir string
+	bgr *badger.DB
 }
 
-func retry(dir string, originalOpts badger.Options) (*BadgerStore, error) {
-	lockPath := filepath.Join(dir, "LOCK")
+func retry(originalOpts badger.Options) (*BadgerStore, error) {
+	lockPath := filepath.Join(originalOpts.Dir, "LOCK")
 	if err := os.Remove(lockPath); err != nil {
 		return nil, fmt.Errorf(`removing "LOCK": %s`, err)
 	}
 	retryOpts := originalOpts
 	retryOpts.Truncate = true
 	bgr, err := badger.Open(retryOpts)
-	return &BadgerStore{bgr: bgr, dataDir: dir}, err
+	return &BadgerStore{bgr: bgr}, err
 }
 
-func New(dir string, useMMAP bool) (*BadgerStore, error) {
-	opts := badger.DefaultOptions
-	opts.Dir = dir
-	opts.ValueDir = dir
-	if useMMAP {
-		opts.ValueLogLoadingMode = options.MemoryMap
-	} else {
-		opts.ValueLogLoadingMode = options.FileIO
-	}
-	bgr, err := badger.Open(opts)
+func New(dir string) (*BadgerStore, error) {
+	bgr, err := badger.Open(opts(dir))
 	if err != nil {
 		if strings.Contains(err.Error(), "LOCK") {
 			log.Println("database locked, probably due to improper shutdown")
-			if bgr, err := retry(dir, opts); err == nil {
+			if bgr, err := retry(opts(dir)); err == nil {
 				log.Println("database unlocked, value log truncated")
 				return bgr, nil
 			}
@@ -53,7 +43,7 @@ func New(dir string, useMMAP bool) (*BadgerStore, error) {
 		}
 		return nil, err
 	}
-	bs := &BadgerStore{bgr: bgr, dataDir: dir}
+	bs := &BadgerStore{bgr: bgr}
 	return bs, nil
 }
 
