@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/PaluMacil/dwn/sections/gamelibrary"
+	"github.com/PaluMacil/dwn/sections/logutil"
 	"github.com/PaluMacil/dwn/sections/shopping"
 )
 
@@ -14,6 +15,7 @@ type Database struct {
 	CoreProviders
 	GameLibrary gamelibrary.Providers
 	Shopping    shopping.Providers
+	Log         logutil.Providers
 }
 
 func (db Database) Close() error {

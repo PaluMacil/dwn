@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	log.Printf("starting\n")
 	app, err := application.New()
 	if err != nil {
 		log.Fatalln("could not start app:", err)
@@ -21,5 +22,5 @@ func main() {
 	app.Web.Serve()
 
 	app.Db.Close()
-	log.Printf("Badger: database stopped\n")
+	log.Printf("database stopped\n")
 }

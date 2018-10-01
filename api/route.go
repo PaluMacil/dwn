@@ -52,8 +52,13 @@ type API interface {
 }
 
 func (rt Route) String() string {
-	if rt.Current == nil {
-		return "route without identity" //TODO: finish this stringer method
+	return fmt.Sprintf("Route[Name:%s Endpoint:%s ID:%s]", rt.Name,
+		rt.Endpoint, rt.ID)
+}
+
+func (rt *Route) LogString() string {
+	if rt == nil {
+		return "\tRoute[none]\n"
 	}
-	return fmt.Sprintf("%s %s %s", rt.Name, rt.Endpoint, rt.ID)
+	return fmt.Sprintf("\t%s\n%s", rt, rt.Current.LogString())
 }

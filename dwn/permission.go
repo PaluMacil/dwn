@@ -9,6 +9,7 @@ const (
 	PermissionManageAppDeployment = "MANAGE_APP_DEPLOYMENT"
 	PermissionStopServer          = "STOP_SERVER"
 	PermissionManageIndexes       = "MANAGE_INDEXES"
+	PermissionLogging             = "LOGGING"
 )
 
 const (
@@ -41,6 +42,7 @@ var Permissions = []string{
 	PermissionManageAppDeployment,
 	PermissionStopServer,
 	PermissionManageIndexes,
+	PermissionLogging,
 
 	PermissionPostComments,
 	PermissionEditUserInfo,

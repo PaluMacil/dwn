@@ -20,6 +20,7 @@ func New() (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf(`initializing default database: %s`, err)
 	}
+
 	web := webserver.New(db, config)
 	return &App{
 		Config: config,

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,6 +13,17 @@ type Current struct {
 	User    dwn.User           `json:"user"`
 	Session dwn.Session        `json:"session"`
 	db      *database.Database `json:"-"`
+}
+
+func (c Current) String() string {
+	return fmt.Sprintf("Current[Name:%s Email:%s]", c.User.DisplayName, c.User.Email)
+}
+
+func (c *Current) LogString() string {
+	if c == nil {
+		return "\tCurrent[none]\n"
+	}
+	return fmt.Sprintf("\t%s\n", c)
 }
 
 func GetCurrent(r *http.Request, db *database.Database) (*Current, error) {
