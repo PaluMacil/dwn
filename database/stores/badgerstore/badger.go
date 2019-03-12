@@ -4,18 +4,19 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"github.com/PaluMacil/dwn/database"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/PaluMacil/dwn/database"
+	"time"
 
 	"github.com/dgraph-io/badger"
 )
 
 type BadgerStore struct {
-	bgr *badger.DB
+	bgr      *badger.DB
+	gcTicker *time.Ticker
 }
 
 func retry(originalOpts badger.Options) (*BadgerStore, error) {
@@ -43,11 +44,35 @@ func New(dir string) (*BadgerStore, error) {
 		}
 		return nil, err
 	}
-	bs := &BadgerStore{bgr: bgr}
+
+	gcTicker := time.NewTicker(5 * time.Minute)
+	bs := &BadgerStore{
+		bgr:      bgr,
+		gcTicker: gcTicker,
+	}
+	go func() {
+		for range gcTicker.C {
+			bs.runGC()
+		}
+	}()
 	return bs, nil
 }
 
+func (bs *BadgerStore) runGC() {
+	log.Println("Running GC...")
+	var logFiles int
+again:
+	err := bs.bgr.RunValueLogGC(0.7)
+	if err == nil {
+		logFiles++
+		goto again
+	}
+	log.Println(logFiles, "log files removed during GC.")
+}
+
 func (bs BadgerStore) Close() error {
+	bs.gcTicker.Stop()
+	bs.runGC()
 	return bs.bgr.Close()
 }
 
