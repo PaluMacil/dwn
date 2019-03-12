@@ -27,7 +27,7 @@ func (rt *InfoRoute) handleServerInfo(config configuration.Configuration) {
 			return
 		}
 
-		resp := InfoResponse{config, info, runtime.Version()}
+		resp := InfoResponse{config, info, runtime.Version(), runtime.NumCPU()}
 
 		if err := json.NewEncoder(rt.W).Encode(resp); err != nil {
 			rt.API().ServeInternalServerError(err)
@@ -42,4 +42,5 @@ type InfoResponse struct {
 	Config configuration.Configuration `json:"config"`
 	dwn.SetupInfo
 	GoVersion string `json:"goVersion"`
+	NumCPUs   int    `json:"numCPUs"`
 }
