@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"github.com/PaluMacil/dwn/sections/logutil/logutilrepo"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/configuration/env"
@@ -52,6 +53,8 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Util = &badgerstore.Utility{}
 
 	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
+	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
+	//db.Log.Writer = logutilrepo.NewEntryRepo(store, db)
 
 	return db, nil
 }
