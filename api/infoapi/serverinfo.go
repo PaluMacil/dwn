@@ -3,6 +3,8 @@ package infoapi
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"runtime"
 
@@ -30,12 +32,15 @@ func (rt *InfoRoute) handleServerInfo(config configuration.Configuration) {
 		var m runtime.MemStats
 		runtime.ReadMemStats(&m)
 
+		dataSize, _ := dirSize(config.Database.DataDir)
+
 		resp := InfoResponse{
 			Config:          config,
 			SetupInfo:       info,
 			GoVersion:       runtime.Version(),
 			NumCPUs:         runtime.NumCPU(),
 			AllocatedMemory: m.Alloc,
+			DataDirSize:     dataSize,
 		}
 
 		if err := json.NewEncoder(rt.W).Encode(resp); err != nil {
@@ -47,10 +52,25 @@ func (rt *InfoRoute) handleServerInfo(config configuration.Configuration) {
 	}
 }
 
+func dirSize(path string) (int64, error) {
+	var size int64
+	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			size += info.Size()
+		}
+		return err
+	})
+	return size, err
+}
+
 type InfoResponse struct {
 	Config configuration.Configuration `json:"config"`
 	dwn.SetupInfo
 	GoVersion       string `json:"goVersion"`
 	NumCPUs         int    `json:"numCPUs"`
 	AllocatedMemory uint64 `json:"allocatedMemory"`
+	DataDirSize     int64  `json:"dataDirSize"`
 }
