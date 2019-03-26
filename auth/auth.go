@@ -11,8 +11,6 @@ import (
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/dwn"
-
-	"golang.org/x/oauth2"
 )
 
 type Module struct {
@@ -47,7 +45,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		code := r.FormValue("code")
-		token, err := mod.config.Auth.Google.Exchange(oauth2.NoContext, code)
+		token, err := mod.config.Auth.Google.Exchange(r.Context(), code)
 		if err != nil {
 			fmt.Printf("Code exchange failed with '%s'\n", err)
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
@@ -69,7 +67,15 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if claims.VerifiedEmail {
-			session := mod.db.Sessions.GenerateFor(claims.Email, r.RemoteAddr)
+			ip := r.RemoteAddr
+			forwardForIP := r.Header.Get("X-Forwarded-For")
+			if forwardForIP != "" {
+				// if the user if coming through one or more proxies, one or more IP addresses
+				// could be set in this comma separated header. The first IP is the user's
+				// original IP.
+				ip = strings.Split(forwardForIP, ",")[0]
+			}
+			session := mod.db.Sessions.GenerateFor(claims.Email, ip)
 			err := mod.db.Sessions.Set(session)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
