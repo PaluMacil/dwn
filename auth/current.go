@@ -10,7 +10,7 @@ import (
 )
 
 type Current struct {
-	User    dwn.User           `json:"user"`
+	User    dwn.UserInfo       `json:"user"`
 	Session dwn.Session        `json:"session"`
 	db      *database.Database `json:"-"`
 }
@@ -45,7 +45,7 @@ func GetCurrent(r *http.Request, db *database.Database) (*Current, error) {
 		return nil, err
 	}
 	return &Current{
-		User:    user,
+		User:    user.Info(),
 		Session: session,
 		db:      db,
 	}, nil

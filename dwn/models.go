@@ -21,24 +21,54 @@ func (d DisplayName) Tag() string {
 }
 
 type User struct {
-	GoogleID         string      `json:"googleId"`
-	GoogleImportDate time.Time   `json:"googleImportDate"`
-	Email            string      `json:"email"`
-	Tag              string      `json:"tag"`
-	PreviousTags     []string    `json:"previousTags"`
-	PasswordHash     []byte      `json:"-"`
-	VerifiedEmail    bool        `json:"verifiedEmail"`
-	Locked           bool        `json:"locked"`
-	DisplayName      DisplayName `json:"displayName"`
-	GivenName        string      `json:"givenName"`
-	FamilyName       string      `json:"familyName"`
-	Link             string      `json:"link"`
-	Picture          string      `json:"picture"`
-	Gender           string      `json:"gender"`
-	Locale           string      `json:"locale"`
-	LastLogin        time.Time   `json:"lastLogin"`
-	ModifiedDate     time.Time   `json:"modifiedDate"`
-	CreatedDate      time.Time   `json:"createdDate"`
+	GoogleID          string      `json:"googleId"`
+	GoogleImportDate  time.Time   `json:"googleImportDate"`
+	Email             string      `json:"email"`
+	Tag               string      `json:"tag"`
+	PreviousTags      []string    `json:"previousTags"`
+	PasswordHash      []byte      `json:"-"`
+	Require2FA        bool        `json:"require2FA"`
+	VerifiedEmail     bool        `json:"verifiedEmail"`
+	VerifiedEmailDate time.Time   `json:"verifiedEmailDate"`
+	VerificationCode  string      `json:"-"`
+	VaultPIN          string      `json:"-"`
+	Locked            bool        `json:"locked"`
+	LoginAttempts     int         `json:"loginAttempts"`
+	LastFailedLogin   time.Time   `json:"lastFailedLogin"`
+	DisplayName       DisplayName `json:"displayName"`
+	GivenName         string      `json:"givenName"`
+	FamilyName        string      `json:"familyName"`
+	Link              string      `json:"link"`
+	Picture           string      `json:"picture"`
+	Gender            string      `json:"gender"`
+	Locale            string      `json:"locale"`
+	LastLogin         time.Time   `json:"lastLogin"`
+	ModifiedDate      time.Time   `json:"modifiedDate"`
+	CreatedDate       time.Time   `json:"createdDate"`
+}
+
+func (u User) Info() UserInfo {
+	return UserInfo{
+		User:        u,
+		HasPassword: len(u.PasswordHash) > 0,
+		HasVaultPIN: u.VaultPIN != "",
+	}
+}
+
+type Users []User
+
+func (users Users) Info() []UserInfo {
+	userInfo := make([]UserInfo, len(users), len(users))
+	for i, user := range users {
+		userInfo[i] = user.Info()
+	}
+	return userInfo
+}
+
+type UserInfo struct {
+	User
+	HasPassword bool `json:"hasPassword"`
+	HasVaultPIN bool `json:"hasVaultPIN"`
 }
 
 func (u User) Key() []byte {
@@ -50,10 +80,12 @@ func (u User) Prefix() []byte {
 }
 
 type Group struct {
-	Name         string    `json:"name"`
-	Permissions  []string  `json:"permissions"`
-	ModifiedBy   string    `json:"modifiedBy"`
-	ModifiedDate time.Time `json:"modifiedDate"`
+	Name             string    `json:"name"`
+	Permissions      []string  `json:"permissions"`
+	Requires2FA      bool      `json:"requires2FA"`
+	RequiresVaultPIN bool      `json:"requiresVaultPIN"`
+	ModifiedBy       string    `json:"modifiedBy"`
+	ModifiedDate     time.Time `json:"modifiedDate"`
 }
 
 func (g Group) HasPermission(permission string) bool {

@@ -20,7 +20,8 @@ func (rt *GroupRoute) handleUsersForGroup() {
 	sort.Slice(users, func(i, j int) bool {
 		return users[i].DisplayName < users[j].DisplayName
 	})
-	if err := json.NewEncoder(rt.W).Encode(users); err != nil {
+	userInfo := dwn.Users(users).Info()
+	if err := json.NewEncoder(rt.W).Encode(userInfo); err != nil {
 		rt.API().ServeInternalServerError(err)
 		return
 	}
