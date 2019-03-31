@@ -21,7 +21,6 @@ type WebServerConfiguration struct {
 	Protocol    string `json:"protocol"`
 	Host        string `json:"host"`
 	Port        string `json:"port"`
-	BaseURL     string `json:"baseURL"`
 	UIProxyPort string `json:"uiProxyPort"`
 	ContentRoot string `json:"contentRoot"`
 }
@@ -35,8 +34,8 @@ func (ws WebServerConfiguration) HomePage() string {
 	if port == "" {
 		port = ws.Port
 	}
-	return fmt.Sprintf("%s://%s:%s%s",
-		ws.Protocol, ws.Host, port, ws.BaseURL)
+	return fmt.Sprintf("%s://%s:%s",
+		ws.Protocol, ws.Host, port)
 }
 
 type AuthConfiguration struct {

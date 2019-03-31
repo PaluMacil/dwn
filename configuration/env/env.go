@@ -14,7 +14,6 @@ func Config() configuration.Configuration {
 		Protocol:    os.Getenv("DWN_PROTOCOL"),
 		Host:        os.Getenv("DWN_HOST"),
 		Port:        os.Getenv("DWN_PORT"),
-		BaseURL:     os.Getenv("DWN_BASE_URL"),
 		UIProxyPort: os.Getenv("DWN_UI_PROXY_PORT"),
 		ContentRoot: os.Getenv("DWN_CONTENT_ROOT"),
 	}
