@@ -26,7 +26,7 @@ func defaultCmd(config *Config) {
 			}
 		}
 	})
-	
+
 	log.Println("First visit", config.GeekURL(1))
 	config.InitialCollector.Visit(config.GeekURL(1))
 }

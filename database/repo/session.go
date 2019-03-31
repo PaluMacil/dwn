@@ -81,7 +81,7 @@ func (p SessionRepo) PurgeAll() error {
 		return err
 	}
 	for _, s := range sessions {
-		p.Delete(s.Token)
+		err = p.Delete(s.Token)
 		if err != nil {
 			return err
 		}

@@ -1,41 +1,20 @@
 module github.com/PaluMacil/dwn
 
 require (
-	cloud.google.com/go v0.34.0
-	github.com/AndreasBriese/bbloom v0.0.0-20180913140656-343706a395b7
-	github.com/PuerkitoBio/goquery v1.5.0
-	github.com/RoaringBitmap/roaring v0.4.16
-	github.com/Smerity/govarint v0.0.0-20150407073650-7265e41f48f1
-	github.com/andybalholm/cascadia v1.0.0
-	github.com/antchfx/htmlquery v0.0.0-20181228060131-db5c1236cbb4
-	github.com/antchfx/xmlquery v0.0.0-20181223105952-355641961c92
-	github.com/antchfx/xpath v0.0.0-20181208024549-4bbdf6db12aa
+	github.com/AndreasBriese/bbloom v0.0.0-20190306092124-e2d15f34fcf9 // indirect
+	github.com/RoaringBitmap/roaring v0.4.17 // indirect
+	github.com/Smerity/govarint v0.0.0-20150407073650-7265e41f48f1 // indirect
 	github.com/blevesearch/bleve v0.7.0
-	github.com/blevesearch/go-porterstemmer v0.0.0-20141230013033-23a2c8e5cf1f
-	github.com/blevesearch/segment v0.0.0-20160105220820-db70c57796cc
-	github.com/boltdb/bolt v0.0.0-20171120010307-9da317453632
-	github.com/couchbase/vellum v0.0.0-20190111184608-e91b68ff3efe
+	github.com/blevesearch/go-porterstemmer v1.0.2 // indirect
+	github.com/blevesearch/segment v0.0.0-20160915185041-762005e7a34f // indirect
+	github.com/boltdb/bolt v1.3.1 // indirect
+	github.com/couchbase/vellum v0.0.0-20190328134517-462e86d8716b // indirect
 	github.com/dgraph-io/badger v1.5.4
-	github.com/dgryski/go-farm v0.0.0-20190104051053-3adb47b1fb0f
-	github.com/edsrzf/mmap-go v1.0.0
-	github.com/glycerine/go-unsnap-stream v0.0.0-20181221182339-f9677308dec2
-	github.com/gobwas/glob v0.2.3
-	github.com/gocolly/colly v1.1.0
+	github.com/dgryski/go-farm v0.0.0-20190323231341-8198c7b169ec // indirect
+	github.com/edsrzf/mmap-go v1.0.0 // indirect
 	github.com/gofrs/uuid v3.2.0+incompatible
-	github.com/golang/protobuf v1.2.0
-	github.com/golang/snappy v0.0.0-20160407051505-cef980a12b31
-	github.com/kennygrant/sanitize v1.2.4
-	github.com/mschoch/smat v0.0.0-20160514031455-90eadee771ae
-	github.com/philhofer/fwd v1.0.0
-	github.com/pkg/errors v0.8.1
-	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
-	github.com/steveyen/gtreap v0.0.0-20150807155958-0abe01ef9be2
-	github.com/temoto/robotstxt v0.0.0-20180810133444-97ee4a9ee6ea
-	github.com/tinylib/msgp v1.1.0
-	github.com/willf/bitset v0.0.0-20161202170036-5c3c0fce4884
-	golang.org/x/net v0.0.0-20190119204137-ed066c81e75e
-	golang.org/x/oauth2 v0.0.0-20190115181402-5dab4167f31c
-	golang.org/x/sys v0.0.0-20190116161447-11f53e031339
-	golang.org/x/text v0.3.0
-	google.golang.org/appengine v1.4.0
+	github.com/pkg/errors v0.8.1 // indirect
+	github.com/steveyen/gtreap v0.0.0-20150807155958-0abe01ef9be2 // indirect
+	golang.org/x/oauth2 v0.0.0-20190319182350-c85d3e98c914
+	golang.org/x/sys v0.0.0-20190329044733-9eb1bfa1ce65 // indirect
 )

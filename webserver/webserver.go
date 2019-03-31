@@ -41,7 +41,7 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
-		mux: http.NewServeMux(),
+		mux:                    http.NewServeMux(),
 	}
 	ws.mux.Handle("/", spaModule)
 	ws.mux.Handle("/oauth/", authModule)

@@ -11,6 +11,8 @@ data/
 /out-tsc
 debug
 debug.test
+cmd/echo/echo
+dwn-server
 
 # dependencies
 /node_modules
