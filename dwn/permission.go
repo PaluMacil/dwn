@@ -34,6 +34,11 @@ const (
 	PermissionManageAllTenants  = "MANAGE_ALL_TENANTS"
 )
 
+// Projects Module
+const (
+	PermissionListProjects = "LIST_PROJECTS"
+)
+
 var Permissions = []string{
 	PermissionResetUserPassword,
 	PermissionSetAdmin,
@@ -57,4 +62,6 @@ var Permissions = []string{
 
 	PermissionViewAllTenantInfo,
 	PermissionManageAllTenants,
+
+	PermissionListProjects,
 }

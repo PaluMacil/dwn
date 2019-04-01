@@ -6,12 +6,11 @@ import (
 )
 
 const (
-	SessionPrefix    = "SESSION:"
-	UserPrefix       = "USER:"
-	GroupPrefix      = "GROUP:"
-	PermissionPrefix = "PERMISSION:"
-	UserGroupPrefix  = "USERGROUP:"
-	SetupInfoPrefix  = "SETUPINFO:"
+	SessionPrefix   = "SESSION:"
+	UserPrefix      = "USER:"
+	GroupPrefix     = "GROUP:"
+	UserGroupPrefix = "USERGROUP:"
+	SetupInfoPrefix = "SETUPINFO:"
 )
 
 type DisplayName string
@@ -21,30 +20,32 @@ func (d DisplayName) Tag() string {
 }
 
 type User struct {
-	GoogleID          string      `json:"googleId"`
-	GoogleImportDate  time.Time   `json:"googleImportDate"`
-	Email             string      `json:"email"`
-	Tag               string      `json:"tag"`
-	PreviousTags      []string    `json:"previousTags"`
-	PasswordHash      []byte      `json:"-"`
-	Require2FA        bool        `json:"require2FA"`
-	VerifiedEmail     bool        `json:"verifiedEmail"`
-	VerifiedEmailDate time.Time   `json:"verifiedEmailDate"`
-	VerificationCode  string      `json:"-"`
-	VaultPIN          string      `json:"-"`
-	Locked            bool        `json:"locked"`
-	LoginAttempts     int         `json:"loginAttempts"`
-	LastFailedLogin   time.Time   `json:"lastFailedLogin"`
-	DisplayName       DisplayName `json:"displayName"`
-	GivenName         string      `json:"givenName"`
-	FamilyName        string      `json:"familyName"`
-	Link              string      `json:"link"`
-	Picture           string      `json:"picture"`
-	Gender            string      `json:"gender"`
-	Locale            string      `json:"locale"`
-	LastLogin         time.Time   `json:"lastLogin"`
-	ModifiedDate      time.Time   `json:"modifiedDate"`
-	CreatedDate       time.Time   `json:"createdDate"`
+	GoogleID              string      `json:"googleId"`
+	GoogleImportDate      time.Time   `json:"googleImportDate"`
+	Email                 string      `json:"email"`
+	Tag                   string      `json:"tag"`
+	PreviousTags          []string    `json:"previousTags"`
+	PasswordHash          []byte      `json:"-"`
+	LastPasswordHash      []byte      `json:"-"`
+	MustChangePWNextLogin bool        `json:"mustChangePWNextLogin"`
+	Require2FA            bool        `json:"require2FA"`
+	VerifiedEmail         bool        `json:"verifiedEmail"`
+	VerifiedEmailDate     time.Time   `json:"verifiedEmailDate"`
+	VerificationCode      string      `json:"-"`
+	VaultPIN              string      `json:"-"`
+	Locked                bool        `json:"locked"`
+	LoginAttempts         int         `json:"loginAttempts"`
+	LastFailedLogin       time.Time   `json:"lastFailedLogin"`
+	DisplayName           DisplayName `json:"displayName"`
+	GivenName             string      `json:"givenName"`
+	FamilyName            string      `json:"familyName"`
+	Link                  string      `json:"link"`
+	Picture               string      `json:"picture"`
+	Gender                string      `json:"gender"`
+	Locale                string      `json:"locale"`
+	LastLogin             time.Time   `json:"lastLogin"`
+	ModifiedDate          time.Time   `json:"modifiedDate"`
+	CreatedDate           time.Time   `json:"createdDate"`
 }
 
 func (u User) Info() UserInfo {
@@ -88,6 +89,23 @@ type Group struct {
 	ModifiedDate     time.Time `json:"modifiedDate"`
 }
 
+type GroupCreationRequest struct {
+	Name             string `json:"name"`
+	Requires2FA      bool   `json:"requires2FA"`
+	RequiresVaultPIN bool   `json:"requiresVaultPIN"`
+}
+
+func (req GroupCreationRequest) Group(modifiedBy string) Group {
+	return Group{
+		Name:             req.Name,
+		Permissions:      []string{},
+		Requires2FA:      req.Requires2FA,
+		RequiresVaultPIN: req.RequiresVaultPIN,
+		ModifiedBy:       modifiedBy,
+		ModifiedDate:     time.Now(),
+	}
+}
+
 func (g Group) HasPermission(permission string) bool {
 	for _, p := range g.Permissions {
 		if p == permission {
@@ -98,13 +116,14 @@ func (g Group) HasPermission(permission string) bool {
 }
 
 const (
-	BuiltInGroupAdmin    = "ADMIN"
-	BuiltInGroupSpouse   = "SPOUSE"
-	BuiltInGroupResident = "RESIDENT"
-	BuiltInGroupFriend   = "FRIEND"
-	BuiltInGroupLandlord = "LANDLORD"
-	BuiltInGroupTenant   = "TENANT"
-	BuiltInGroupUser     = "USER"
+	BuiltInGroupAdmin     = "ADMIN"
+	BuiltInGroupSpouse    = "SPOUSE"
+	BuiltInGroupResident  = "RESIDENT"
+	BuiltInGroupFriend    = "FRIEND"
+	BuiltInGroupLandlord  = "LANDLORD"
+	BuiltInGroupTenant    = "TENANT"
+	BuiltInGroupPowerUser = "POWER_USER"
+	BuiltInGroupUser      = "USER"
 )
 
 func (g Group) Key() []byte {

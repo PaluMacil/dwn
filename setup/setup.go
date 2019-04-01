@@ -18,6 +18,8 @@ func New(db *database.Database) *Module {
 	}
 }
 
+const setupUser = "(SETUP)"
+
 func (mod Module) Ensure() error {
 	complete, err := mod.Db.SetupInfo.Completed()
 	if err != nil {
@@ -29,12 +31,12 @@ func (mod Module) Ensure() error {
 	}
 
 	builtinGroups := []dwn.Group{
-		dwn.Group{
+		{
 			Name:         dwn.BuiltInGroupAdmin,
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
 			Name: dwn.BuiltInGroupSpouse,
 			Permissions: []string{
 				dwn.PermissionEditUserInfo,
@@ -44,43 +46,49 @@ func (mod Module) Ensure() error {
 				dwn.PermissionViewGroups,
 				dwn.PermissionEditAllVisitPages,
 			},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
 			Name: dwn.BuiltInGroupResident,
 			Permissions: []string{
 				dwn.PermissionManageIOTDevices,
 			},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
 
 			Name:         dwn.BuiltInGroupFriend,
 			Permissions:  []string{},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
 
 			Name:         dwn.BuiltInGroupLandlord,
 			Permissions:  []string{},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
 
 			Name:         dwn.BuiltInGroupTenant,
 			Permissions:  []string{},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
-		dwn.Group{
+		{
+
+			Name:        dwn.BuiltInGroupPowerUser,
+			Permissions: []string{dwn.PermissionListProjects},
+			ModifiedBy:  setupUser,
+		},
+		{
 
 			Name:         dwn.BuiltInGroupUser,
 			Permissions:  []string{dwn.PermissionPostComments},
-			ModifiedBy:   "(SETUP)",
+			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 	}
