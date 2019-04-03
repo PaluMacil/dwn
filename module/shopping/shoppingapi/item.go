@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/PaluMacil/dwn/dwn"
-	"github.com/PaluMacil/dwn/sections/shopping"
+	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/shopping"
 )
 
 // api/shopping/item
@@ -15,7 +15,7 @@ func (rt *ShoppingRoute) handleItem() {
 	if rt.API().Current == nil {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 	}
-	if spouse, err := rt.API().Current.Is(dwn.BuiltInGroupSpouse); err != nil {
+	if spouse, err := rt.API().Current.Is(core.BuiltInGroupSpouse); err != nil {
 		rt.API().ServeInternalServerError(err)
 		return
 	} else if !spouse {

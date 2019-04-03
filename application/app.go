@@ -2,7 +2,7 @@ package application
 
 import (
 	"fmt"
-	"github.com/PaluMacil/dwn/sections/logutil/logutilrepo"
+	"github.com/PaluMacil/dwn/module/logutil/logutilrepo"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/configuration/env"
@@ -12,7 +12,7 @@ import (
 	"github.com/PaluMacil/dwn/database/stores/badgerstore"
 	"github.com/PaluMacil/dwn/webserver"
 
-	"github.com/PaluMacil/dwn/sections/shopping/shoppingrepo"
+	"github.com/PaluMacil/dwn/module/shopping/shoppingrepo"
 )
 
 func New() (*App, error) {

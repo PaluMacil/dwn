@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 	"github.com/gofrs/uuid"
 )
 
@@ -19,8 +19,8 @@ func NewSessionRepo(store database.Storer, db *database.Database) *SessionRepo {
 	return &SessionRepo{store, db}
 }
 
-func (p SessionRepo) Get(token string) (dwn.Session, error) {
-	var session = dwn.Session{Token: token}
+func (p SessionRepo) Get(token string) (core.Session, error) {
+	var session = core.Session{Token: token}
 	if token == "" {
 		return session, errors.New("SessionRepo.Get requires a token but got an empty string")
 	}
@@ -28,9 +28,9 @@ func (p SessionRepo) Get(token string) (dwn.Session, error) {
 	if err != nil {
 		return session, err
 	}
-	session, ok := item.(dwn.Session)
+	session, ok := item.(core.Session)
 	if !ok {
-		return session, fmt.Errorf("got data of type %T but wanted dwn.Session", session)
+		return session, fmt.Errorf("got data of type %T but wanted core.Session", session)
 	}
 	return session, err
 }
@@ -43,13 +43,13 @@ func (p SessionRepo) Exists(token string) (bool, error) {
 	return true, err
 }
 
-func (p SessionRepo) Set(session dwn.Session) error {
+func (p SessionRepo) Set(session core.Session) error {
 	return p.store.Set(&session)
 }
 
-func (p SessionRepo) GenerateFor(email, ip string) dwn.Session {
+func (p SessionRepo) GenerateFor(email, ip string) core.Session {
 	t := uuid.Must(uuid.NewV4())
-	session := dwn.Session{
+	session := core.Session{
 		Token:       t.String(),
 		Email:       email,
 		IP:          ip,
@@ -59,20 +59,20 @@ func (p SessionRepo) GenerateFor(email, ip string) dwn.Session {
 	return session
 }
 
-func (p SessionRepo) All() ([]dwn.Session, error) {
+func (p SessionRepo) All() ([]core.Session, error) {
 	var items []database.Item
-	pfx := dwn.Session{}.Prefix()
+	pfx := core.Session{}.Prefix()
 	err := p.store.All(pfx, &items, true)
-	sessions := make([]dwn.Session, len(items))
+	sessions := make([]core.Session, len(items))
 	for i, v := range items {
-		sessions[i] = v.(dwn.Session)
+		sessions[i] = v.(core.Session)
 	}
 
 	return sessions, err
 }
 
 func (p SessionRepo) Delete(token string) error {
-	return p.store.Delete(dwn.Session{Token: token})
+	return p.store.Delete(core.Session{Token: token})
 }
 
 func (p SessionRepo) PurgeAll() error {

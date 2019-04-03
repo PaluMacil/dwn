@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 type LogLevel int8
@@ -33,11 +33,11 @@ const (
 )
 
 type Config struct {
-	ConsoleLevel  LogLevel        `json:"consoleLevel"`
-	UseColorCodes bool            `json:"useColorCodes"`
-	QueueLevel    LogLevel        `json:"queueLevel"`
-	ModifiedBy    dwn.DisplayName `json:"modifiedBy"`
-	Modified      time.Time       `json:"modified"`
+	ConsoleLevel  LogLevel         `json:"consoleLevel"`
+	UseColorCodes bool             `json:"useColorCodes"`
+	QueueLevel    LogLevel         `json:"queueLevel"`
+	ModifiedBy    core.DisplayName `json:"modifiedBy"`
+	Modified      time.Time        `json:"modified"`
 }
 
 func (c Config) Key() []byte {

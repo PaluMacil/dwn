@@ -1,9 +1,9 @@
 package database
 
 import (
-	"github.com/PaluMacil/dwn/sections/gamelibrary"
-	"github.com/PaluMacil/dwn/sections/logutil"
-	"github.com/PaluMacil/dwn/sections/shopping"
+	"github.com/PaluMacil/dwn/module/gamelibrary"
+	"github.com/PaluMacil/dwn/module/logutil"
+	"github.com/PaluMacil/dwn/module/shopping"
 )
 
 func New(store Storer) *Database {

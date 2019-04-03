@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 )
 
 type GroupRepo struct {
@@ -17,19 +17,19 @@ func NewGroupRepo(store database.Storer, db *database.Database) *GroupRepo {
 	return &GroupRepo{store, db}
 }
 
-func (p GroupRepo) GroupsFor(email string) ([]dwn.Group, error) {
+func (p GroupRepo) GroupsFor(email string) ([]core.Group, error) {
 	var items []database.Item
-	extendedPrefix := append(dwn.UserGroup{}.Prefix(), []byte(email)...)
+	extendedPrefix := append(core.UserGroup{}.Prefix(), []byte(email)...)
 	err := p.store.All(extendedPrefix, &items, true)
 	if err != nil {
 		return nil, err
 	}
-	userGroups := make([]dwn.UserGroup, len(items))
+	userGroups := make([]core.UserGroup, len(items))
 	for i, v := range items {
-		userGroups[i] = v.(dwn.UserGroup)
+		userGroups[i] = v.(core.UserGroup)
 	}
 
-	groups := make([]dwn.Group, len(items))
+	groups := make([]core.Group, len(items))
 	for i, ug := range userGroups {
 		groups[i], err = p.Get(ug.GroupName)
 		if err != nil {
@@ -40,8 +40,8 @@ func (p GroupRepo) GroupsFor(email string) ([]dwn.Group, error) {
 	return groups, err
 }
 
-func (p GroupRepo) Get(name string) (dwn.Group, error) {
-	var group = dwn.Group{Name: name}
+func (p GroupRepo) Get(name string) (core.Group, error) {
+	var group = core.Group{Name: name}
 	if name == "" {
 		return group, errors.New("GroupRepo.Get requires a name but got an empty string")
 	}
@@ -49,7 +49,7 @@ func (p GroupRepo) Get(name string) (dwn.Group, error) {
 	if err != nil {
 		return group, err
 	}
-	group, ok := item.(dwn.Group)
+	group, ok := item.(core.Group)
 	if !ok {
 		return group, fmt.Errorf("got data of type %T but wanted Group", group)
 	}
@@ -64,21 +64,21 @@ func (p GroupRepo) Exists(name string) (bool, error) {
 	return true, err
 }
 
-func (p GroupRepo) Set(group dwn.Group) error {
+func (p GroupRepo) Set(group core.Group) error {
 	return p.store.Set(&group)
 }
 
-func (p GroupRepo) All() ([]dwn.Group, error) {
+func (p GroupRepo) All() ([]core.Group, error) {
 	var items []database.Item
-	err := p.store.All(dwn.Group{}.Prefix(), &items, true)
-	groups := make([]dwn.Group, len(items))
+	err := p.store.All(core.Group{}.Prefix(), &items, true)
+	groups := make([]core.Group, len(items))
 	for i, v := range items {
-		groups[i] = v.(dwn.Group)
+		groups[i] = v.(core.Group)
 	}
 
 	return groups, err
 }
 
 func (p GroupRepo) Delete(name string) error {
-	return p.store.Delete(dwn.Group{Name: name})
+	return p.store.Delete(core.Group{Name: name})
 }

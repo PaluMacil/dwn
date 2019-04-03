@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/sections/shopping"
+	"github.com/PaluMacil/dwn/module/shopping"
 )
 
 type ItemRepo struct {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 	"github.com/blevesearch/bleve"
 )
 
@@ -28,7 +28,7 @@ func (ui UserIndex) Reindex() error {
 	return nil
 }
 
-func (ui UserIndex) Index(u dwn.User) error {
+func (ui UserIndex) Index(u core.User) error {
 	err := ui.idx.Index(u.Email, u)
 	if err != nil {
 		return err
@@ -36,7 +36,7 @@ func (ui UserIndex) Index(u dwn.User) error {
 	return nil
 }
 
-func (ui UserIndex) Deindex(u dwn.User) error {
+func (ui UserIndex) Deindex(u core.User) error {
 	err := ui.idx.Delete(u.Email)
 	if err != nil {
 		return err
@@ -59,16 +59,16 @@ func NewUserIndex(db *database.Database, dataDir string) (*UserIndex, error) {
 	return &UserIndex{index, db}, nil
 }
 
-func (ui UserIndex) CompletionSuggestions(query string) ([]dwn.User, error) {
+func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	queryWithoutPrefix := bleve.NewPrefixQuery(query)
 	queryWithPrefix := bleve.NewPrefixQuery("@" + query)
 	searchQuery := bleve.NewDisjunctionQuery(queryWithoutPrefix, queryWithPrefix)
 	search := bleve.NewSearchRequest(searchQuery)
 	result, err := ui.idx.Search(search)
 	if err != nil {
-		return []dwn.User{}, err
+		return []core.User{}, err
 	}
-	users := make([]dwn.User, len(result.Hits))
+	users := make([]core.User, len(result.Hits))
 	for i, res := range result.Hits {
 		email := res.ID
 		u, err := ui.db.Users.Get(email)

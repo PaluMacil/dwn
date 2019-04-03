@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 )
 
 type Current struct {
-	User    dwn.UserInfo       `json:"user"`
-	Session dwn.Session        `json:"session"`
+	User    core.UserInfo      `json:"user"`
+	Session core.Session       `json:"session"`
 	db      *database.Database `json:"-"`
 }
 
@@ -27,7 +27,7 @@ func (c *Current) LogString() string {
 }
 
 func GetCurrent(r *http.Request, db *database.Database) (*Current, error) {
-	token := r.Header.Get("dwn-token")
+	token := r.Header.Get("core-token")
 	if token == "" {
 		return nil, nil
 	}
@@ -62,7 +62,7 @@ func (c *Current) Can(permission string) (bool, error) {
 		return false, err
 	}
 	for _, g := range groups {
-		if g.Name == dwn.BuiltInGroupAdmin || g.HasPermission(permission) {
+		if g.Name == core.BuiltInGroupAdmin || g.HasPermission(permission) {
 			return true, nil
 		}
 	}

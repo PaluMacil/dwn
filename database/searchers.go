@@ -1,10 +1,10 @@
 package database
 
-import "github.com/PaluMacil/dwn/dwn"
+import "github.com/PaluMacil/dwn/core"
 
 type UserSearcher interface {
-	Index(u dwn.User) error
-	Deindex(u dwn.User) error
+	Index(u core.User) error
+	Deindex(u core.User) error
 	Reindex() error
-	CompletionSuggestions(query string) ([]dwn.User, error)
+	CompletionSuggestions(query string) ([]core.User, error)
 }

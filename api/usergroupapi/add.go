@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/usergroup/add
 func (rt *UserGroupRoute) handleAdd() {
-	if rt.API().ServeCannot(dwn.PermissionEditGroups) {
+	if rt.API().ServeCannot(core.PermissionEditGroups) {
 		return
 	}
 	if rt.R.Method != "POST" {
@@ -20,7 +20,7 @@ func (rt *UserGroupRoute) handleAdd() {
 		rt.API().ServeBadRequest()
 		return
 	}
-	var ug dwn.UserGroup
+	var ug core.UserGroup
 	err := json.NewDecoder(rt.R.Body).Decode(&ug)
 	if err != nil {
 		rt.API().ServeInternalServerError(err)

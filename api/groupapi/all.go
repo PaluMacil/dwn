@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/group/all
@@ -15,7 +15,7 @@ func (rt *GroupRoute) handleAll() {
 	}
 	switch rt.R.Method {
 	case "GET":
-		if rt.API().ServeCannot(dwn.PermissionViewGroups) {
+		if rt.API().ServeCannot(core.PermissionViewGroups) {
 			return
 		}
 		groups, err := rt.Db.Groups.All()

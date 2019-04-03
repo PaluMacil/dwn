@@ -1,4 +1,4 @@
-package dwn
+package core
 
 // Elevated permissions
 const (

@@ -9,7 +9,7 @@ import (
 	"runtime"
 
 	"github.com/PaluMacil/dwn/configuration"
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/info/server
@@ -18,7 +18,7 @@ func (rt *InfoRoute) handleServerInfo(config configuration.Configuration) {
 		http.Error(rt.W, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}
-	if rt.API().ServeCannot(dwn.PermissionViewAppSettings) {
+	if rt.API().ServeCannot(core.PermissionViewAppSettings) {
 		return
 	}
 	switch rt.R.Method {
@@ -68,7 +68,7 @@ func dirSize(path string) (int64, error) {
 
 type InfoResponse struct {
 	Config configuration.Configuration `json:"config"`
-	dwn.SetupInfo
+	core.SetupInfo
 	GoVersion       string `json:"goVersion"`
 	NumCPUs         int    `json:"numCPUs"`
 	AllocatedMemory uint64 `json:"allocatedMemory"`

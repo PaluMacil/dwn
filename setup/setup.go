@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 )
 
 type Module struct {
@@ -30,64 +30,64 @@ func (mod Module) Ensure() error {
 		return nil
 	}
 
-	builtinGroups := []dwn.Group{
+	builtinGroups := []core.Group{
 		{
-			Name:         dwn.BuiltInGroupAdmin,
+			Name:         core.BuiltInGroupAdmin,
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
-			Name: dwn.BuiltInGroupSpouse,
+			Name: core.BuiltInGroupSpouse,
 			Permissions: []string{
-				dwn.PermissionEditUserInfo,
-				dwn.PermissionUnlockUser,
-				dwn.PermissionViewUsers,
-				dwn.PermissionEditGroups,
-				dwn.PermissionViewGroups,
-				dwn.PermissionEditAllVisitPages,
+				core.PermissionEditUserInfo,
+				core.PermissionUnlockUser,
+				core.PermissionViewUsers,
+				core.PermissionEditGroups,
+				core.PermissionViewGroups,
+				core.PermissionEditAllVisitPages,
 			},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
-			Name: dwn.BuiltInGroupResident,
+			Name: core.BuiltInGroupResident,
 			Permissions: []string{
-				dwn.PermissionManageIOTDevices,
+				core.PermissionManageIOTDevices,
 			},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
 
-			Name:         dwn.BuiltInGroupFriend,
+			Name:         core.BuiltInGroupFriend,
 			Permissions:  []string{},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
 
-			Name:         dwn.BuiltInGroupLandlord,
+			Name:         core.BuiltInGroupLandlord,
 			Permissions:  []string{},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
 
-			Name:         dwn.BuiltInGroupTenant,
+			Name:         core.BuiltInGroupTenant,
 			Permissions:  []string{},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
 		{
 
-			Name:        dwn.BuiltInGroupPowerUser,
-			Permissions: []string{dwn.PermissionListProjects},
+			Name:        core.BuiltInGroupPowerUser,
+			Permissions: []string{core.PermissionListProjects},
 			ModifiedBy:  setupUser,
 		},
 		{
 
-			Name:         dwn.BuiltInGroupUser,
-			Permissions:  []string{dwn.PermissionPostComments},
+			Name:         core.BuiltInGroupUser,
+			Permissions:  []string{core.PermissionPostComments},
 			ModifiedBy:   setupUser,
 			ModifiedDate: time.Now(),
 		},
@@ -99,7 +99,7 @@ func (mod Module) Ensure() error {
 		}
 	}
 
-	err = mod.Db.SetupInfo.Set(dwn.SetupInfo{time.Now()})
+	err = mod.Db.SetupInfo.Set(core.SetupInfo{time.Now()})
 	if err != nil {
 		return err
 	}

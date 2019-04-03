@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 )
 
 type UserGroupRepo struct {
@@ -18,8 +18,8 @@ func NewUserGroupRepo(store database.Storer, db *database.Database) *UserGroupRe
 	return &UserGroupRepo{store, db}
 }
 
-func (p UserGroupRepo) Get(email, groupName string) (dwn.UserGroup, error) {
-	var userGroup = dwn.UserGroup{
+func (p UserGroupRepo) Get(email, groupName string) (core.UserGroup, error) {
+	var userGroup = core.UserGroup{
 		Email:     email,
 		GroupName: groupName,
 	}
@@ -33,7 +33,7 @@ func (p UserGroupRepo) Get(email, groupName string) (dwn.UserGroup, error) {
 	if err != nil {
 		return userGroup, err
 	}
-	userGroup, ok := item.(dwn.UserGroup)
+	userGroup, ok := item.(core.UserGroup)
 	if !ok {
 		return userGroup, fmt.Errorf("got data of type %T but wanted UserGroup", userGroup)
 	}
@@ -48,26 +48,26 @@ func (p UserGroupRepo) Exists(email, groupName string) (bool, error) {
 	return true, err
 }
 
-func (p UserGroupRepo) Set(userGroup dwn.UserGroup) error {
+func (p UserGroupRepo) Set(userGroup core.UserGroup) error {
 	if userGroup.CreatedDate.IsZero() {
 		userGroup.CreatedDate = time.Now()
 	}
 	return p.store.Set(&userGroup)
 }
 
-func (p UserGroupRepo) All() ([]dwn.UserGroup, error) {
+func (p UserGroupRepo) All() ([]core.UserGroup, error) {
 	var items []database.Item
-	err := p.store.All(dwn.UserGroup{}.Prefix(), &items, true)
-	userGroups := make([]dwn.UserGroup, len(items))
+	err := p.store.All(core.UserGroup{}.Prefix(), &items, true)
+	userGroups := make([]core.UserGroup, len(items))
 	for i, v := range items {
-		userGroups[i] = v.(dwn.UserGroup)
+		userGroups[i] = v.(core.UserGroup)
 	}
 
 	return userGroups, err
 }
 
 func (p UserGroupRepo) Delete(email, groupName string) error {
-	return p.store.Delete(dwn.UserGroup{
+	return p.store.Delete(core.UserGroup{
 		Email:     email,
 		GroupName: groupName,
 	})

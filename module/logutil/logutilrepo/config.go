@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/sections/logutil"
+	"github.com/PaluMacil/dwn/module/logutil"
 )
 
 type LogConfigRepo struct {

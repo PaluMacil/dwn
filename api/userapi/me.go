@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/PaluMacil/dwn/auth"
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/user/me
@@ -21,7 +21,7 @@ func (rt *UserRoute) handleMe() {
 	}
 	me := struct {
 		auth.Current
-		Groups []dwn.Group `json:"groups"`
+		Groups []core.Group `json:"groups"`
 	}{
 		*rt.Current,
 		groups,

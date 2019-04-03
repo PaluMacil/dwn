@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/typeahead/user?query=searchstring
 func (rt *TypeaheadRoute) handleUser() {
 	switch rt.R.Method {
 	case "GET":
-		if rt.API().ServeCannot(dwn.PermissionViewUsers) {
+		if rt.API().ServeCannot(core.PermissionViewUsers) {
 			return
 		}
 		qry, err := url.QueryUnescape(rt.R.URL.Query().Get("query"))

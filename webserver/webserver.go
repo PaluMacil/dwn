@@ -17,7 +17,7 @@ import (
 	"github.com/PaluMacil/dwn/auth"
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/sections/shopping/shoppingapi"
+	"github.com/PaluMacil/dwn/module/shopping/shoppingapi"
 	"github.com/PaluMacil/dwn/spa"
 )
 

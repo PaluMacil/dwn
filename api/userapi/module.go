@@ -37,7 +37,8 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		route.handleLogout()
 	case "groups-for":
 		route.handleGroupsForUser()
-	default:
+	default: // TODO: don't use any bare routes for post / put (slash routing redirects)
+		// or simply don't use default on the base api/module url
 		route.handleUser()
 	}
 }

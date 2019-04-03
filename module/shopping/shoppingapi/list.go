@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/shopping/list
 func (rt *ShoppingRoute) handleList() {
-	if spouse, err := rt.API().Current.Is(dwn.BuiltInGroupSpouse); err != nil {
+	if spouse, err := rt.API().Current.Is(core.BuiltInGroupSpouse); err != nil {
 		rt.API().ServeInternalServerError(err)
 		return
 	} else if !spouse {

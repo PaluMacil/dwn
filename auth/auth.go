@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/configuration"
+	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/dwn"
 )
 
 type Module struct {
@@ -92,9 +92,9 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				user = claims.CreateUser(displayName)
 				if claims.Email == mod.config.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
-					mod.db.UserGroups.Set(dwn.UserGroup{
+					mod.db.UserGroups.Set(core.UserGroup{
 						Email:     claims.Email,
-						GroupName: dwn.BuiltInGroupAdmin,
+						GroupName: core.BuiltInGroupAdmin,
 					})
 				}
 			} else if err != nil {
@@ -114,7 +114,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			tmpl.Execute(w,
 				loginCallbackData{
-					TokenName:   "dwn-token",
+					TokenName:   "core-token",
 					Token:       session.Token,
 					RedirectURL: mod.config.WebServer.HomePage(), //TODO: Check to see if a different redirect is requested and if it is safe
 				})

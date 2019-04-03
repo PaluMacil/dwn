@@ -2,7 +2,7 @@ package groupapi
 
 import (
 	"encoding/json"
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 	"net/http"
 )
 
@@ -24,10 +24,10 @@ func (rt *GroupRoute) handleGroup() {
 			return
 		}
 	case "POST":
-		if rt.API().ServeCannot(dwn.PermissionEditGroups) {
+		if rt.API().ServeCannot(core.PermissionEditGroups) {
 			return
 		}
-		var request dwn.GroupCreationRequest
+		var request core.GroupCreationRequest
 		if err := json.NewDecoder(rt.R.Body).Decode(&request); err != nil {
 			rt.API().ServeInternalServerError(err)
 			return

@@ -5,12 +5,12 @@ import (
 	"net/url"
 	"sort"
 
-	"github.com/PaluMacil/dwn/dwn"
+	"github.com/PaluMacil/dwn/core"
 )
 
 // api/user/groups-for/{email}
 func (rt *UserRoute) handleGroupsForUser() {
-	if rt.API().ServeCannot(dwn.PermissionViewGroups) {
+	if rt.API().ServeCannot(core.PermissionViewGroups) {
 		return
 	}
 	email, err := url.QueryUnescape(rt.ID)
