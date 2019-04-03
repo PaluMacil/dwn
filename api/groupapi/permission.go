@@ -2,10 +2,9 @@ package groupapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/url"
 	"time"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/group/permission/{groupName}?permission={permission}

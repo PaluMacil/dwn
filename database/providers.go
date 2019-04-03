@@ -1,6 +1,8 @@
 package database
 
-import "github.com/PaluMacil/dwn/core"
+import (
+	"github.com/PaluMacil/dwn/module/core"
+)
 
 type CoreProviders struct {
 	Sessions   SessionProvider

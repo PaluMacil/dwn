@@ -1,7 +1,7 @@
 package searchapi
 
 import (
-	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 // api/search/index/{name|list}

@@ -1,9 +1,8 @@
 package auth
 
 import (
+	"github.com/PaluMacil/dwn/module/core"
 	"time"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 type GoogleClaims struct {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module/core"
 	"github.com/blevesearch/bleve"
 )
 

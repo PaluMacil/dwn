@@ -2,16 +2,16 @@ package auth
 
 import (
 	"fmt"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 	"time"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
 )
 
 type Current struct {
-	User    core.UserInfo      `json:"user"`
-	Session core.Session       `json:"session"`
+	User    core.UserInfo    `json:"user"`
+	Session core.Session     `json:"session"`
 	db      *database.Database `json:"-"`
 }
 

@@ -3,13 +3,13 @@ package auth
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 	"strings"
 	"text/template"
 	"time"
 
 	"github.com/PaluMacil/dwn/configuration"
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
 )
 

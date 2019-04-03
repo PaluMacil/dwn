@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 func generateDisplayName(givenName string) (core.DisplayName, error) {

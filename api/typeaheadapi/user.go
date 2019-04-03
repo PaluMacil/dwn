@@ -2,9 +2,8 @@ package typeaheadapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/url"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/typeahead/user?query=searchstring

@@ -2,10 +2,10 @@ package userapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 
 	"github.com/PaluMacil/dwn/auth"
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/user/me

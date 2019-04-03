@@ -3,8 +3,8 @@ package repo
 import (
 	"errors"
 	"fmt"
+	"github.com/PaluMacil/dwn/module/core"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
 )
 

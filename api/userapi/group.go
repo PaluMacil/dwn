@@ -2,10 +2,9 @@ package userapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/url"
 	"sort"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/user/groups-for/{email}

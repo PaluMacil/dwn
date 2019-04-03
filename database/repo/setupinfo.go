@@ -2,8 +2,8 @@ package repo
 
 import (
 	"fmt"
+	"github.com/PaluMacil/dwn/module/core"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
 )
 

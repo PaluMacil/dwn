@@ -2,8 +2,7 @@ package usergroupapi
 
 import (
 	"encoding/json"
-
-	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 // api/usergroup/remove

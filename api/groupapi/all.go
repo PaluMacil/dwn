@@ -2,9 +2,8 @@ package groupapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/group/all

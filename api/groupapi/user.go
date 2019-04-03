@@ -2,9 +2,8 @@ package groupapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"sort"
-
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/group/users-for/{groupname}

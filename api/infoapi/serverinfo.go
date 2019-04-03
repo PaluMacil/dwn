@@ -2,6 +2,7 @@ package infoapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -9,7 +10,6 @@ import (
 	"runtime"
 
 	"github.com/PaluMacil/dwn/configuration"
-	"github.com/PaluMacil/dwn/core"
 )
 
 // api/info/server

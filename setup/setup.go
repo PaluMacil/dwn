@@ -1,10 +1,10 @@
 package setup
 
 import (
+	"github.com/PaluMacil/dwn/module/core"
 	"log"
 	"time"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/database"
 )
 

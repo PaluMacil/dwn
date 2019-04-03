@@ -2,11 +2,11 @@ package shoppingapi
 
 import (
 	"encoding/json"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/PaluMacil/dwn/core"
 	"github.com/PaluMacil/dwn/module/shopping"
 )
 

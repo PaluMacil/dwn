@@ -2,8 +2,7 @@ package userapi
 
 import (
 	"encoding/json"
-
-	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 // api/user/{email or username}

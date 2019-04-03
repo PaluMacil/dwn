@@ -2,8 +2,7 @@ package searchapi
 
 import (
 	"encoding/json"
-
-	"github.com/PaluMacil/dwn/core"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 // api/search/user?query=searchstring&type=prefix
