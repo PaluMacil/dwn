@@ -1,4 +1,4 @@
-package logutilrepo
+package repo
 
 import (
 	"github.com/PaluMacil/dwn/database"

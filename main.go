@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/PaluMacil/dwn/application"
-	"github.com/PaluMacil/dwn/setup"
+	"github.com/PaluMacil/dwn/module/setup"
 )
 
 func main() {

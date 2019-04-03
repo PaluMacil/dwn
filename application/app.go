@@ -2,17 +2,18 @@ package application
 
 import (
 	"fmt"
-	"github.com/PaluMacil/dwn/module/logutil/logutilrepo"
+
+	logutilrepo "github.com/PaluMacil/dwn/module/logutil/repo"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/configuration/env"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/database/repo"
-	"github.com/PaluMacil/dwn/database/search"
+	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/database/stores/badgerstore"
+	"github.com/PaluMacil/dwn/module/core/repo"
 	"github.com/PaluMacil/dwn/webserver"
 
-	"github.com/PaluMacil/dwn/module/shopping/shoppingrepo"
+	shoppingrepo "github.com/PaluMacil/dwn/module/shopping/repo"
 )
 
 func New() (*App, error) {
@@ -54,7 +55,7 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 
 	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
 	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
-	//db.Log.Writer = logutilrepo.NewEntryRepo(store, db)
+	//db.Log.Writer = repo.NewEntryRepo(store, db)
 
 	return db, nil
 }

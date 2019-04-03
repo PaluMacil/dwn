@@ -1,10 +1,6 @@
-package database
+package core
 
-import (
-	"github.com/PaluMacil/dwn/module/core"
-)
-
-type CoreProviders struct {
+type Providers struct {
 	Sessions   SessionProvider
 	Users      UserProvider
 	Groups     GroupProvider
@@ -16,46 +12,46 @@ type CoreProviders struct {
 type UserProvider interface {
 	UserSearcher
 
-	UsersFor(groupName string) ([]core.User, error)
-	Get(email string) (core.User, error)
+	UsersFor(groupName string) ([]User, error)
+	Get(email string) (User, error)
 	Exists(email string) (bool, error)
-	Set(user core.User) error
+	Set(user User) error
 	Count() (int, error)
-	All() ([]core.User, error)
+	All() ([]User, error)
 	Delete(email string) error
 	PurgeAll() error
 }
 
 type GroupProvider interface {
-	GroupsFor(email string) ([]core.Group, error)
-	Get(name string) (core.Group, error)
+	GroupsFor(email string) ([]Group, error)
+	Get(name string) (Group, error)
 	Exists(name string) (bool, error)
-	Set(group core.Group) error
-	All() ([]core.Group, error)
+	Set(group Group) error
+	All() ([]Group, error)
 	Delete(name string) error
 }
 
 type SessionProvider interface {
-	Get(token string) (core.Session, error)
+	Get(token string) (Session, error)
 	Exists(token string) (bool, error)
-	Set(session core.Session) error
-	GenerateFor(email, ip string) core.Session
-	All() ([]core.Session, error)
+	Set(session Session) error
+	GenerateFor(email, ip string) Session
+	All() ([]Session, error)
 	Delete(token string) error
 	PurgeAll() error
 }
 
 type UserGroupProvider interface {
-	Get(email, groupName string) (core.UserGroup, error)
+	Get(email, groupName string) (UserGroup, error)
 	Exists(email, groupName string) (bool, error)
-	Set(userGroup core.UserGroup) error
-	All() ([]core.UserGroup, error)
+	Set(userGroup UserGroup) error
+	All() ([]UserGroup, error)
 	Delete(email, groupName string) error
 }
 
 type SetupInfoProvider interface {
-	Get() (core.SetupInfo, error)
+	Get() (SetupInfo, error)
 	Completed() (bool, error)
-	Set(setupInfo core.SetupInfo) error
+	Set(setupInfo SetupInfo) error
 	Delete() error
 }

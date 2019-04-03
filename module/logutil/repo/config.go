@@ -1,4 +1,4 @@
-package logutilrepo
+package repo
 
 import (
 	"fmt"

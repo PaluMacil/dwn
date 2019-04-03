@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/module/gamelibrary"
 	"github.com/PaluMacil/dwn/module/logutil"
 	"github.com/PaluMacil/dwn/module/shopping"
@@ -12,7 +13,7 @@ func New(store Storer) *Database {
 
 type Database struct {
 	store Storer
-	CoreProviders
+	core.Providers
 	GameLibrary gamelibrary.Providers
 	Shopping    shopping.Providers
 	Log         logutil.Providers
