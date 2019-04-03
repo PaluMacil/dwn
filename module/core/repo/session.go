@@ -37,7 +37,7 @@ func (p SessionRepo) Get(token string) (core.Session, error) {
 
 func (p SessionRepo) Exists(token string) (bool, error) {
 	_, err := p.Get(token)
-	if p.db.Util.IsKeyNotFoundErr(err) {
+	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

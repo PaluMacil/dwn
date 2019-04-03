@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"github.com/PaluMacil/dwn/database"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/PaluMacil/dwn/database"
 
 	"github.com/dgraph-io/badger"
 )
@@ -74,6 +75,13 @@ func (bs BadgerStore) Close() error {
 	bs.gcTicker.Stop()
 	bs.runGC()
 	return bs.bgr.Close()
+}
+
+func (bs BadgerStore) IsKeyNotFoundErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	return strings.Contains(err.Error(), badger.ErrKeyNotFound.Error())
 }
 
 func (bs *BadgerStore) Get(obj database.Item) (database.Item, error) {

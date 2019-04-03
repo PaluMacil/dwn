@@ -25,7 +25,7 @@ func (r *LogConfigRepo) Get() (logutil.Config, error) {
 	}
 	var config = logutil.Config{}
 	item, err := r.store.Get(&config)
-	if r.db.Util.IsKeyNotFoundErr(err) {
+	if r.db.IsKeyNotFoundErr(err) {
 		return defaultConfig, nil
 	} else if err != nil {
 		return config, err

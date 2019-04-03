@@ -3,6 +3,7 @@ package repo
 import (
 	"errors"
 	"fmt"
+
 	"github.com/PaluMacil/dwn/module/core"
 
 	"github.com/PaluMacil/dwn/database"
@@ -11,10 +12,10 @@ import (
 type UserRepo struct {
 	store database.Storer
 	db    *database.Database
-	database.UserSearcher
+	core.UserSearcher
 }
 
-func NewUserRepo(store database.Storer, db *database.Database, search database.UserSearcher) *UserRepo {
+func NewUserRepo(store database.Storer, db *database.Database, search core.UserSearcher) *UserRepo {
 	return &UserRepo{store, db, search}
 }
 
@@ -55,7 +56,7 @@ func (p UserRepo) Get(email string) (core.User, error) {
 //TODO: exists can be pushed into a db method
 func (p UserRepo) Exists(email string) (bool, error) {
 	_, err := p.Get(email)
-	if p.db.Util.IsKeyNotFoundErr(err) {
+	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

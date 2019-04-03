@@ -83,7 +83,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			//if user exists in database, save session, update last login
 			user, err := mod.db.Users.Get(claims.Email)
-			if mod.db.Util.IsKeyNotFoundErr(err) {
+			if mod.db.IsKeyNotFoundErr(err) {
 				displayName, err := generateDisplayName(claims.GivenName)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)

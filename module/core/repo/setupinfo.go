@@ -31,7 +31,7 @@ func (p SetupInfoRepo) Get() (core.SetupInfo, error) {
 
 func (p SetupInfoRepo) Completed() (bool, error) {
 	_, err := p.Get()
-	if p.db.Util.IsKeyNotFoundErr(err) {
+	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

@@ -6,7 +6,6 @@ type Providers struct {
 	Groups     GroupProvider
 	UserGroups UserGroupProvider
 	SetupInfo  SetupInfoProvider
-	Util       UtilityProvider
 }
 
 type UserProvider interface {

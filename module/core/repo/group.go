@@ -58,7 +58,7 @@ func (p GroupRepo) Get(name string) (core.Group, error) {
 
 func (p GroupRepo) Exists(name string) (bool, error) {
 	_, err := p.Get(name)
-	if p.db.Util.IsKeyNotFoundErr(err) {
+	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

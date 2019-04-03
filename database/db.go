@@ -23,6 +23,10 @@ func (db Database) Close() error {
 	return db.store.Close()
 }
 
+func (db Database) IsKeyNotFoundErr(err error) bool {
+	return db.store.IsKeyNotFoundErr(err)
+}
+
 type Item interface {
 	Key() []byte
 	Prefix() []byte
@@ -34,9 +38,6 @@ type Storer interface {
 	Delete(obj Item) error
 	All(pfx []byte, out *[]Item, preload bool) error
 	Count(pfx []byte) (int, error)
-	Close() error
-}
-
-type UtilityProvider interface {
 	IsKeyNotFoundErr(err error) bool
+	Close() error
 }

@@ -42,7 +42,7 @@ func (p UserGroupRepo) Get(email, groupName string) (core.UserGroup, error) {
 
 func (p UserGroupRepo) Exists(email, groupName string) (bool, error) {
 	_, err := p.Get(email, groupName)
-	if p.db.Util.IsKeyNotFoundErr(err) {
+	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
 	return true, err

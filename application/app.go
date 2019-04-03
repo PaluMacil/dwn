@@ -8,9 +8,9 @@ import (
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/configuration/env"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/database/stores/badgerstore"
 	"github.com/PaluMacil/dwn/module/core/repo"
+	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/webserver"
 
 	shoppingrepo "github.com/PaluMacil/dwn/module/shopping/repo"
@@ -51,7 +51,6 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Groups = repo.NewGroupRepo(store, db)
 	db.UserGroups = repo.NewUserGroupRepo(store, db)
 	db.SetupInfo = repo.NewSetupInfoRepo(store, db)
-	db.Util = &badgerstore.Utility{}
 
 	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
 	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
