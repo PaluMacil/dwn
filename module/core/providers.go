@@ -5,7 +5,6 @@ type Providers struct {
 	Users      UserProvider
 	Groups     GroupProvider
 	UserGroups UserGroupProvider
-	SetupInfo  SetupInfoProvider
 }
 
 type UserProvider interface {
@@ -46,11 +45,4 @@ type UserGroupProvider interface {
 	Set(userGroup UserGroup) error
 	All() ([]UserGroup, error)
 	Delete(email, groupName string) error
-}
-
-type SetupInfoProvider interface {
-	Get() (SetupInfo, error)
-	Completed() (bool, error)
-	Set(setupInfo SetupInfo) error
-	Delete() error
 }

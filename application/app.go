@@ -13,6 +13,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/webserver"
 
+	setuprepo "github.com/PaluMacil/dwn/module/setup/repo"
 	shoppingrepo "github.com/PaluMacil/dwn/module/shopping/repo"
 )
 
@@ -50,11 +51,11 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Users = repo.NewUserRepo(store, db, userIndex)
 	db.Groups = repo.NewGroupRepo(store, db)
 	db.UserGroups = repo.NewUserGroupRepo(store, db)
-	db.SetupInfo = repo.NewSetupInfoRepo(store, db)
 
 	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
 	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
 	//db.Log.Writer = repo.NewEntryRepo(store, db)
+	db.Setup.Initialization = setuprepo.NewInitializationRepo(store, db)
 
 	return db, nil
 }

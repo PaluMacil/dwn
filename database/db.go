@@ -4,6 +4,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/module/gamelibrary"
 	"github.com/PaluMacil/dwn/module/logutil"
+	"github.com/PaluMacil/dwn/module/setup"
 	"github.com/PaluMacil/dwn/module/shopping"
 )
 
@@ -17,6 +18,7 @@ type Database struct {
 	GameLibrary gamelibrary.Providers
 	Shopping    shopping.Providers
 	Log         logutil.Providers
+	Setup       setup.Providers
 }
 
 func (db Database) Close() error {

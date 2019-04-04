@@ -10,7 +10,6 @@ const (
 	UserPrefix      = "USER:"
 	GroupPrefix     = "GROUP:"
 	UserGroupPrefix = "USERGROUP:"
-	SetupInfoPrefix = "SETUPINFO:"
 )
 
 type DisplayName string
@@ -149,18 +148,6 @@ func (s Session) Key() []byte {
 
 func (s Session) Prefix() []byte {
 	return []byte(SessionPrefix)
-}
-
-type SetupInfo struct {
-	InitializedDate time.Time `json:"initializedDate"`
-}
-
-func (s SetupInfo) Key() []byte {
-	return s.Prefix()
-}
-
-func (s SetupInfo) Prefix() []byte {
-	return []byte(SetupInfoPrefix)
 }
 
 type UserGroup struct {

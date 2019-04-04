@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/PaluMacil/dwn/application"
-	"github.com/PaluMacil/dwn/module/setup"
 )
 
 func main() {
@@ -13,8 +12,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("could not start app:", err)
 	}
-	setupModule := setup.New(app.Db)
-	if err := setupModule.Ensure(); err != nil {
+	if err := app.Db.Setup.Initialization.EnsureDatabase(); err != nil {
 		app.Db.Close()
 		log.Fatalln("could not ensure app setup:", err)
 	}
