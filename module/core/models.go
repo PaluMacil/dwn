@@ -34,6 +34,7 @@ type User struct {
 	VerificationCode      string      `json:"-"`
 	VaultPIN              string      `json:"-"`
 	Locked                bool        `json:"locked"`
+	Disabled              bool        `json:"disabled"`
 	LoginAttempts         int         `json:"loginAttempts"`
 	LastFailedLogin       time.Time   `json:"lastFailedLogin"`
 	DisplayName           DisplayName `json:"displayName"`
