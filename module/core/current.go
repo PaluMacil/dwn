@@ -33,7 +33,7 @@ func GetCurrent(r *http.Request, db Providers) (*Current, error) {
 		return nil, err
 	}
 	session.Heartbeat = time.Now()
-	session.IP = r.RemoteAddr
+	session.IP = IP(r)
 	if err = db.Sessions.Set(session); err != nil {
 		return nil, err
 	}
@@ -71,4 +71,8 @@ func (c *Current) Is(groupName string) (bool, error) {
 		return false, nil
 	}
 	return c.db.UserGroups.Exists(c.User.Email, groupName)
+}
+
+func (c *Current) Authenticated() bool {
+	return c != nil
 }

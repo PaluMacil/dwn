@@ -19,11 +19,12 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly v1.2.0
 	github.com/gofrs/uuid v3.2.0+incompatible
+	github.com/gorilla/mux v1.7.1
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/steveyen/gtreap v0.0.0-20150807155958-0abe01ef9be2 // indirect
 	github.com/temoto/robotstxt v0.0.0-20180810133444-97ee4a9ee6ea // indirect
+	golang.org/x/crypto v0.0.0-20190404164418-38d8ce5564a5
 	golang.org/x/oauth2 v0.0.0-20190319182350-c85d3e98c914
-	golang.org/x/sys v0.0.0-20190329044733-9eb1bfa1ce65 // indirect
 )

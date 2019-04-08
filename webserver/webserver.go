@@ -10,19 +10,44 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module"
+	coreapi "github.com/PaluMacil/dwn/module/core/api"
+	"github.com/gorilla/mux"
 )
 
 type WebServer struct {
 	configuration.WebServerConfiguration
-	mux *http.ServeMux
+	mux *mux.Router
 }
 
 func New(db *database.Database, config configuration.Configuration) *WebServer {
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
-		mux:                    http.NewServeMux(),
+		mux:                    mux.NewRouter(),
 	}
 
+	apiFactory := module.HandlerFactory{
+		Db:                    db,
+		Config:                config,
+		AssumeJSONContentType: true,
+	}
+	// TODO: refactor config and remove this check on the os args
+	prod := len(os.Args) == 2 && os.Args[1] == "prod"
+
+	// Set host subrouters
+	var dwnHost *mux.Router
+	if prod {
+		dwnHost = ws.mux.Host("danwolf.net").Subrouter()
+	} else {
+		dwnHost = ws.mux.Host("localhost:" + ws.Port).Subrouter()
+	}
+
+	// Set module subrouters
+	coreRouter := dwnHost.PathPrefix("/api/core/").Subrouter()
+	coreapi.RegisterRoutes(coreRouter, apiFactory)
+
+	ws.mux.Host("echo.danwolf.net").Subrouter()
+	ws.mux.Host("echo-history.danwolf.net").Subrouter()
 	return ws
 }
 
