@@ -10,8 +10,8 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
+	"github.com/PaluMacil/dwn/webserver/handler"
 	"github.com/gorilla/mux"
 )
 
@@ -26,7 +26,7 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 		mux:                    mux.NewRouter(),
 	}
 
-	apiFactory := module.HandlerFactory{
+	apiFactory := handler.Factory{
 		Db:                    db,
 		Config:                config,
 		AssumeJSONContentType: true,

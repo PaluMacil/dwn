@@ -53,7 +53,6 @@ func (p UserRepo) Get(email string) (core.User, error) {
 	return user, err
 }
 
-//TODO: exists can be pushed into a db method
 func (p UserRepo) Exists(email string) (bool, error) {
 	_, err := p.Get(email)
 	if p.db.IsKeyNotFoundErr(err) {

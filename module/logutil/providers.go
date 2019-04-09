@@ -14,4 +14,4 @@ type EntryProvider interface {
 	Write(p []byte) (n int, err error)
 	Cached() ([]Entry, error)
 	Log(level int, message string)
-} //TODO: implement this with multiwriter and mutexes
+} //TODO: implement this with multiwriter, sync.Pool, and mutexes
