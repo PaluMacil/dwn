@@ -11,6 +11,7 @@ import (
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
+	"github.com/PaluMacil/dwn/spa"
 	"github.com/PaluMacil/dwn/webserver/handler"
 	"github.com/gorilla/mux"
 )
@@ -45,6 +46,7 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// Set module subrouters
 	coreRouter := dwnHost.PathPrefix("/api/core/").Subrouter()
 	coreapi.RegisterRoutes(coreRouter, apiFactory)
+	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
 
 	ws.mux.Host("echo.danwolf.net").Subrouter()
 	ws.mux.Host("echo-history.danwolf.net").Subrouter()

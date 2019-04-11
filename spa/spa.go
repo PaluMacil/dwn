@@ -6,23 +6,15 @@ import (
 	"strings"
 )
 
-type Module struct {
-	contentRoot string
-}
+type ContentRoot string
 
-func New(contentRoot string) *Module {
-	return &Module{
-		contentRoot: contentRoot,
-	}
-}
-
-func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fs := http.FileServer(http.Dir(mod.contentRoot))
+func (root ContentRoot) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fs := http.FileServer(http.Dir(root))
 	pathParts := strings.Split(r.URL.Path, `/`)
 	lastPart := pathParts[len(pathParts)-1]
 	if strings.Contains(lastPart, ".") {
 		fs.ServeHTTP(w, r)
 	} else {
-		http.ServeFile(w, r, path.Join(mod.contentRoot, "index.html"))
+		http.ServeFile(w, r, path.Join(string(root), "index.html"))
 	}
 }
