@@ -20,30 +20,35 @@ type BadgerStore struct {
 	gcTicker *time.Ticker
 }
 
-func retry(originalOpts badger.Options) (*BadgerStore, error) {
-	lockPath := filepath.Join(originalOpts.Dir, "LOCK")
-	if err := os.Remove(lockPath); err != nil {
-		return nil, fmt.Errorf(`removing "LOCK": %s`, err)
-	}
-	retryOpts := originalOpts
-	retryOpts.Truncate = true
-	bgr, err := badger.Open(retryOpts)
-	return &BadgerStore{bgr: bgr}, err
-}
-
-func New(dir string) (*BadgerStore, error) {
-	bgr, err := badger.Open(opts(dir))
+func open(dir string) (*badger.DB, error) {
+	originalOpts := opts(dir)
+	bgr, err := badger.Open(originalOpts)
 	if err != nil {
 		if strings.Contains(err.Error(), "LOCK") {
 			log.Println("database locked, probably due to improper shutdown")
-			if bgr, err := retry(opts(dir)); err == nil {
-				log.Println("database unlocked, value log truncated")
-				return bgr, nil
-			}
-			log.Println("could not unlock database:", err)
 
+			lockPath := filepath.Join(originalOpts.Dir, "LOCK")
+			if err = os.Remove(lockPath); err != nil {
+				return nil, fmt.Errorf(`removing "LOCK": %s`, err)
+			}
+			retryOpts := originalOpts
+			retryOpts.Truncate = true
+			log.Println("attempting to unlock database, tuncating value log")
+			bgr, err = badger.Open(retryOpts)
+			if err != nil {
+				return nil, fmt.Errorf("could not unlock database: %s", err)
+			}
+			return bgr, nil
 		}
 		return nil, err
+	}
+	return bgr, nil
+}
+
+func New(dir string) (*BadgerStore, error) {
+	bgr, err := open(dir)
+	if err != nil {
+		return nil, fmt.Errorf("opening badger database: %s", err)
 	}
 
 	gcTicker := time.NewTicker(5 * time.Minute)
