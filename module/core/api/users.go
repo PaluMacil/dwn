@@ -10,7 +10,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 )
 
-// /api/core/users
+// GET /api/core/users
 func usersHandler(
 	db *database.Database,
 	config configuration.Configuration,
