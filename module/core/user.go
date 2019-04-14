@@ -40,6 +40,7 @@ type User struct {
 	VerifiedEmail         bool        `json:"verifiedEmail"`
 	VerifiedEmailDate     time.Time   `json:"verifiedEmailDate"`
 	VerificationCode      string      `json:"-"`
+	VerificationCodeDate  time.Time   `json:"-"`
 	VaultPIN              string      `json:"-"`
 	Locked                bool        `json:"locked"`
 	Disabled              bool        `json:"disabled"`
@@ -87,4 +88,8 @@ func (u User) Key() []byte {
 
 func (u User) Prefix() []byte {
 	return []byte(UserPrefix)
+}
+
+func (u User) CanLogin() bool {
+	return !u.Locked && !u.Disabled
 }

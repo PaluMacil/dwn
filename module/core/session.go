@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-const SessionPrefix   = "SESSION:"
+const SessionPrefix = "SESSION:"
 
 type Session struct {
-	Token         string `json:"token"`
-	Email         string `json:"email"`
-	IP            string `json:"ip"`
-	Proxy         bool
-	VaultUnlocked bool
+	Token         string    `json:"token"`
+	Email         string    `json:"email"`
+	IP            string    `json:"ip"`
+	Proxy         bool      `json:"proxy"`
+	VaultUnlocked bool      `json:"vaultUnlocked"`
 	CreatedDate   time.Time `json:"createdDate"`
 	Heartbeat     time.Time `json:"heartbeat"`
 }
@@ -37,3 +37,73 @@ func IP(r *http.Request) string {
 	}
 	return ip
 }
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResult int
+
+const (
+	LoginResultSuccess LoginResult = iota
+	LoginResultBadCredentials
+	LoginResult2FA
+	LoginResultChangePassword
+	LoginResultLockedOrDisabled
+	LoginResultError
+)
+
+const (
+	// TODO: make max login attempts before lock configurable
+	maxLoginAttempts    = 5
+	failedLoginDuration = 20 * time.Hour
+)
+
+func (req LoginRequest) Do(db Providers, ip string) (Session, LoginResult, error) {
+	exists, err := db.Users.Exists(req.Email)
+	if err != nil {
+		// error checking if user exists
+		return Session{}, LoginResultError, err
+	}
+	user, err := db.Users.Get(req.Email)
+	if err != nil && exists {
+		// error getting user, but user exists
+		return Session{}, LoginResultError, err
+	}
+
+	// if user cannot log in, respond with this information before checking credentials
+	// (otherwise bruteforce attempts on a locked account could be possible)
+	if !user.CanLogin() {
+		return Session{}, LoginResultLockedOrDisabled, nil
+	}
+
+	// if user doesn't exist or the password is incorrect
+	if !exists {
+		return Session{}, LoginResultBadCredentials, nil
+	}
+	if !user.PasswordHash.Check(req.Password) {
+		// if it's been longer than required since the last failure, reset failures to 1
+		if user.LastFailedLogin.Add(failedLoginDuration).Before(time.Now()) {
+			user.LoginAttempts = 1
+		} else {
+			user.LoginAttempts++
+		}
+		// if user has had to many failed attempts, lock account
+		if user.LoginAttempts > maxLoginAttempts {
+			user.Locked = true
+		}
+		user.LastFailedLogin = time.Now()
+		return Session{}, LoginResultBadCredentials, nil
+	}
+
+	// check for 2FA required
+
+	// check for password change required
+
+	// success, no further steps required
+	session := db.Sessions.GenerateFor(user.Email, ip)
+	return
+}
+
+//TODO: save user when credentials are bad, and save session on success

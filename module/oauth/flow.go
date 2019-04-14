@@ -68,14 +68,7 @@ func (mod Module) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if claims.VerifiedEmail {
-			ip := r.RemoteAddr
-			forwardForIP := r.Header.Get("X-Forwarded-For")
-			if forwardForIP != "" {
-				// if the user if coming through one or more proxies, one or more IP addresses
-				// could be set in this comma separated header. The first IP is the user's
-				// original IP.
-				ip = strings.Split(forwardForIP, ",")[0]
-			}
+			ip := core.IP(r)
 			session := mod.db.Sessions.GenerateFor(claims.Email, ip)
 			err := mod.db.Sessions.Set(session)
 			if err != nil {
