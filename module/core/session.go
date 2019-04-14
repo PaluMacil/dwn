@@ -1,6 +1,7 @@
 package core
 
 import (
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -56,31 +57,35 @@ const (
 
 const (
 	// TODO: make max login attempts before lock configurable
+	// TODO: save failures to database and require captcha for suspect / repeat offender IPs
 	maxLoginAttempts    = 5
 	failedLoginDuration = 20 * time.Hour
 )
 
-func (req LoginRequest) Do(db Providers, ip string) (Session, LoginResult, error) {
+// Do executes a login request. It returns a user, session (possibly both empty) and
+// a LoginResult. The error will be nil if (and only if) the result is LoginResultError
+func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginResult, error) {
 	exists, err := db.Users.Exists(req.Email)
 	if err != nil {
 		// error checking if user exists
-		return Session{}, LoginResultError, err
+		return UserInfo{}, Session{}, LoginResultError, err
 	}
 	user, err := db.Users.Get(req.Email)
 	if err != nil && exists {
 		// error getting user, but user exists
-		return Session{}, LoginResultError, err
+		return UserInfo{}, Session{}, LoginResultError, err
 	}
 
 	// if user cannot log in, respond with this information before checking credentials
 	// (otherwise bruteforce attempts on a locked account could be possible)
 	if !user.CanLogin() {
-		return Session{}, LoginResultLockedOrDisabled, nil
+		return UserInfo{}, Session{}, LoginResultLockedOrDisabled, nil
 	}
 
 	// if user doesn't exist or the password is incorrect
 	if !exists {
-		return Session{}, LoginResultBadCredentials, nil
+		// TODO: count non-existent user attempts towards suspicion score of an IP
+		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
 	}
 	if !user.PasswordHash.Check(req.Password) {
 		// if it's been longer than required since the last failure, reset failures to 1
@@ -94,16 +99,22 @@ func (req LoginRequest) Do(db Providers, ip string) (Session, LoginResult, error
 			user.Locked = true
 		}
 		user.LastFailedLogin = time.Now()
-		return Session{}, LoginResultBadCredentials, nil
+		err := db.Users.Set(user)
+		if err != nil {
+			log.Println("saving user with failed login attempt:", err.Error())
+		}
+		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
 	}
 
-	// check for 2FA required
+	// TODO: check for 2FA required
 
-	// check for password change required
+	// TODO: check for password change required
 
 	// success, no further steps required
 	session := db.Sessions.GenerateFor(user.Email, ip)
-	return
+	err = db.Sessions.Set(session)
+	if err != nil {
+		return UserInfo{}, Session{}, LoginResultError, err
+	}
+	return user.Info(), session, LoginResultSuccess, nil
 }
-
-//TODO: save user when credentials are bad, and save session on success

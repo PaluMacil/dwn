@@ -3,7 +3,6 @@ package core
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/PaluMacil/dwn/module"
 )
@@ -25,18 +24,12 @@ func (c *Current) LogString() string {
 	return fmt.Sprintf("\t%s\n", c)
 }
 
-func GetCurrent(r *http.Request, db Providers) (*Current, error) {
-	token := r.Header.Get("dwn-token")
+func GetCurrent(token string, db Providers) (*Current, error) {
 	if token == "" {
 		return nil, nil
 	}
 	session, err := db.Sessions.Get(token)
 	if err != nil {
-		return nil, err
-	}
-	session.Heartbeat = time.Now()
-	session.IP = IP(r)
-	if err = db.Sessions.Set(session); err != nil {
 		return nil, err
 	}
 	user, err := db.Users.Get(session.Email)

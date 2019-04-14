@@ -63,4 +63,5 @@ var (
 	StatusUnauthorized = StatusError{http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized))}
 	StatusForbidden    = StatusError{http.StatusForbidden, errors.New(http.StatusText(http.StatusForbidden))}
 	StatusNotFound     = StatusError{http.StatusNotFound, errors.New(http.StatusText(http.StatusNotFound))}
+	StatusLocked       = StatusError{http.StatusLocked, errors.New(http.StatusText(http.StatusLocked))}
 )

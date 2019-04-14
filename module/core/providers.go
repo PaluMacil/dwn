@@ -37,6 +37,7 @@ type SessionProvider interface {
 	All() ([]Session, error)
 	Delete(token string) error
 	PurgeAll() error
+	UpdateHeartbeat(session *Session, ip string) error
 }
 
 type UserGroupProvider interface {

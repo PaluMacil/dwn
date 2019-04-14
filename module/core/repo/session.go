@@ -3,8 +3,9 @@ package repo
 import (
 	"errors"
 	"fmt"
-	"github.com/PaluMacil/dwn/module/core"
 	"time"
+
+	"github.com/PaluMacil/dwn/module/core"
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/gofrs/uuid"
@@ -35,6 +36,7 @@ func (p SessionRepo) Get(token string) (core.Session, error) {
 	return session, err
 }
 
+// Exists checks whether a specific core.Session exists
 func (p SessionRepo) Exists(token string) (bool, error) {
 	_, err := p.Get(token)
 	if p.db.IsKeyNotFoundErr(err) {
@@ -43,10 +45,13 @@ func (p SessionRepo) Exists(token string) (bool, error) {
 	return true, err
 }
 
+// Set saves a core.Session to the database
 func (p SessionRepo) Set(session core.Session) error {
 	return p.store.Set(&session)
 }
 
+// GenerateFor makes a new core.Session for the specified email but does
+// not check if the email exists in or persist anything to the database.
 func (p SessionRepo) GenerateFor(email, ip string) core.Session {
 	t := uuid.Must(uuid.NewV4())
 	session := core.Session{
@@ -87,4 +92,10 @@ func (p SessionRepo) PurgeAll() error {
 		}
 	}
 	return nil
+}
+
+func (p SessionRepo) UpdateHeartbeat(session *core.Session, ip string) error {
+	session.Heartbeat = time.Now()
+	session.IP = ip
+	return p.Set(*session)
 }

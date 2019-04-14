@@ -56,10 +56,16 @@ type Handler struct {
 // standard library Handler while adding application specific context.
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// get the current session information
-	cur, err := core.GetCurrent(r, h.db.Providers)
+	token := r.Header.Get("dwn-token")
+	cur, err := core.GetCurrent(token, h.db.Providers)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
+	}
+	// update heartbeat, logging any error (but don't fail the request if update fails)
+	ip := core.IP(r)
+	if err := h.db.Sessions.UpdateHeartbeat(&cur.Session, ip); err != nil {
+		log.Printf("updating heartbeat for %s: %s", ip, err)
 	}
 	// unless anonymous browsing is allowed, check for authentication
 	if !h.options.Contains(OptionAllowAnonymous) && !cur.Authenticated() {
