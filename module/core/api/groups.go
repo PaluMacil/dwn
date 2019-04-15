@@ -7,7 +7,7 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module"
+	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
 )
 
@@ -25,7 +25,7 @@ func groupsHandler(
 	}
 	group, err := db.Groups.Get(vars["group"])
 	if db.IsKeyNotFoundErr(err) {
-		return module.StatusNotFound
+		return errs.StatusNotFound
 	} else if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func createGroupHandler(
 		return err
 	}
 	if exists, err := db.Groups.Exists(request.Name); exists {
-		return module.StatusError{http.StatusBadRequest, errors.New("group already exists")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("group already exists")}
 	} else if err != nil {
 		return err
 	}

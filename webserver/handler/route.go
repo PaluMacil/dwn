@@ -6,12 +6,12 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/gorilla/mux"
 )
 
-// HandlerOption is a type for option constands
+// HandlerOption is a type for option constants
 type Option int
 
 // HandlerOptions is a type representing multiple options and providing a Contains method.
@@ -64,8 +64,10 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	// update heartbeat, logging any error (but don't fail the request if update fails)
 	ip := core.IP(r)
-	if err := h.db.Sessions.UpdateHeartbeat(&cur.Session, ip); err != nil {
-		log.Printf("updating heartbeat for %s: %s", ip, err)
+	if cur.Authenticated() {
+		if err := h.db.Sessions.UpdateHeartbeat(&cur.Session, ip); err != nil {
+			log.Printf("updating heartbeat for %s: %s", ip, err)
+		}
 	}
 	// unless anonymous browsing is allowed, check for authentication
 	if !h.options.Contains(OptionAllowAnonymous) && !cur.Authenticated() {
@@ -85,7 +87,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err = h.Handler(h.db, h.config, cur, mux.Vars(r), w, r)
 	if err != nil {
 		switch e := err.(type) {
-		case module.Error:
+		case errs.Error:
 			// We can retrieve the status here and write out a specific
 			// HTTP status code.
 			log.Printf("HTTP %d - %s", e.Status(), e)

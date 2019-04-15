@@ -11,6 +11,7 @@ import (
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
+	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"
 	"github.com/PaluMacil/dwn/spa"
 	"github.com/PaluMacil/dwn/webserver/handler"
 	"github.com/gorilla/mux"
@@ -32,6 +33,11 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 		Config:                config,
 		AssumeJSONContentType: true,
 	}
+	genericFactory := handler.Factory{
+		Db:                    db,
+		Config:                config,
+		AssumeJSONContentType: false,
+	}
 	// TODO: refactor config and remove this check on the os args
 	prod := len(os.Args) == 2 && os.Args[1] == "prod"
 
@@ -44,8 +50,13 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	}
 
 	// Set module subrouters
+	// ...core
 	coreRouter := dwnHost.PathPrefix("/api/core/").Subrouter()
 	coreapi.RegisterRoutes(coreRouter, apiFactory)
+	// ...oauth
+	oauthBaseRouter := dwnHost.PathPrefix("/oauth/").Subrouter()
+	oauthapi.RegisterBaseRoutes(oauthBaseRouter, genericFactory)
+	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
 
 	ws.mux.Host("echo.danwolf.net").Subrouter()

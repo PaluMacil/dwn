@@ -7,7 +7,7 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module"
+	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
 )
 
@@ -42,7 +42,7 @@ func loginHandler(
 		}
 		return nil
 	case core.LoginResultBadCredentials:
-		return module.StatusUnauthorized
+		return errs.StatusUnauthorized
 	case core.LoginResult2FA:
 		// TODO: create 2FA
 		return nil
@@ -50,7 +50,7 @@ func loginHandler(
 		// TODO: create and return a change password specialized token
 		return nil
 	case core.LoginResultLockedOrDisabled:
-		return module.StatusLocked
+		return errs.StatusLocked
 	case core.LoginResultError:
 		return err
 	}

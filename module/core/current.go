@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/PaluMacil/dwn/module"
+	"github.com/PaluMacil/dwn/webserver/errs"
 )
 
 type Current struct {
@@ -46,20 +46,20 @@ func GetCurrent(token string, db Providers) (*Current, error) {
 // Can asks if a user can do something. It returns nil if a user is in a group with
 // the specified permission. Admins always return nil because they can do anything.
 // Otherwise can returns an appropriate StatusError.
-func (c *Current) Can(permission string) module.Error {
+func (c *Current) Can(permission string) errs.Error {
 	if c == nil {
-		return module.StatusUnauthorized
+		return errs.StatusUnauthorized
 	}
 	groups, err := c.db.Groups.GroupsFor(c.User.Email)
 	if err != nil {
-		return module.StatusError{http.StatusInternalServerError, err}
+		return errs.StatusError{http.StatusInternalServerError, err}
 	}
 	for _, g := range groups {
 		if g.Name == BuiltInGroupAdmin || g.HasPermission(permission) {
 			return nil
 		}
 	}
-	return module.StatusForbidden
+	return errs.StatusForbidden
 }
 
 func (c *Current) Is(groupName string) (bool, error) {

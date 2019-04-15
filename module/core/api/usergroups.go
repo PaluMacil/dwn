@@ -10,7 +10,7 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module"
+	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
 )
 
@@ -27,7 +27,7 @@ func addUserHandler(
 		return err
 	}
 	if r.Body == nil {
-		return module.StatusError{http.StatusBadRequest, errors.New("no request body")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("no request body")}
 	}
 	var ug core.UserGroup
 	err := json.NewDecoder(r.Body).Decode(&ug)
@@ -44,7 +44,7 @@ func addUserHandler(
 		return err
 	}
 	if !userExists || !groupExists {
-		return module.StatusError{http.StatusBadRequest, errors.New("user or group doesn't exist")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("user or group doesn't exist")}
 	}
 	ug.CreatedDate = time.Now()
 	err = db.UserGroups.Set(ug)
@@ -71,7 +71,7 @@ func removeUserHandler(
 		return err
 	}
 	if r.Body == nil {
-		return module.StatusError{http.StatusBadRequest, errors.New("no request body")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("no request body")}
 	}
 	var ug core.UserGroup
 	err := json.NewDecoder(r.Body).Decode(&ug)
@@ -130,7 +130,7 @@ func groupsForHandler(
 	}
 	email, err := url.QueryUnescape(vars["email"])
 	if err != nil {
-		return module.StatusError{http.StatusBadRequest, errors.New("invalid email")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid email")}
 	}
 	groups, err := db.Groups.GroupsFor(email)
 	if err != nil {
