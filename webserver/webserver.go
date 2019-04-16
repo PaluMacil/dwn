@@ -2,6 +2,7 @@ package webserver
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -46,7 +47,8 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	if prod {
 		dwnHost = ws.mux.Host("danwolf.net").Subrouter()
 	} else {
-		dwnHost = ws.mux.Host("localhost:" + ws.Port).Subrouter()
+		localhostMatchPattern := fmt.Sprintf("localhost:(?:%s|%s)", ws.Port, ws.UIProxyPort)
+		dwnHost = ws.mux.Host(localhostMatchPattern).Subrouter()
 	}
 
 	// Set module subrouters
