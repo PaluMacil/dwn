@@ -13,6 +13,7 @@ import (
 	"github.com/PaluMacil/dwn/database"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
 	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"
+	typeaheadapi "github.com/PaluMacil/dwn/module/typeahead"
 	"github.com/PaluMacil/dwn/spa"
 	"github.com/PaluMacil/dwn/webserver/handler"
 	"github.com/gorilla/mux"
@@ -58,6 +59,9 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// ...oauth
 	oauthBaseRouter := dwnHost.PathPrefix("/oauth/").Subrouter()
 	oauthapi.RegisterBaseRoutes(oauthBaseRouter, genericFactory)
+	// ...typeahead
+	typeaheadRouter := dwnHost.PathPrefix("/typeahead/").Subrouter()
+	typeaheadapi.RegisterRoutes(coreRouter, apiFactory)
 	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
 

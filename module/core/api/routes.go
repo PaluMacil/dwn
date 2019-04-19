@@ -33,10 +33,12 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 		Methods("GET")
 	rt.Path("/permissions").
 		Handler(factory.Handler(addPermissionHandler)).
-		Methods("PUT")
-	rt.Path("/permissions").
+		Methods("PUT").
+		Queries("permission", "")
+	rt.Path("/permissions/{group}").
 		Handler(factory.Handler(removePermissionHandler)).
-		Methods("DELETE")
+		Methods("DELETE").
+		Queries("permission", "")
 	rt.Path("/sessions/login").
 		Handler(factory.Handler(loginHandler, handler.OptionAllowAnonymous)).
 		Methods("POST")
