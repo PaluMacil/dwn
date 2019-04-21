@@ -7,8 +7,8 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/webserver/errs"
 )
 
 // POST /api/core/sessions/login
@@ -26,6 +26,7 @@ func loginHandler(
 	}
 	ip := core.IP(r)
 	userInfo, session, result, err := request.Do(db.Providers, ip)
+	// TODO: add minimum wait delay
 	switch result {
 	case core.LoginResultSuccess:
 		groups, err := db.Groups.GroupsFor(userInfo.Email)

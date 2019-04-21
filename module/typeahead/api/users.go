@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/webserver/errs"
 )
 
 // GET /api/typeahead/users&query={query}
@@ -32,7 +33,9 @@ func usersHandler(
 	if err != nil {
 		return err
 	}
-	if err := json.NewEncoder(rt.W).Encode(user); err != nil {
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		return err
 	}
+
+	return nil
 }
