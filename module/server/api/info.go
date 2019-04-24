@@ -45,11 +45,7 @@ func handleInfo(
 		DataDirSize:     dataSize,
 	}
 
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		return err
-	}
-
-	return nil
+	return json.NewEncoder(w).Encode(resp)
 }
 
 func dirSize(path string) (int64, error) {

@@ -30,9 +30,6 @@ func usersHandler(
 		return users[i].DisplayName < users[j].DisplayName
 	})
 	userInfo := core.Users(users).Info()
-	if err := json.NewEncoder(w).Encode(userInfo); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(userInfo)
 }

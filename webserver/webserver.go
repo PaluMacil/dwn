@@ -48,9 +48,9 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// Set host subrouters
 	var dwnHost *mux.Router
 	if prod {
-		dwnHost = ws.mux.Host("danwolf.net").Subrouter()
+		dwnHost = ws.mux.Host("{host:danwolf.net").Subrouter()
 	} else {
-		localhostMatchPattern := fmt.Sprintf("localhost:(?:%s|%s)", ws.Port, ws.UIProxyPort)
+		localhostMatchPattern := fmt.Sprintf("{host:localhost:(?:%s|%s)}", ws.Port, ws.UIProxyPort)
 		dwnHost = ws.mux.Host(localhostMatchPattern).Subrouter()
 	}
 
@@ -75,6 +75,7 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 
 	ws.mux.Host("echo.danwolf.net").Subrouter()
 	ws.mux.Host("echo-history.danwolf.net").Subrouter()
+
 	return ws
 }
 

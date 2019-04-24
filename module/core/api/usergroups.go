@@ -10,8 +10,8 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/webserver/errs"
 )
 
 // POST /api/core/usergroups
@@ -51,11 +51,8 @@ func addUserHandler(
 	if err != nil {
 		return err
 	}
-	if err := json.NewEncoder(w).Encode(ug); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(ug)
 }
 
 // DELETE /api/core/usergroups
@@ -82,11 +79,8 @@ func removeUserHandler(
 	if err != nil {
 		return err
 	}
-	if err := json.NewEncoder(w).Encode(ug); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(ug)
 }
 
 // GET /api/core/usergroups/members-of/{group}
@@ -139,9 +133,6 @@ func groupsForHandler(
 	sort.Slice(groups, func(i, j int) bool {
 		return groups[i].Name < groups[j].Name
 	})
-	if err := json.NewEncoder(w).Encode(groups); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(groups)
 }
