@@ -8,6 +8,9 @@ import (
 // RegisterRoutes defines /api/core/...
 func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/groups/{group}").
+		Handler(factory.Handler(groupHandler)).
+		Methods("GET")
+	rt.Path("/groups").
 		Handler(factory.Handler(groupsHandler)).
 		Methods("GET")
 	rt.Path("/groups").
@@ -27,18 +30,22 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 		Methods("POST")
 	rt.Path("/usergroups").
 		Handler(factory.Handler(removeUserHandler)).
-		Methods("DELETE")
+		Methods("DELETE").
+		Queries("email", "{email}").
+		Queries("group", "{group}")
 	rt.Path("/permissions").
 		Handler(factory.Handler(permissionsHandler)).
 		Methods("GET")
 	rt.Path("/permissions").
 		Handler(factory.Handler(addPermissionHandler)).
 		Methods("PUT").
-		Queries("permission", "")
+		Queries("permission", "{permission}").
+		Queries("group", "{group}")
 	rt.Path("/permissions/{group}").
 		Handler(factory.Handler(removePermissionHandler)).
 		Methods("DELETE").
-		Queries("permission", "")
+		Queries("permission", "{permission}").
+		Queries("group", "{group}")
 	rt.Path("/sessions/login").
 		Handler(factory.Handler(loginHandler, handler.OptionAllowAnonymous)).
 		Methods("POST")

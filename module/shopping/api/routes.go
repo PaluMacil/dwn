@@ -16,5 +16,5 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/items").
 		Handler(factory.Handler(removeHandler)).
 		Methods("DELETE").
-		Queries("name", "")
+		Queries("name", "{name}")
 }

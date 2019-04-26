@@ -61,7 +61,7 @@ func addPermissionHandler(
 		}
 	}
 
-	return nil
+	return json.NewEncoder(w).Encode(group)
 }
 
 // DELETE /api/core/permissions
@@ -95,7 +95,7 @@ func removePermissionHandler(
 		}
 	}
 
-	return nil
+	return json.NewEncoder(w).Encode(group)
 }
 
 func remove(s []string, r string) []string {

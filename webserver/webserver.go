@@ -62,13 +62,13 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	oauthBaseRouter := dwnHost.PathPrefix("/oauth/").Subrouter()
 	oauthapi.RegisterBaseRoutes(oauthBaseRouter, genericFactory)
 	// ...typeahead
-	typeaheadRouter := dwnHost.PathPrefix("/typeahead/").Subrouter()
+	typeaheadRouter := dwnHost.PathPrefix("/api/typeahead/").Subrouter()
 	typeaheadapi.RegisterRoutes(typeaheadRouter, apiFactory)
 	// ...shopping
-	shoppingRouter := dwnHost.PathPrefix("/shopping/").Subrouter()
+	shoppingRouter := dwnHost.PathPrefix("/api/shopping/").Subrouter()
 	shoppingapi.RegisterRoutes(shoppingRouter, apiFactory)
 	// ...server
-	serverRouter := dwnHost.PathPrefix("/server/").Subrouter()
+	serverRouter := dwnHost.PathPrefix("/api/server/").Subrouter()
 	serverapi.RegisterRoutes(serverRouter, apiFactory)
 	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))

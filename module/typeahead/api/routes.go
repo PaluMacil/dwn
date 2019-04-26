@@ -10,5 +10,5 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/users").
 		Handler(factory.Handler(usersHandler)).
 		Methods("GET").
-		Queries("query", "")
+		Queries("query", "{query}")
 }

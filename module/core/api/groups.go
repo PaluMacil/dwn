@@ -7,12 +7,32 @@ import (
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/webserver/errs"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/webserver/errs"
 )
 
-// GET /api/core/groups/{group}
+// GET /api/core/groups
 func groupsHandler(
+	db *database.Database,
+	config configuration.Configuration,
+	cur *core.Current,
+	vars map[string]string,
+	w http.ResponseWriter,
+	r *http.Request,
+) error {
+	if err := cur.Can(core.PermissionViewGroups); err != nil {
+		return err
+	}
+	groups, err := db.Groups.All()
+	if err != nil {
+		return err
+	}
+
+	return json.NewEncoder(w).Encode(groups)
+}
+
+// GET /api/core/groups/{group}
+func groupHandler(
 	db *database.Database,
 	config configuration.Configuration,
 	cur *core.Current,
@@ -29,11 +49,8 @@ func groupsHandler(
 	} else if err != nil {
 		return err
 	}
-	if err := json.NewEncoder(w).Encode(group); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(group)
 }
 
 // POST /api/core/groups
@@ -61,9 +78,6 @@ func createGroupHandler(
 	if err := db.Groups.Set(group); err != nil {
 		return err
 	}
-	if err := json.NewEncoder(w).Encode(group); err != nil {
-		return err
-	}
 
-	return nil
+	return json.NewEncoder(w).Encode(group)
 }
