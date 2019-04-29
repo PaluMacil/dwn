@@ -11,13 +11,17 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 
 	"github.com/dgraph-io/badger"
 )
 
+const globalSequenceKey = "GLOBAL_SEQUENCE"
+
 type BadgerStore struct {
 	bgr      *badger.DB
 	gcTicker *time.Ticker
+	seq      *badger.Sequence
 }
 
 func open(dir string) (*badger.DB, error) {
@@ -33,7 +37,7 @@ func open(dir string) (*badger.DB, error) {
 			}
 			retryOpts := originalOpts
 			retryOpts.Truncate = true
-			log.Println("attempting to unlock database, tuncating value log")
+			log.Println("attempting to unlock database, truncating value log")
 			bgr, err = badger.Open(retryOpts)
 			if err != nil {
 				return nil, fmt.Errorf("could not unlock database: %s", err)
@@ -51,10 +55,16 @@ func New(dir string) (*BadgerStore, error) {
 		return nil, fmt.Errorf("opening badger database: %s", err)
 	}
 
+	log.Println("db open... starting tickers and sequences")
 	gcTicker := time.NewTicker(5 * time.Minute)
+	seq, err := bgr.GetSequence([]byte(globalSequenceKey), 100)
+	if err != nil {
+		return nil, fmt.Errorf("getting badger sequence: %s", err)
+	}
 	bs := &BadgerStore{
 		bgr:      bgr,
 		gcTicker: gcTicker,
+		seq:      seq,
 	}
 	go func() {
 		for range gcTicker.C {
@@ -62,6 +72,11 @@ func New(dir string) (*BadgerStore, error) {
 		}
 	}()
 	return bs, nil
+}
+
+func (bs *BadgerStore) NextID() (store.Identity, error) {
+	id, err := bs.seq.Next()
+	return store.Identity(id), err
 }
 
 func (bs *BadgerStore) runGC() {
@@ -79,6 +94,7 @@ again:
 func (bs BadgerStore) Close() error {
 	bs.gcTicker.Stop()
 	bs.runGC()
+	bs.seq.Release()
 	return bs.bgr.Close()
 }
 

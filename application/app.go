@@ -3,16 +3,16 @@ package application
 import (
 	"fmt"
 
-	logutilrepo "github.com/PaluMacil/dwn/module/logutil/repo"
-
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/configuration/env"
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/database/stores/badgerstore"
-	"github.com/PaluMacil/dwn/module/core/repo"
+	"github.com/PaluMacil/dwn/database/store/badgerstore"
 	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/webserver"
 
+	"github.com/PaluMacil/dwn/module/core/repo"
+	dashboardrepo "github.com/PaluMacil/dwn/module/dashboard/repo"
+	logutilrepo "github.com/PaluMacil/dwn/module/logutil/repo"
 	setuprepo "github.com/PaluMacil/dwn/module/setup/repo"
 	shoppingrepo "github.com/PaluMacil/dwn/module/shopping/repo"
 )
@@ -33,6 +33,7 @@ func New() (*App, error) {
 }
 
 func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Database, error) {
+
 	// initialize store
 	store, err := badgerstore.New(config.DataDir)
 	if err != nil {
@@ -56,6 +57,10 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
 	//db.Log.Writer = repo.NewEntryRepo(store, db)
 	db.Setup.Initialization = setuprepo.NewInitializationRepo(store, db)
+
+	// Initialize dashboard providers from repos
+	db.Dashboard.Board = dashboardrepo.NewDashboardRepo(store, db)
+	db.Dashboard.Projects = dashboardrepo.NewProjectRepo(store, db)
 
 	return db, nil
 }

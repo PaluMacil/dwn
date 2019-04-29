@@ -12,6 +12,7 @@ import (
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
+	dashboardapi "github.com/PaluMacil/dwn/module/dashboard/api"
 	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"
 	serverapi "github.com/PaluMacil/dwn/module/server/api"
 	shoppingapi "github.com/PaluMacil/dwn/module/shopping/api"
@@ -48,7 +49,7 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// Set host subrouters
 	var dwnHost *mux.Router
 	if prod {
-		dwnHost = ws.mux.Host("{host:danwolf.net").Subrouter()
+		dwnHost = ws.mux.Host("danwolf.net").Subrouter()
 	} else {
 		localhostMatchPattern := fmt.Sprintf("{host:localhost:(?:%s|%s)}", ws.Port, ws.UIProxyPort)
 		dwnHost = ws.mux.Host(localhostMatchPattern).Subrouter()
@@ -70,6 +71,9 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// ...server
 	serverRouter := dwnHost.PathPrefix("/api/server/").Subrouter()
 	serverapi.RegisterRoutes(serverRouter, apiFactory)
+	// ...dashboard
+	dashboardRouter := dwnHost.PathPrefix("/api/dashboard/").Subrouter()
+	dashboardapi.RegisterRoutes(dashboardRouter, apiFactory)
 	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
 
@@ -90,11 +94,11 @@ func (ws *WebServer) Serve() {
 		IdleTimeout:  120 * time.Second,
 	}
 	stop := make(chan os.Signal)
-	signal.Notify(stop, os.Interrupt)
+	signal.Notify(stop, os.Interrupt, os.Kill)
 	go func() {
-		log.Println("Now serving on port", ws.Port)
 		log.Println(srv.ListenAndServe())
 	}()
+	log.Println("Now serving on port", ws.Port)
 	<-stop
 
 	log.Printf("shutting down ...\n")

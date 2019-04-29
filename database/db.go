@@ -1,7 +1,9 @@
 package database
 
 import (
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/module/dashboard"
 	"github.com/PaluMacil/dwn/module/gamelibrary"
 	"github.com/PaluMacil/dwn/module/logutil"
 	"github.com/PaluMacil/dwn/module/setup"
@@ -19,6 +21,7 @@ type Database struct {
 	Shopping    shopping.Providers
 	Log         logutil.Providers
 	Setup       setup.Providers
+	Dashboard   dashboard.Providers
 }
 
 func (db Database) Close() error {
@@ -41,5 +44,6 @@ type Storer interface {
 	All(pfx []byte, out *[]Item, preload bool) error
 	Count(pfx []byte) (int, error)
 	IsKeyNotFoundErr(err error) bool
+	NextID() (store.Identity, error)
 	Close() error
 }

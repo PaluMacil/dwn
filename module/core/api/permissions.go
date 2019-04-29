@@ -22,11 +22,7 @@ func permissionsHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	if err := json.NewEncoder(w).Encode(core.Permissions); err != nil {
-		return err
-	}
-
-	return nil
+	return json.NewEncoder(w).Encode(core.Permissions)
 }
 
 // PUT /api/core/permissions
