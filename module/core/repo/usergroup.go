@@ -3,10 +3,11 @@ package repo
 import (
 	"errors"
 	"fmt"
-	"github.com/PaluMacil/dwn/module/core"
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 type UserGroupRepo struct {
@@ -18,13 +19,10 @@ func NewUserGroupRepo(store database.Storer, db *database.Database) *UserGroupRe
 	return &UserGroupRepo{store, db}
 }
 
-func (p UserGroupRepo) Get(email, groupName string) (core.UserGroup, error) {
+func (p UserGroupRepo) Get(userID store.Identity, groupName string) (core.UserGroup, error) {
 	var userGroup = core.UserGroup{
-		Email:     email,
+		UserID:    userID,
 		GroupName: groupName,
-	}
-	if email == "" {
-		return userGroup, errors.New("UserGroupRepo.Get requires an email but got an empty string")
 	}
 	if groupName == "" {
 		return userGroup, errors.New("UserGroupRepo.Get requires a groupName but got an empty string")
@@ -40,8 +38,8 @@ func (p UserGroupRepo) Get(email, groupName string) (core.UserGroup, error) {
 	return userGroup, err
 }
 
-func (p UserGroupRepo) Exists(email, groupName string) (bool, error) {
-	_, err := p.Get(email, groupName)
+func (p UserGroupRepo) Exists(userID, groupName string) (bool, error) {
+	_, err := p.Get(userID, groupName)
 	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
@@ -66,9 +64,9 @@ func (p UserGroupRepo) All() ([]core.UserGroup, error) {
 	return userGroups, err
 }
 
-func (p UserGroupRepo) Delete(email, groupName string) error {
+func (p UserGroupRepo) Delete(userID store.Identity, groupName string) error {
 	return p.store.Delete(core.UserGroup{
-		Email:     email,
+		UserID:    userID,
 		GroupName: groupName,
 	})
 }

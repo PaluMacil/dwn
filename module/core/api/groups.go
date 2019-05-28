@@ -74,7 +74,7 @@ func createGroupHandler(
 	} else if err != nil {
 		return err
 	}
-	group := request.Group(cur.User.Email)
+	group := request.Group(cur.User.ID)
 	if err := db.Groups.Set(group); err != nil {
 		return err
 	}

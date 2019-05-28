@@ -35,7 +35,7 @@ func addUserHandler(
 		return err
 	}
 	// check both user and group exist
-	userExists, err := db.Users.Exists(ug.Email)
+	userExists, err := db.Users.Exists(ug.UserID)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func removeUserHandler(
 	if err != nil {
 		return err
 	}
-	err = db.UserGroups.Delete(ug.Email, ug.GroupName)
+	err = db.UserGroups.Delete(ug.UserID, ug.GroupName)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func membersOfHandler(
 	return nil
 }
 
-// GET /api/core/usergroups/groups-for/{email}
+// GET /api/core/usergroups/groups-for/{userID}
 func groupsForHandler(
 	db *database.Database,
 	config configuration.Configuration,
@@ -122,11 +122,11 @@ func groupsForHandler(
 	if err := cur.Can(core.PermissionViewGroups); err != nil {
 		return err
 	}
-	email, err := url.QueryUnescape(vars["email"])
+	userId, err :=  i, err := strconv.Atoi(vars["userID"])
 	if err != nil {
-		return errs.StatusError{http.StatusBadRequest, errors.New("invalid email")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userId")}
 	}
-	groups, err := db.Groups.GroupsFor(email)
+	groups, err := db.Groups.GroupsFor(userId)
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,10 @@
 package oauth
 
 import (
-	"github.com/PaluMacil/dwn/module/core"
 	"time"
+
+	"github.com/PaluMacil/dwn/database/store"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 type GoogleClaims struct {
@@ -18,7 +20,7 @@ type GoogleClaims struct {
 	Locale        string `json:"locale"`
 }
 
-func (g *GoogleClaims) CreateUser(displayName core.DisplayName) core.User {
+func (g *GoogleClaims) CreateUser(id store.Identity, displayName core.DisplayName) core.User {
 	// TODO: must check if displayname as tag exists once bleve search is up
 	return core.User{
 		GoogleID:         g.ID,

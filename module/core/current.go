@@ -14,7 +14,7 @@ type Current struct {
 }
 
 func (c Current) String() string {
-	return fmt.Sprintf("Current[Name:%s Email:%s]", c.User.DisplayName, c.User.Email)
+	return fmt.Sprintf("Current[Name:%s Email:%s]", c.User.DisplayName, c.User.PrimaryEmail)
 }
 
 func (c *Current) LogString() string {
@@ -32,7 +32,7 @@ func GetCurrent(token string, db Providers) (*Current, error) {
 	if err != nil {
 		return nil, err
 	}
-	user, err := db.Users.Get(session.Email)
+	user, err := db.Users.Get(session.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *Current) Can(permission string) errs.Error {
 	if c == nil {
 		return errs.StatusUnauthorized
 	}
-	groups, err := c.db.Groups.GroupsFor(c.User.Email)
+	groups, err := c.db.Groups.GroupsFor(c.User.ID)
 	if err != nil {
 		return errs.StatusError{http.StatusInternalServerError, err}
 	}
@@ -66,7 +66,7 @@ func (c *Current) Is(groupName string) (bool, error) {
 	if c == nil {
 		return false, nil
 	}
-	return c.db.UserGroups.Exists(c.User.Email, groupName)
+	return c.db.UserGroups.Exists(c.User.ID, groupName)
 }
 
 func (c *Current) Authenticated() bool {

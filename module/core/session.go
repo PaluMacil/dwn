@@ -5,13 +5,15 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 const SessionPrefix = "SESSION:"
 
 type Session struct {
 	Token         string    `json:"token"`
-	Email         string    `json:"email"`
+	UserID         store.Identity   `json:"userID"`
 	IP            string    `json:"ip"`
 	Proxy         bool      `json:"proxy"`
 	VaultUnlocked bool      `json:"vaultUnlocked"`
@@ -111,7 +113,7 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 	// TODO: check for password change required
 
 	// success, no further steps required
-	session := db.Sessions.GenerateFor(user.Email, ip)
+	session := db.Sessions.GenerateFor(user.ID, ip)
 	err = db.Sessions.Set(session)
 	if err != nil {
 		return UserInfo{}, Session{}, LoginResultError, err

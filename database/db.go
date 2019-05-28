@@ -28,6 +28,10 @@ func (db Database) Close() error {
 	return db.store.Close()
 }
 
+func (db Database) NextID() (store.Identity, error) {
+	return db.store.NextID()
+}
+
 func (db Database) IsKeyNotFoundErr(err error) bool {
 	return db.store.IsKeyNotFoundErr(err)
 }

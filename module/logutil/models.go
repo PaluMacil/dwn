@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/module/core"
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 type LogLevel int8
@@ -36,7 +37,7 @@ type Config struct {
 	ConsoleLevel  LogLevel         `json:"consoleLevel"`
 	UseColorCodes bool             `json:"useColorCodes"`
 	QueueLevel    LogLevel         `json:"queueLevel"`
-	ModifiedBy    core.DisplayName `json:"modifiedBy"`
+	ModifiedBy    store.Identity `json:"modifiedBy"`
 	Modified      time.Time        `json:"modified"`
 }
 

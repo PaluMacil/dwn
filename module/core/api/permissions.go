@@ -49,7 +49,7 @@ func addPermissionHandler(
 	}
 	if !group.HasPermission(permission) {
 		group.Permissions = append(group.Permissions, permission)
-		group.ModifiedBy = cur.User.Email
+		group.ModifiedBy = cur.User.ID
 		group.ModifiedDate = time.Now()
 		err := db.Groups.Set(group)
 		if err != nil {
@@ -83,7 +83,7 @@ func removePermissionHandler(
 	}
 	if group.HasPermission(permission) {
 		group.Permissions = remove(group.Permissions, permission)
-		group.ModifiedBy = cur.User.Email
+		group.ModifiedBy = cur.User.ID
 		group.ModifiedDate = time.Now()
 		err := db.Groups.Set(group)
 		if err != nil {

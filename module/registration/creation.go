@@ -22,9 +22,8 @@ func (req UserCreationRequest) Validate() []string {
 
 func (req UserCreationRequest) User() (core.User, error) {
 	user := core.User{
-		Email: req.Email,
-
-		VerificationCode: uuid.Must(uuid.NewV4()).String(),
+		// TODO: make a new user with an unverified email
+		// VerificationCode: uuid.Must(uuid.NewV4()).String(),
 	}
 
 	return user, nil

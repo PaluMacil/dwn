@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 const UserPrefix = "USER:"
@@ -27,20 +28,26 @@ func (hash Hash) Check(password string) bool {
 	return err == nil
 }
 
+type Email struct {
+	Email                 string      `json:"email"`
+	Verified        bool        `json:"verifiedEmail"`
+	VerifiedDate     time.Time   `json:"verifiedEmailDate"`
+	VerificationCode      string      `json:"-"`
+	VerificationCodeDate  time.Time   `json:"-"`
+}
+
 type User struct {
+	ID                    store.Identity `json:"id"`
 	GoogleID              string      `json:"googleId"`
 	GoogleImportDate      time.Time   `json:"googleImportDate"`
-	Email                 string      `json:"email"`
+	PrimaryEmail          string      `json:"primaryEmail"`
+	Emails                []Email     `json:"emails"`
 	Tag                   string      `json:"tag"`
 	PreviousTags          []string    `json:"previousTags"`
 	PasswordHash          Hash        `json:"-"`
 	LastPasswordHash      Hash        `json:"-"`
 	MustChangePWNextLogin bool        `json:"mustChangePWNextLogin"`
 	Require2FA            bool        `json:"require2FA"`
-	VerifiedEmail         bool        `json:"verifiedEmail"`
-	VerifiedEmailDate     time.Time   `json:"verifiedEmailDate"`
-	VerificationCode      string      `json:"-"`
-	VerificationCodeDate  time.Time   `json:"-"`
 	VaultPIN              string      `json:"-"`
 	Locked                bool        `json:"locked"`
 	Disabled              bool        `json:"disabled"`
@@ -83,7 +90,7 @@ type UserInfo struct {
 }
 
 func (u User) Key() []byte {
-	return append(u.Prefix(), []byte(u.Email)...)
+	return append(u.Prefix(), u.ID.Bytes()...)
 }
 
 func (u User) Prefix() []byte {

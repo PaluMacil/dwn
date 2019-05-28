@@ -2,18 +2,20 @@ package core
 
 import (
 	"time"
+
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 const UserGroupPrefix = "USERGROUP:"
 
 type UserGroup struct {
-	Email       string    `json:"email"`
-	GroupName   string    `json:"groupName"`
-	CreatedDate time.Time `json:"createdDate"`
+	UserID      store.Identity `json:"userId"`
+	GroupName   string         `json:"groupName"`
+	CreatedDate time.Time      `json:"createdDate"`
 }
 
 func (u UserGroup) Key() []byte {
-	partOne := append(u.Prefix(), []byte(u.Email)...)
+	partOne := append(u.Prefix(), u.UserID.Bytes()...)
 	return append(partOne, []byte(u.GroupName)...)
 }
 

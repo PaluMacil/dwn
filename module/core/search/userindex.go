@@ -3,6 +3,7 @@ package search
 import (
 	"fmt"
 	"path"
+	"strconv"
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/module/core"
@@ -29,7 +30,8 @@ func (ui UserIndex) Reindex() error {
 }
 
 func (ui UserIndex) Index(u core.User) error {
-	err := ui.idx.Index(u.Email, u)
+	id := strconv.Itoa(u.ID)
+	err := ui.idx.Index(id, u)
 	if err != nil {
 		return err
 	}
@@ -37,7 +39,8 @@ func (ui UserIndex) Index(u core.User) error {
 }
 
 func (ui UserIndex) Deindex(u core.User) error {
-	err := ui.idx.Delete(u.Email)
+	id := strconv.Itoa(u.ID)
+	err := ui.idx.Delete(id)
 	if err != nil {
 		return err
 	}
@@ -70,12 +73,19 @@ func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	}
 	users := make([]core.User, len(result.Hits))
 	for i, res := range result.Hits {
-		email := res.ID
-		u, err := ui.db.Users.Get(email)
+		id, err := strconv.Atoi(res.ID)
+		if err != nil {
+			return users, err
+		}
+		u, err := ui.db.Users.Get(id)
 		if err != nil {
 			return users, err
 		}
 		users[i] = u
 	}
 	return users, nil
+}
+
+func (ui UserIndex) FromEmail(email string) (User, error) {
+	searchQuery := bleve.NewMatchQuery(email)
 }
