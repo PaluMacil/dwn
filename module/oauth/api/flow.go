@@ -86,7 +86,7 @@ func flowHandler(
 			}
 			ip := core.IP(r)
 			session := db.Sessions.GenerateFor(user.ID, ip)
-			err := db.Sessions.Set(session)
+			err = db.Sessions.Set(session)
 			if err != nil {
 				return err
 			}

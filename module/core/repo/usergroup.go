@@ -38,7 +38,7 @@ func (p UserGroupRepo) Get(userID store.Identity, groupName string) (core.UserGr
 	return userGroup, err
 }
 
-func (p UserGroupRepo) Exists(userID, groupName string) (bool, error) {
+func (p UserGroupRepo) Exists(userID store.Identity, groupName string) (bool, error) {
 	_, err := p.Get(userID, groupName)
 	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil

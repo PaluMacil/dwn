@@ -40,8 +40,8 @@ func (p UserRepo) UsersFor(groupName string) ([]core.User, error) {
 
 func (p UserRepo) Get(userID store.Identity) (core.User, error) {
 	var user = core.User{ID: userID}
-	if email == "" {
-		return user, errors.New("UserRepo.Get requires an email but got an empty string")
+	if uint64(userID) == 0 {
+		return user, errors.New("UserRepo.Get requires an identity but got unknown ID")
 	}
 	item, err := p.store.Get(&user)
 	if err != nil {
@@ -86,7 +86,7 @@ func (p UserRepo) All() ([]core.User, error) {
 }
 
 func (p UserRepo) Delete(userID store.Identity) error {
-	u := core.User{UserID: userID}
+	u := core.User{ID: userID}
 	err := p.Deindex(u)
 	if err != nil {
 		return err

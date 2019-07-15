@@ -13,7 +13,7 @@ const SessionPrefix = "SESSION:"
 
 type Session struct {
 	Token         string    `json:"token"`
-	UserID         store.Identity   `json:"userID"`
+	UserID        store.Identity   `json:"userID"`
 	IP            string    `json:"ip"`
 	Proxy         bool      `json:"proxy"`
 	VaultUnlocked bool      `json:"vaultUnlocked"`
@@ -67,12 +67,12 @@ const (
 // Do executes a login request. It returns a user, session (possibly both empty) and
 // a LoginResult. The error will be nil if (and only if) the result is LoginResultError
 func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginResult, error) {
-	exists, err := db.Users.Exists(req.Email)
+	exists, err := db.Users.EmailExists(req.Email)
 	if err != nil {
 		// error checking if user exists
 		return UserInfo{}, Session{}, LoginResultError, err
 	}
-	user, err := db.Users.Get(req.Email)
+	user, err := db.Users.FromEmail(req.Email)
 	if err != nil && exists {
 		// error getting user, but user exists
 		return UserInfo{}, Session{}, LoginResultError, err

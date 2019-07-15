@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/module/setup"
 )
@@ -62,10 +61,10 @@ func (p InitializationRepo) EnsureDatabase() error {
 	setupUser := core.User{
 		ID:          setupUserID,
 		DisplayName: core.DisplayName("(SETUP)"),
-		Emails: []Email{
-			Email{
-				Email:         "(SETUP)",
-				EmailVerified: true,
+		Emails: []core.Email{
+			core.Email{
+				Email:    "(SETUP)",
+				Verified: true,
 			},
 		},
 		Locked: true,

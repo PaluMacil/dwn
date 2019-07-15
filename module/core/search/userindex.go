@@ -3,9 +3,9 @@ package search
 import (
 	"fmt"
 	"path"
-	"strconv"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/blevesearch/bleve"
 )
@@ -30,7 +30,7 @@ func (ui UserIndex) Reindex() error {
 }
 
 func (ui UserIndex) Index(u core.User) error {
-	id := strconv.Itoa(u.ID)
+	id := u.ID.String()
 	err := ui.idx.Index(id, u)
 	if err != nil {
 		return err
@@ -39,7 +39,7 @@ func (ui UserIndex) Index(u core.User) error {
 }
 
 func (ui UserIndex) Deindex(u core.User) error {
-	id := strconv.Itoa(u.ID)
+	id := u.ID.String()
 	err := ui.idx.Delete(id)
 	if err != nil {
 		return err
@@ -73,11 +73,11 @@ func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	}
 	users := make([]core.User, len(result.Hits))
 	for i, res := range result.Hits {
-		id, err := strconv.Atoi(res.ID)
+		id, err := store.StringToIdentity(res.ID)
 		if err != nil {
 			return users, err
 		}
-		u, err := ui.db.Users.Get(id)
+		u, err := ui.db.Users.Get(store.Identity(id))
 		if err != nil {
 			return users, err
 		}
@@ -86,6 +86,22 @@ func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	return users, nil
 }
 
-func (ui UserIndex) FromEmail(email string) (User, error) {
+func (ui UserIndex) FromEmail(email string) (core.User, error) {
 	searchQuery := bleve.NewMatchQuery(email)
+	search := bleve.NewSearchRequest(searchQuery)
+	result, err := ui.idx.Search(search)
+	if err != nil {
+		return core.User{}, err
+	}
+	// TODO: finish method; what if someone has unverified email?
+}
+
+func (ui UserIndex) EmailExists(email string) (bool, error) {
+	searchQuery := bleve.NewMatchQuery(email)
+	search := bleve.NewSearchRequest(searchQuery)
+	result, err := ui.idx.Search(search)
+	if err != nil {
+		return false, err
+	}
+	return len(result.Hits) > 0, nil
 }

@@ -55,10 +55,9 @@ func (p SessionRepo) Set(session core.Session) error {
 // not check if the id exists or persist anything to the database.
 func (p SessionRepo) GenerateFor(userID store.Identity, ip string) core.Session {
 	t := uuid.Must(uuid.NewV4())
-	p.db.Users.
 	session := core.Session{
 		Token:       t.String(),
-		UserID:      u.UserID,
+		UserID:      userID,
 		IP:          ip,
 		CreatedDate: time.Now(),
 		Heartbeat:   time.Now(),

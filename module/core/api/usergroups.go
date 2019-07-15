@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/url"
 	"sort"
 	"time"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -122,7 +122,7 @@ func groupsForHandler(
 	if err := cur.Can(core.PermissionViewGroups); err != nil {
 		return err
 	}
-	userId, err :=  i, err := strconv.Atoi(vars["userID"])
+	userId, err := store.StringToIdentity(vars["userID"])
 	if err != nil {
 		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userId")}
 	}
