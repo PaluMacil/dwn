@@ -72,10 +72,26 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 		// error checking if user exists
 		return UserInfo{}, Session{}, LoginResultError, err
 	}
-	user, err := db.Users.FromEmail(req.Email)
+	usersWithEmail, err := db.Users.WithEmail(req.Email)
 	if err != nil && exists {
 		// error getting user, but user exists
 		return UserInfo{}, Session{}, LoginResultError, err
+	}
+
+	// Check whether any of the users with this email have verified it.
+	var user User
+	noVerifiedUser := true
+	for _, u := range usersWithEmail {
+		for _, email := range u.Emails {
+			// Check if matched AND verified.
+			if email.Email == req.Email && email.Verified {
+				user = u
+				noVerifiedUser = false
+			}
+		}
+	}
+	if noVerifiedUser {
+		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
 	}
 
 	// if user cannot log in, respond with this information before checking credentials

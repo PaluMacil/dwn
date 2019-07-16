@@ -36,6 +36,10 @@ func (db Database) IsKeyNotFoundErr(err error) bool {
 	return db.store.IsKeyNotFoundErr(err)
 }
 
+func (db Database) KeyNotFoundErr() error {
+	return db.store.KeyNotFoundErr()
+}
+
 type Item interface {
 	Key() []byte
 	Prefix() []byte
@@ -48,6 +52,7 @@ type Storer interface {
 	All(pfx []byte, out *[]Item, preload bool) error
 	Count(pfx []byte) (int, error)
 	IsKeyNotFoundErr(err error) bool
+	KeyNotFoundErr() error
 	NextID() (store.Identity, error)
 	Close() error
 }

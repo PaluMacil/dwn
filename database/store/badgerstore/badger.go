@@ -105,6 +105,10 @@ func (bs BadgerStore) IsKeyNotFoundErr(err error) bool {
 	return strings.Contains(err.Error(), badger.ErrKeyNotFound.Error())
 }
 
+func (bs BadgerStore) KeyNotFoundErr() error {
+	return badger.ErrKeyNotFound
+}
+
 func (bs *BadgerStore) Get(obj database.Item) (database.Item, error) {
 	var rawBytes []byte
 	err := bs.bgr.View(func(txn *badger.Txn) error {

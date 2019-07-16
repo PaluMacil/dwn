@@ -76,7 +76,7 @@ func (u User) Info() UserInfo {
 type Users []User
 
 func (users Users) Info() []UserInfo {
-	userInfo := make([]UserInfo, len(users), len(users))
+	userInfo := make([]UserInfo, len(users))
 	for i, user := range users {
 		userInfo[i] = user.Info()
 	}
