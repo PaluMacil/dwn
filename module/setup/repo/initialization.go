@@ -54,6 +54,14 @@ func (p InitializationRepo) EnsureDatabase() error {
 		return nil
 	}
 
+	// skip ID 0 for representation of the unauthenticated user
+	skipID, err := p.db.NextID()
+	if err != nil {
+		return err
+	} else if skipID != 0 {
+		return fmt.Errorf("first number in sequence was not 0; it was %v", skipID)
+	}
+
 	setupUserID, err := p.db.NextID()
 	if err != nil {
 		return err
@@ -62,7 +70,7 @@ func (p InitializationRepo) EnsureDatabase() error {
 		ID:          setupUserID,
 		DisplayName: core.DisplayName("(SETUP)"),
 		Emails: []core.Email{
-			core.Email{
+			{
 				Email:    "(SETUP)",
 				Verified: true,
 			},

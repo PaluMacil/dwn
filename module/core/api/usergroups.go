@@ -70,11 +70,17 @@ func removeUserHandler(
 	if r.Body == nil {
 		return errs.StatusError{http.StatusBadRequest, errors.New("no request body")}
 	}
-	var ug core.UserGroup
-	err := json.NewDecoder(r.Body).Decode(&ug)
+
+	userId, err := store.StringToIdentity(vars["userID"])
 	if err != nil {
-		return err
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userId")}
 	}
+	group := vars["group"]
+	ug := core.UserGroup{
+		UserID:    userId,
+		GroupName: group,
+	}
+
 	err = db.UserGroups.Delete(ug.UserID, ug.GroupName)
 	if err != nil {
 		return err

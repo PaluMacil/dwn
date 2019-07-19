@@ -9,7 +9,7 @@ import (
 const UserGroupPrefix = "USERGROUP:"
 
 type UserGroup struct {
-	UserID      store.Identity `json:"userId"`
+	UserID      store.Identity `json:"userID"`
 	GroupName   string         `json:"groupName"`
 	CreatedDate time.Time      `json:"createdDate"`
 }

@@ -19,6 +19,10 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/users").
 		Handler(factory.Handler(usersHandler)).
 		Methods("GET")
+	rt.Path("/users/displayname").
+		Handler(factory.Handler(userDisplayNameMapHandler, handler.OptionAllowAnonymous)).
+		Methods("GET").
+		Queries("ids", "{ids}")
 	rt.Path("/usergroups/members-of/{group}").
 		Handler(factory.Handler(membersOfHandler)).
 		Methods("GET")
@@ -41,7 +45,7 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 		Methods("PUT").
 		Queries("permission", "{permission}").
 		Queries("group", "{group}")
-	rt.Path("/permissions/{group}").
+	rt.Path("/permissions").
 		Handler(factory.Handler(removePermissionHandler)).
 		Methods("DELETE").
 		Queries("permission", "{permission}").

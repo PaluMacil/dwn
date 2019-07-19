@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
 	"github.com/PaluMacil/dwn/database/store"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const UserPrefix = "USER:"
@@ -29,40 +29,40 @@ func (hash Hash) Check(password string) bool {
 }
 
 type Email struct {
-	Email                 string      `json:"email"`
-	Verified        bool        `json:"verifiedEmail"`
-	VerifiedDate     time.Time   `json:"verifiedEmailDate"`
-	VerificationCode      string      `json:"-"`
-	VerificationCodeDate  time.Time   `json:"-"`
+	Email                string    `json:"email"`
+	Verified             bool      `json:"verified"`
+	VerifiedDate         time.Time `json:"verifiedDate"`
+	VerificationCode     string    `json:"-"`
+	VerificationCodeDate time.Time `json:"-"`
 }
 
 type User struct {
 	ID                    store.Identity `json:"id"`
-	GoogleID              string      `json:"googleId"`
-	GoogleImportDate      time.Time   `json:"googleImportDate"`
-	PrimaryEmail          string      `json:"primaryEmail"`
-	Emails                []Email     `json:"emails"`
-	Tag                   string      `json:"tag"`
-	PreviousTags          []string    `json:"previousTags"`
-	PasswordHash          Hash        `json:"-"`
-	LastPasswordHash      Hash        `json:"-"`
-	MustChangePWNextLogin bool        `json:"mustChangePWNextLogin"`
-	Require2FA            bool        `json:"require2FA"`
-	VaultPIN              string      `json:"-"`
-	Locked                bool        `json:"locked"`
-	Disabled              bool        `json:"disabled"`
-	LoginAttempts         int         `json:"loginAttempts"`
-	LastFailedLogin       time.Time   `json:"lastFailedLogin"`
-	DisplayName           DisplayName `json:"displayName"`
-	GivenName             string      `json:"givenName"`
-	FamilyName            string      `json:"familyName"`
-	Link                  string      `json:"link"`
-	Picture               string      `json:"picture"`
-	Gender                string      `json:"gender"`
-	Locale                string      `json:"locale"`
-	LastLogin             time.Time   `json:"lastLogin"`
-	ModifiedDate          time.Time   `json:"modifiedDate"`
-	CreatedDate           time.Time   `json:"createdDate"`
+	GoogleID              string         `json:"googleId"`
+	GoogleImportDate      time.Time      `json:"googleImportDate"`
+	PrimaryEmail          string         `json:"primaryEmail"`
+	Emails                []Email        `json:"emails"`
+	Tag                   string         `json:"tag"`
+	PreviousTags          []string       `json:"previousTags"`
+	PasswordHash          Hash           `json:"-"`
+	LastPasswordHash      Hash           `json:"-"`
+	MustChangePWNextLogin bool           `json:"mustChangePWNextLogin"`
+	Require2FA            bool           `json:"require2FA"`
+	VaultPIN              string         `json:"-"`
+	Locked                bool           `json:"locked"`
+	Disabled              bool           `json:"disabled"`
+	LoginAttempts         int            `json:"loginAttempts"`
+	LastFailedLogin       time.Time      `json:"lastFailedLogin"`
+	DisplayName           DisplayName    `json:"displayName"`
+	GivenName             string         `json:"givenName"`
+	FamilyName            string         `json:"familyName"`
+	Link                  string         `json:"link"`
+	Picture               string         `json:"picture"`
+	Gender                string         `json:"gender"`
+	Locale                string         `json:"locale"`
+	LastLogin             time.Time      `json:"lastLogin"`
+	ModifiedDate          time.Time      `json:"modifiedDate"`
+	CreatedDate           time.Time      `json:"createdDate"`
 }
 
 func (u User) Info() UserInfo {
