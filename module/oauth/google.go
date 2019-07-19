@@ -1,8 +1,10 @@
 package oauth
 
 import (
-	"github.com/PaluMacil/dwn/module/core"
 	"time"
+
+	"github.com/PaluMacil/dwn/database/store"
+	"github.com/PaluMacil/dwn/module/core"
 )
 
 type GoogleClaims struct {
@@ -18,26 +20,33 @@ type GoogleClaims struct {
 	Locale        string `json:"locale"`
 }
 
-func (g *GoogleClaims) CreateUser(displayName core.DisplayName) core.User {
+func (g *GoogleClaims) CreateUser(id store.Identity, displayName core.DisplayName) core.User {
 	// TODO: must check if displayname as tag exists once bleve search is up
 	return core.User{
+		ID:               id,
 		GoogleID:         g.ID,
 		GoogleImportDate: time.Now(),
-		Email:            g.Email,
-		Tag:              displayName.Tag(),
-		PreviousTags:     []string{},
-		PasswordHash:     []byte{},
-		VerifiedEmail:    g.VerifiedEmail,
-		Locked:           false,
-		DisplayName:      displayName,
-		GivenName:        g.GivenName,
-		FamilyName:       g.FamilyName,
-		Link:             g.Link,
-		Picture:          g.Picture,
-		Gender:           g.Gender,
-		Locale:           g.Locale,
-		LastLogin:        time.Now(),
-		ModifiedDate:     time.Now(),
-		CreatedDate:      time.Now(),
+		PrimaryEmail:     g.Email,
+		Emails: []core.Email{
+			core.Email{
+				Email:        g.Email,
+				Verified:     g.VerifiedEmail,
+				VerifiedDate: time.Now(),
+			},
+		},
+		Tag:          displayName.Tag(),
+		PreviousTags: []string{},
+		PasswordHash: []byte{},
+		Locked:       false,
+		DisplayName:  displayName,
+		GivenName:    g.GivenName,
+		FamilyName:   g.FamilyName,
+		Link:         g.Link,
+		Picture:      g.Picture,
+		Gender:       g.Gender,
+		Locale:       g.Locale,
+		LastLogin:    time.Now(),
+		ModifiedDate: time.Now(),
+		CreatedDate:  time.Now(),
 	}
 }

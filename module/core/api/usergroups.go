@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/url"
 	"sort"
 	"time"
 
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -35,7 +35,7 @@ func addUserHandler(
 		return err
 	}
 	// check both user and group exist
-	userExists, err := db.Users.Exists(ug.Email)
+	userExists, err := db.Users.Exists(ug.UserID)
 	if err != nil {
 		return err
 	}
@@ -70,12 +70,18 @@ func removeUserHandler(
 	if r.Body == nil {
 		return errs.StatusError{http.StatusBadRequest, errors.New("no request body")}
 	}
-	var ug core.UserGroup
-	err := json.NewDecoder(r.Body).Decode(&ug)
+
+	userId, err := store.StringToIdentity(vars["userID"])
 	if err != nil {
-		return err
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userId")}
 	}
-	err = db.UserGroups.Delete(ug.Email, ug.GroupName)
+	group := vars["group"]
+	ug := core.UserGroup{
+		UserID:    userId,
+		GroupName: group,
+	}
+
+	err = db.UserGroups.Delete(ug.UserID, ug.GroupName)
 	if err != nil {
 		return err
 	}
@@ -110,7 +116,7 @@ func membersOfHandler(
 	return nil
 }
 
-// GET /api/core/usergroups/groups-for/{email}
+// GET /api/core/usergroups/groups-for/{userID}
 func groupsForHandler(
 	db *database.Database,
 	config configuration.Configuration,
@@ -122,11 +128,11 @@ func groupsForHandler(
 	if err := cur.Can(core.PermissionViewGroups); err != nil {
 		return err
 	}
-	email, err := url.QueryUnescape(vars["email"])
+	userId, err := store.StringToIdentity(vars["userID"])
 	if err != nil {
-		return errs.StatusError{http.StatusBadRequest, errors.New("invalid email")}
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userId")}
 	}
-	groups, err := db.Groups.GroupsFor(email)
+	groups, err := db.Groups.GroupsFor(userId)
 	if err != nil {
 		return err
 	}

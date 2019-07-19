@@ -6,6 +6,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 type GroupRepo struct {
@@ -17,9 +18,9 @@ func NewGroupRepo(store database.Storer, db *database.Database) *GroupRepo {
 	return &GroupRepo{store, db}
 }
 
-func (p GroupRepo) GroupsFor(email string) ([]core.Group, error) {
+func (p GroupRepo) GroupsFor(userID store.Identity) ([]core.Group, error) {
 	var items []database.Item
-	extendedPrefix := append(core.UserGroup{}.Prefix(), []byte(email)...)
+	extendedPrefix := append(core.UserGroup{}.Prefix(), userID.Bytes()...)
 	err := p.store.All(extendedPrefix, &items, true)
 	if err != nil {
 		return nil, err

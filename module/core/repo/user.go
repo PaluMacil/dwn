@@ -7,6 +7,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 type UserRepo struct {
@@ -27,7 +28,7 @@ func (p UserRepo) UsersFor(groupName string) ([]core.User, error) {
 	var users []core.User
 	for _, ug := range userGroups {
 		if ug.GroupName == groupName {
-			u, err := p.Get(ug.Email)
+			u, err := p.Get(ug.UserID)
 			if err != nil {
 				return nil, err
 			}
@@ -37,10 +38,10 @@ func (p UserRepo) UsersFor(groupName string) ([]core.User, error) {
 	return users, nil
 }
 
-func (p UserRepo) Get(email string) (core.User, error) {
-	var user = core.User{Email: email}
-	if email == "" {
-		return user, errors.New("UserRepo.Get requires an email but got an empty string")
+func (p UserRepo) Get(userID store.Identity) (core.User, error) {
+	var user = core.User{ID: userID}
+	if uint64(userID) == 0 {
+		return user, errors.New("UserRepo.Get requires an identity but got unknown ID")
 	}
 	item, err := p.store.Get(&user)
 	if err != nil {
@@ -53,8 +54,8 @@ func (p UserRepo) Get(email string) (core.User, error) {
 	return user, err
 }
 
-func (p UserRepo) Exists(email string) (bool, error) {
-	_, err := p.Get(email)
+func (p UserRepo) Exists(userID store.Identity) (bool, error) {
+	_, err := p.Get(userID)
 	if p.db.IsKeyNotFoundErr(err) {
 		return false, nil
 	}
@@ -84,8 +85,8 @@ func (p UserRepo) All() ([]core.User, error) {
 	return users, err
 }
 
-func (p UserRepo) Delete(email string) error {
-	u := core.User{Email: email}
+func (p UserRepo) Delete(userID store.Identity) error {
+	u := core.User{ID: userID}
 	err := p.Deindex(u)
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func (p UserRepo) PurgeAll() error {
 		return err
 	}
 	for _, u := range users {
-		p.Delete(u.Email)
+		p.Delete(u.ID)
 		if err != nil {
 			return err
 		}

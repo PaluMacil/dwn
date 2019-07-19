@@ -1,5 +1,9 @@
 package core
 
+import (
+	"github.com/PaluMacil/dwn/database/store"
+)
+
 type Providers struct {
 	Sessions   SessionProvider
 	Users      UserProvider
@@ -11,17 +15,17 @@ type UserProvider interface {
 	UserSearcher
 
 	UsersFor(groupName string) ([]User, error)
-	Get(email string) (User, error)
-	Exists(email string) (bool, error)
+	Get(userID store.Identity) (User, error)
+	Exists(userID store.Identity) (bool, error)
 	Set(user User) error
 	Count() (int, error)
 	All() ([]User, error)
-	Delete(email string) error
+	Delete(userID store.Identity) error
 	PurgeAll() error
 }
 
 type GroupProvider interface {
-	GroupsFor(email string) ([]Group, error)
+	GroupsFor(userID store.Identity) ([]Group, error)
 	Get(name string) (Group, error)
 	Exists(name string) (bool, error)
 	Set(group Group) error
@@ -33,7 +37,7 @@ type SessionProvider interface {
 	Get(token string) (Session, error)
 	Exists(token string) (bool, error)
 	Set(session Session) error
-	GenerateFor(email, ip string) Session
+	GenerateFor(userID store.Identity, ip string) Session
 	All() ([]Session, error)
 	Delete(token string) error
 	PurgeAll() error
@@ -41,9 +45,9 @@ type SessionProvider interface {
 }
 
 type UserGroupProvider interface {
-	Get(email, groupName string) (UserGroup, error)
-	Exists(email, groupName string) (bool, error)
+	Get(userID store.Identity, groupName string) (UserGroup, error)
+	Exists(userID store.Identity, groupName string) (bool, error)
 	Set(userGroup UserGroup) error
 	All() ([]UserGroup, error)
-	Delete(email, groupName string) error
+	Delete(userID store.Identity, groupName string) error
 }

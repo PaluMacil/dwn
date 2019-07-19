@@ -57,24 +57,22 @@ func flowHandler(
 		}
 
 		if claims.VerifiedEmail {
-			ip := core.IP(r)
-			session := db.Sessions.GenerateFor(claims.Email, ip)
-			err := db.Sessions.Set(session)
-			if err != nil {
-				return err
-			}
 			//if user exists in database, save session, update last login
-			user, err := db.Users.Get(claims.Email)
+			user, err := db.Users.FromEmail(claims.Email)
 			if db.IsKeyNotFoundErr(err) {
 				displayName, err := generateDisplayName(claims.GivenName)
 				if err != nil {
 					return err
 				}
-				user = claims.CreateUser(displayName)
+				id, err := db.NextID()
+				if err != nil {
+					return err
+				}
+				user = claims.CreateUser(id, displayName)
 				if claims.Email == config.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
 					db.UserGroups.Set(core.UserGroup{
-						Email:     claims.Email,
+						UserID:    id,
 						GroupName: core.BuiltInGroupAdmin,
 					})
 				}
@@ -83,6 +81,12 @@ func flowHandler(
 			}
 			user.LastLogin = time.Now()
 			err = db.Users.Set(user)
+			if err != nil {
+				return err
+			}
+			ip := core.IP(r)
+			session := db.Sessions.GenerateFor(user.ID, ip)
+			err = db.Sessions.Set(session)
 			if err != nil {
 				return err
 			}

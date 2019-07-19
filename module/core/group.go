@@ -2,6 +2,7 @@ package core
 
 import (
 	"time"
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 const GroupPrefix = "GROUP:"
@@ -11,7 +12,7 @@ type Group struct {
 	Permissions      []string  `json:"permissions"`
 	Requires2FA      bool      `json:"requires2FA"`
 	RequiresVaultPIN bool      `json:"requiresVaultPIN"`
-	ModifiedBy       string    `json:"modifiedBy"`
+	ModifiedBy       store.Identity    `json:"modifiedBy"`
 	ModifiedDate     time.Time `json:"modifiedDate"`
 }
 
@@ -21,7 +22,7 @@ type GroupCreationRequest struct {
 	RequiresVaultPIN bool   `json:"requiresVaultPIN"`
 }
 
-func (req GroupCreationRequest) Group(modifiedBy string) Group {
+func (req GroupCreationRequest) Group(modifiedBy store.Identity) Group {
 	return Group{
 		Name:             req.Name,
 		Permissions:      []string{},

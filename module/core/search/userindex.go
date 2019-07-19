@@ -5,6 +5,7 @@ import (
 	"path"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/blevesearch/bleve"
 )
@@ -29,7 +30,8 @@ func (ui UserIndex) Reindex() error {
 }
 
 func (ui UserIndex) Index(u core.User) error {
-	err := ui.idx.Index(u.Email, u)
+	id := u.ID.String()
+	err := ui.idx.Index(id, u)
 	if err != nil {
 		return err
 	}
@@ -37,7 +39,8 @@ func (ui UserIndex) Index(u core.User) error {
 }
 
 func (ui UserIndex) Deindex(u core.User) error {
-	err := ui.idx.Delete(u.Email)
+	id := u.ID.String()
+	err := ui.idx.Delete(id)
 	if err != nil {
 		return err
 	}
@@ -70,12 +73,64 @@ func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	}
 	users := make([]core.User, len(result.Hits))
 	for i, res := range result.Hits {
-		email := res.ID
-		u, err := ui.db.Users.Get(email)
+		id, err := store.StringToIdentity(res.ID)
+		if err != nil {
+			return users, err
+		}
+		u, err := ui.db.Users.Get(id)
 		if err != nil {
 			return users, err
 		}
 		users[i] = u
 	}
 	return users, nil
+}
+
+func (ui UserIndex) WithEmail(email string) ([]core.User, error) {
+	searchQuery := bleve.NewMatchQuery(email)
+	search := bleve.NewSearchRequest(searchQuery)
+	result, err := ui.idx.Search(search)
+	if err != nil {
+		return nil, err
+	}
+	users := make([]core.User, len(result.Hits))
+	for i, res := range result.Hits {
+		id, err := store.StringToIdentity(res.ID)
+		if err != nil {
+			return users, err
+		}
+		u, err := ui.db.Users.Get(id)
+		if err != nil {
+			return users, err
+		}
+		users[i] = u
+	}
+	return users, nil
+}
+
+func (ui UserIndex) FromEmail(email string) (core.User, error) {
+	users, err := ui.WithEmail(email)
+	if err != nil {
+		return core.User{}, err
+	}
+	for _, user := range users {
+		for _, e := range user.Emails {
+			// Check if matched AND verified.
+			if e.Email == email && e.Verified {
+				return user, nil
+			}
+		}
+	}
+
+	return core.User{}, ui.db.KeyNotFoundErr()
+}
+
+func (ui UserIndex) EmailExists(email string) (bool, error) {
+	searchQuery := bleve.NewMatchQuery(email)
+	search := bleve.NewSearchRequest(searchQuery)
+	result, err := ui.idx.Search(search)
+	if err != nil {
+		return false, err
+	}
+	return len(result.Hits) > 0, nil
 }

@@ -5,4 +5,7 @@ type UserSearcher interface {
 	Deindex(u User) error
 	Reindex() error
 	CompletionSuggestions(query string) ([]User, error)
+	FromEmail(email string) (User, error)
+	WithEmail(email string) ([]User, error)
+	EmailExists(email string) (bool, error)
 }

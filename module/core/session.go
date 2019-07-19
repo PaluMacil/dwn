@@ -5,13 +5,15 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/PaluMacil/dwn/database/store"
 )
 
 const SessionPrefix = "SESSION:"
 
 type Session struct {
 	Token         string    `json:"token"`
-	Email         string    `json:"email"`
+	UserID        store.Identity   `json:"userID"`
 	IP            string    `json:"ip"`
 	Proxy         bool      `json:"proxy"`
 	VaultUnlocked bool      `json:"vaultUnlocked"`
@@ -65,15 +67,31 @@ const (
 // Do executes a login request. It returns a user, session (possibly both empty) and
 // a LoginResult. The error will be nil if (and only if) the result is LoginResultError
 func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginResult, error) {
-	exists, err := db.Users.Exists(req.Email)
+	exists, err := db.Users.EmailExists(req.Email)
 	if err != nil {
 		// error checking if user exists
 		return UserInfo{}, Session{}, LoginResultError, err
 	}
-	user, err := db.Users.Get(req.Email)
+	usersWithEmail, err := db.Users.WithEmail(req.Email)
 	if err != nil && exists {
 		// error getting user, but user exists
 		return UserInfo{}, Session{}, LoginResultError, err
+	}
+
+	// Check whether any of the users with this email have verified it.
+	var user User
+	noVerifiedUser := true
+	for _, u := range usersWithEmail {
+		for _, email := range u.Emails {
+			// Check if matched AND verified.
+			if email.Email == req.Email && email.Verified {
+				user = u
+				noVerifiedUser = false
+			}
+		}
+	}
+	if noVerifiedUser {
+		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
 	}
 
 	// if user cannot log in, respond with this information before checking credentials
@@ -111,7 +129,7 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 	// TODO: check for password change required
 
 	// success, no further steps required
-	session := db.Sessions.GenerateFor(user.Email, ip)
+	session := db.Sessions.GenerateFor(user.ID, ip)
 	err = db.Sessions.Set(session)
 	if err != nil {
 		return UserInfo{}, Session{}, LoginResultError, err

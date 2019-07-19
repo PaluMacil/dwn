@@ -10,8 +10,6 @@ import (
 	"github.com/PaluMacil/dwn/module/setup"
 )
 
-const setupUser = "(SETUP)"
-
 type InitializationRepo struct {
 	store database.Storer
 	db    *database.Database
@@ -56,10 +54,37 @@ func (p InitializationRepo) EnsureDatabase() error {
 		return nil
 	}
 
+	// skip ID 0 for representation of the unauthenticated user
+	skipID, err := p.db.NextID()
+	if err != nil {
+		return err
+	} else if skipID != 0 {
+		return fmt.Errorf("first number in sequence was not 0; it was %v", skipID)
+	}
+
+	setupUserID, err := p.db.NextID()
+	if err != nil {
+		return err
+	}
+	setupUser := core.User{
+		ID:          setupUserID,
+		DisplayName: core.DisplayName("(SETUP)"),
+		Emails: []core.Email{
+			{
+				Email:    "(SETUP)",
+				Verified: true,
+			},
+		},
+		Locked: true,
+	}
+	if err := p.db.Users.Set(setupUser); err != nil {
+		return err
+	}
+
 	builtinGroups := []core.Group{
 		{
 			Name:         core.BuiltInGroupAdmin,
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
@@ -72,7 +97,7 @@ func (p InitializationRepo) EnsureDatabase() error {
 				core.PermissionViewGroups,
 				core.PermissionEditAllVisitPages,
 			},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
@@ -80,42 +105,42 @@ func (p InitializationRepo) EnsureDatabase() error {
 			Permissions: []string{
 				core.PermissionManageIOTDevices,
 			},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
 
 			Name:         core.BuiltInGroupFriend,
 			Permissions:  []string{},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
 
 			Name:         core.BuiltInGroupLandlord,
 			Permissions:  []string{},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
 
 			Name:         core.BuiltInGroupTenant,
 			Permissions:  []string{},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
 
 			Name:         core.BuiltInGroupPowerUser,
 			Permissions:  []string{core.PermissionListProjects},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
 
 			Name:         core.BuiltInGroupUser,
 			Permissions:  []string{core.PermissionPostComments},
-			ModifiedBy:   setupUser,
+			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 	}

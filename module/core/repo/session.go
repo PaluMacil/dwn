@@ -8,6 +8,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/gofrs/uuid"
 )
 
@@ -50,13 +51,13 @@ func (p SessionRepo) Set(session core.Session) error {
 	return p.store.Set(&session)
 }
 
-// GenerateFor makes a new core.Session for the specified email but does
-// not check if the email exists in or persist anything to the database.
-func (p SessionRepo) GenerateFor(email, ip string) core.Session {
+// GenerateFor makes a new core.Session for the specified userID but does
+// not check if the id exists or persist anything to the database.
+func (p SessionRepo) GenerateFor(userID store.Identity, ip string) core.Session {
 	t := uuid.Must(uuid.NewV4())
 	session := core.Session{
 		Token:       t.String(),
-		Email:       email,
+		UserID:      userID,
 		IP:          ip,
 		CreatedDate: time.Now(),
 		Heartbeat:   time.Now(),

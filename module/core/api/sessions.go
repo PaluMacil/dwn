@@ -29,7 +29,7 @@ func loginHandler(
 	// TODO: add minimum wait delay
 	switch result {
 	case core.LoginResultSuccess:
-		groups, err := db.Groups.GroupsFor(userInfo.Email)
+		groups, err := db.Groups.GroupsFor(userInfo.ID)
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ func sessionsHandler(
 	}
 	details := make([]SessionDetails, len(sessions))
 	for i, s := range sessions {
-		u, err := db.Users.Get(s.Email)
+		u, err := db.Users.Get(s.UserID)
 		if err != nil {
 			return err
 		}
@@ -119,7 +119,7 @@ func meHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	groups, err := db.Groups.GroupsFor(cur.User.Email)
+	groups, err := db.Groups.GroupsFor(cur.User.ID)
 	if err != nil {
 		return err
 	}
