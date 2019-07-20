@@ -45,9 +45,9 @@ func userDisplayNameMapHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	//if err := cur.Can(core.PermissionViewUsers); err != nil {
-	//	return err
-	//}
+	if err := cur.Can(core.PermissionViewUsers); err != nil {
+		return err
+	}
 	idStrings := strings.Split(vars["ids"], ",")
 	idDisplayNameMap := make(map[store.Identity]core.DisplayName)
 	for _, idString := range idStrings {
