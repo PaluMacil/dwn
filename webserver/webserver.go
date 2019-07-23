@@ -14,6 +14,7 @@ import (
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
 	dashboardapi "github.com/PaluMacil/dwn/module/dashboard/api"
 	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"
+	registrationapi "github.com/PaluMacil/dwn/module/registration/api"
 	serverapi "github.com/PaluMacil/dwn/module/server/api"
 	shoppingapi "github.com/PaluMacil/dwn/module/shopping/api"
 	typeaheadapi "github.com/PaluMacil/dwn/module/typeahead/api"
@@ -74,6 +75,9 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	// ...dashboard
 	dashboardRouter := dwnHost.PathPrefix("/api/dashboard/").Subrouter()
 	dashboardapi.RegisterRoutes(dashboardRouter, apiFactory)
+	// ...registration
+	registrationRouter := dwnHost.PathPrefix("/api/registration/").Subrouter()
+	registrationapi.RegisterRoutes(registrationRouter, apiFactory)
 	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
 

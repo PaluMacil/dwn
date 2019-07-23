@@ -12,13 +12,13 @@ import (
 const SessionPrefix = "SESSION:"
 
 type Session struct {
-	Token         string    `json:"token"`
-	UserID        store.Identity   `json:"userID"`
-	IP            string    `json:"ip"`
-	Proxy         bool      `json:"proxy"`
-	VaultUnlocked bool      `json:"vaultUnlocked"`
-	CreatedDate   time.Time `json:"createdDate"`
-	Heartbeat     time.Time `json:"heartbeat"`
+	Token         string         `json:"token"`
+	UserID        store.Identity `json:"userID"`
+	IP            string         `json:"ip"`
+	Proxy         bool           `json:"proxy"`
+	VaultUnlocked bool           `json:"vaultUnlocked"`
+	CreatedDate   time.Time      `json:"createdDate"`
+	Heartbeat     time.Time      `json:"heartbeat"`
 }
 
 func (s Session) Key() []byte {
@@ -51,6 +51,7 @@ type LoginResult int
 const (
 	LoginResultSuccess LoginResult = iota
 	LoginResultBadCredentials
+	LoginResultEmailNotVerified
 	LoginResult2FA
 	LoginResultChangePassword
 	LoginResultLockedOrDisabled
@@ -91,7 +92,7 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 		}
 	}
 	if noVerifiedUser {
-		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
+		return UserInfo{}, Session{}, LoginResultEmailNotVerified, nil
 	}
 
 	// if user cannot log in, respond with this information before checking credentials
