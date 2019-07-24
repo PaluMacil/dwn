@@ -1,8 +1,9 @@
 package registration
 
 import (
+	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
-	"github.com/gofrs/uuid"
+	"time"
 )
 
 type UserCreationRequest struct {
@@ -17,13 +18,33 @@ type UserCreationRequest struct {
 // of validation errors or an empty slice if the request is valid
 func (req UserCreationRequest) Validate() []string {
 	validationErrors := make([]string, 0)
+	//TODO: check for restricted fields, bad pw choice, cetc
 	return validationErrors
 }
 
-func (req UserCreationRequest) User() (core.User, error) {
+func (req UserCreationRequest) User(id store.Identity) (core.User, error) {
+	passwordHash, err := core.CreateHash(req.Password)
+	if err != nil {
+		return core.User{}, err
+	}
+	// TODO: send verification email
 	user := core.User{
-		// TODO: make a new user with an unverified email
-		// VerificationCode: uuid.Must(uuid.NewV4()).String(),
+		ID:           id,
+		PrimaryEmail: req.Email,
+		Emails: []core.Email{
+			{
+				Email:    req.Email,
+				Verified: false,
+				// TODO: verified code and date
+				// VerificationCode: uuid.Must(uuid.NewV4()).String(),
+			},
+		},
+		//TODO: tag, displayName
+		PasswordHash: passwordHash,
+		GivenName:    req.GivenName,
+		FamilyName:   req.FamilyName,
+		ModifiedDate: time.Now(),
+		CreatedDate:  time.Now(),
 	}
 
 	return user, nil

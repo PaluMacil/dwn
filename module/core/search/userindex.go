@@ -15,6 +15,7 @@ type UserIndex struct {
 	db  *database.Database
 }
 
+// Reindex takes all users in the database and reindexes them.
 func (ui UserIndex) Reindex() error {
 	users, err := ui.db.Users.All()
 	if err != nil {
@@ -29,6 +30,7 @@ func (ui UserIndex) Reindex() error {
 	return nil
 }
 
+// Index will index a single user
 func (ui UserIndex) Index(u core.User) error {
 	id := u.ID.String()
 	err := ui.idx.Index(id, u)
@@ -38,6 +40,7 @@ func (ui UserIndex) Index(u core.User) error {
 	return nil
 }
 
+// Deindex deletes the index for a single user
 func (ui UserIndex) Deindex(u core.User) error {
 	id := u.ID.String()
 	err := ui.idx.Delete(id)
@@ -47,6 +50,8 @@ func (ui UserIndex) Deindex(u core.User) error {
 	return nil
 }
 
+// NewUserIndex returns a new *UserIndex based upon the database and data directory given.
+// Indexes will be stored at: {dataDir}/indexes/user
 func NewUserIndex(db *database.Database, dataDir string) (*UserIndex, error) {
 	indexPath := path.Join(dataDir, "indexes", "user")
 	index, err := bleve.Open(indexPath)
@@ -62,6 +67,8 @@ func NewUserIndex(db *database.Database, dataDir string) (*UserIndex, error) {
 	return &UserIndex{index, db}, nil
 }
 
+// CompletionSuggestions returns user suggestions starting with the query string or the query
+// string with an ampersand in front.
 func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	queryWithoutPrefix := bleve.NewPrefixQuery(query)
 	queryWithPrefix := bleve.NewPrefixQuery("@" + query)
@@ -86,6 +93,8 @@ func (ui UserIndex) CompletionSuggestions(query string) ([]core.User, error) {
 	return users, nil
 }
 
+// WithEmail returns all users with this email regardless of whether they have verified
+// the email.
 func (ui UserIndex) WithEmail(email string) ([]core.User, error) {
 	searchQuery := bleve.NewMatchQuery(email)
 	search := bleve.NewSearchRequest(searchQuery)
@@ -108,6 +117,7 @@ func (ui UserIndex) WithEmail(email string) ([]core.User, error) {
 	return users, nil
 }
 
+// FromEmail returns the one verified user with this email or else a KeyNotFoundErr
 func (ui UserIndex) FromEmail(email string) (core.User, error) {
 	users, err := ui.WithEmail(email)
 	if err != nil {
@@ -125,6 +135,8 @@ func (ui UserIndex) FromEmail(email string) (core.User, error) {
 	return core.User{}, ui.db.KeyNotFoundErr()
 }
 
+// EmailExists returns whether a user with an email exists, regardless of whether the
+// existing user has verified that email.
 func (ui UserIndex) EmailExists(email string) (bool, error) {
 	searchQuery := bleve.NewMatchQuery(email)
 	search := bleve.NewSearchRequest(searchQuery)
@@ -133,4 +145,22 @@ func (ui UserIndex) EmailExists(email string) (bool, error) {
 		return false, err
 	}
 	return len(result.Hits) > 0, nil
+}
+
+// VerifiedEmailExists returns whether a user with an email exists if this
+// existing user has also verified that email.
+func (ui UserIndex) VerifiedEmailExists(email string) (bool, error) {
+	users, err := ui.WithEmail(email)
+	if err != nil {
+		return false, err
+	}
+	for _, user := range users {
+		for _, e := range user.Emails {
+			// Check if matched AND verified.
+			if e.Email == email && e.Verified {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
 }

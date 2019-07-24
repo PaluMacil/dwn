@@ -8,4 +8,5 @@ type UserSearcher interface {
 	FromEmail(email string) (User, error)
 	WithEmail(email string) ([]User, error)
 	EmailExists(email string) (bool, error)
+	VerifiedEmailExists(email string) (bool, error)
 }

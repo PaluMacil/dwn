@@ -79,6 +79,12 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 		return UserInfo{}, Session{}, LoginResultError, err
 	}
 
+	// if user doesn't exist (same response as the password is incorrect)
+	if !exists {
+		// TODO: count non-existent user attempts towards suspicion score of an IP
+		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
+	}
+
 	// Check whether any of the users with this email have verified it.
 	var user User
 	noVerifiedUser := true
@@ -101,11 +107,6 @@ func (req LoginRequest) Do(db Providers, ip string) (UserInfo, Session, LoginRes
 		return UserInfo{}, Session{}, LoginResultLockedOrDisabled, nil
 	}
 
-	// if user doesn't exist or the password is incorrect
-	if !exists {
-		// TODO: count non-existent user attempts towards suspicion score of an IP
-		return UserInfo{}, Session{}, LoginResultBadCredentials, nil
-	}
 	if !user.PasswordHash.Check(req.Password) {
 		// if it's been longer than required since the last failure, reset failures to 1
 		if user.LastFailedLogin.Add(failedLoginDuration).Before(time.Now()) {

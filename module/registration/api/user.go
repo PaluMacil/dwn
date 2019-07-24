@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/module/core"
@@ -23,13 +24,29 @@ func userHandler(
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return err
 	}
-	// TODO: check if email already exists on a validated user
+	exists, err := db.Users.VerifiedEmailExists(request.Email)
+	if err != nil {
+		return err
+	}
 	// TODO: finish validation
 	validationErrors := request.Validate()
-	if len(validationErrors) > 0 {
-		return errs.StatusError{}
+	if exists {
+		alreadyExistsMessage := fmt.Sprintf("user with email %s already exists", request.Email)
+		validationErrors = append(validationErrors, alreadyExistsMessage)
 	}
-	user, err := db.Users.Get(id)
+	if len(validationErrors) > 0 {
+		// TODO: fix 400 errors to hold more context, such as a string list
+		return errs.StatusError{Code: 400, Err: fmt.Errorf("validation errors")}
+	}
+	userID, err := db.NextID()
+	if err != nil {
+		return err
+	}
+	user, err := request.User(userID)
+	if err != nil {
+		return err
+	}
+	err = db.Users.Set(user)
 	if err != nil {
 		return err
 	}
