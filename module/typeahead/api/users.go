@@ -33,7 +33,7 @@ func usersHandler(
 	if err != nil {
 		return err
 	}
-	if err := json.NewEncoder(w).Encode(user); err != nil {
+	if err := json.NewEncoder(w).Encode(core.Users(user).Info()); err != nil {
 		return err
 	}
 

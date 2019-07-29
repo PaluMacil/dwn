@@ -51,5 +51,5 @@ func userHandler(
 		return err
 	}
 
-	return json.NewEncoder(w).Encode(user)
+	return json.NewEncoder(w).Encode(user.Info())
 }

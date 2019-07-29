@@ -7,11 +7,13 @@ import (
 )
 
 type UserCreationRequest struct {
-	Email                 string `json:"email"`
-	Password              string `json:"password"`
-	MustChangePWNextLogin bool   `json:"mustChangePWNextLogin"`
-	GivenName             string `json:"givenName"`
-	FamilyName            string `json:"familyName"`
+	Email                      string `json:"email"`
+	Password                   string `json:"password"`
+	WithVerifiedEmail          bool   `json:"withVerifiedEmail"`
+	IgnorePasswordRequirements bool   `json:"ignorePasswordRequirements"`
+	MustChangePWNextLogin      bool   `json:"mustChangePWNextLogin"`
+	GivenName                  string `json:"givenName"`
+	FamilyName                 string `json:"familyName"`
 }
 
 // Validate examines a request object for creation of a new user and returns a slice

@@ -10,4 +10,10 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/user").
 		Handler(factory.Handler(userHandler, handler.OptionAllowAnonymous)).
 		Methods("GET")
+	rt.Path("/verify/{verificationMessage}").
+		Handler(factory.Handler(verifyHandler, handler.OptionAllowAnonymous)).
+		Methods("GET")
+	rt.Path("/verify").
+		Handler(factory.Handler(adminVerifyHandler)).
+		Methods("POST")
 }
