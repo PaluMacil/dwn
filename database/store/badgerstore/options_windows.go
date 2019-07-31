@@ -6,10 +6,7 @@ import (
 )
 
 func opts(dir string) badger.Options {
-	opts := badger.DefaultOptions
-	opts.TableLoadingMode = options.FileIO
-	opts.ValueLogLoadingMode = options.FileIO
-	opts.Dir = dir
-	opts.ValueDir = dir
-	return opts
+	return badger.DefaultOptions(dir).
+		WithTableLoadingMode(options.FileIO).
+		WithValueLogLoadingMode(options.FileIO)
 }

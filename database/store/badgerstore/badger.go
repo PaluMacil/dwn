@@ -116,12 +116,14 @@ func (bs *BadgerStore) Get(obj database.Item) (database.Item, error) {
 		if err != nil {
 			return err
 		}
-		value, err := item.Value()
+		err = item.Value(func(value []byte) error {
+			rawBytes = make([]byte, len(value))
+			copy(rawBytes, value)
+			return nil
+		})
 		if err != nil {
 			return err
 		}
-		rawBytes = make([]byte, len(value))
-		copy(rawBytes, value)
 		return nil
 	})
 	if err != nil {
@@ -169,13 +171,18 @@ func (bs *BadgerStore) All(pfx []byte, out *[]database.Item, preload bool) error
 
 		for it.Seek(pfx); it.ValidForPrefix(pfx); it.Next() {
 			item := it.Item()
-			v, err := item.Value()
+			var rawBytes []byte
+			err := item.Value(func(value []byte) error {
+				rawBytes = make([]byte, len(value))
+				copy(rawBytes, value)
+				return nil
+			})
 			if err != nil {
 				return err
 			}
 			var buf bytes.Buffer
 			var outItem database.Item
-			_, err = buf.Write(v)
+			_, err = buf.Write(rawBytes)
 			if err != nil {
 				return err
 			}
