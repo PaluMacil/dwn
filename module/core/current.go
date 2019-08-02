@@ -70,5 +70,6 @@ func (c *Current) Is(groupName string) (bool, error) {
 }
 
 func (c *Current) Authenticated() bool {
+	// TODO: use anonymous sentinel value to ease use of anonymous api calls
 	return c != nil
 }

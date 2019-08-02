@@ -56,7 +56,7 @@ func New(dir string) (*BadgerStore, error) {
 	}
 
 	log.Println("db open... starting tickers and sequences")
-	gcTicker := time.NewTicker(5 * time.Minute)
+	gcTicker := time.NewTicker(10 * time.Minute)
 	seq, err := bgr.GetSequence([]byte(globalSequenceKey), 100)
 	if err != nil {
 		return nil, fmt.Errorf("getting badger sequence: %s", err)
@@ -83,7 +83,7 @@ func (bs *BadgerStore) runGC() {
 	log.Println("Running GC...")
 	var logFiles int
 again:
-	err := bs.bgr.RunValueLogGC(0.7)
+	err := bs.bgr.RunValueLogGC(0.5)
 	if err == nil {
 		logFiles++
 		goto again
@@ -94,7 +94,9 @@ again:
 func (bs BadgerStore) Close() error {
 	bs.gcTicker.Stop()
 	bs.runGC()
-	bs.seq.Release()
+	if err := bs.seq.Release(); err != nil {
+		log.Println("could not release badger sequence")
+	}
 	return bs.bgr.Close()
 }
 

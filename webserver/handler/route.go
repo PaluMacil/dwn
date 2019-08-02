@@ -59,6 +59,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("dwn-token")
 	cur, err := core.GetCurrent(token, h.db.Providers)
 	if err != nil {
+		log.Printf("couldn't get current user with token %s requesting %s", token, r.URL.Path)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -78,7 +79,8 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if h.options.Contains(OptionAllowCORS) && r.Method == "OPTIONS" {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers",
+			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 		return
 	}
 	if h.assumeJSONContentType {
