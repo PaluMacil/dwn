@@ -17,7 +17,7 @@ import (
 func handleInfo(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,

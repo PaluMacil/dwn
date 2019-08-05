@@ -18,7 +18,7 @@ import (
 func flowHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -71,10 +71,13 @@ func flowHandler(
 				user = claims.CreateUser(id, displayName)
 				if claims.Email == config.Setup.InitialAdmin {
 					//TODO: handle err below and add other users to User group
-					db.UserGroups.Set(core.UserGroup{
+					err = db.UserGroups.Set(core.UserGroup{
 						UserID:    id,
 						GroupName: core.BuiltInGroupAdmin,
 					})
+					if err != nil {
+						return err
+					}
 				}
 			} else if err != nil {
 				return err
@@ -94,13 +97,12 @@ func flowHandler(
 			if err != nil {
 				return err
 			}
-			tmpl.Execute(w,
+			return tmpl.Execute(w,
 				loginCallbackData{
 					TokenName:   "dwn-token",
 					Token:       session.Token,
 					RedirectURL: config.WebServer.HomePage(), //TODO: Check to see if a different redirect is requested and if it is safe
 				})
-			return nil
 		} else {
 			//TODO: Send to registration page. Can't use oauth if not a verified email.
 		}

@@ -17,7 +17,7 @@ type Option int
 // HandlerOptions is a type representing multiple options and providing a Contains method.
 type Options []Option
 
-// Contains returns whether an instance of HandlerOptions containts a specific option.
+// Contains returns whether an instance of HandlerOptions contains a specific option.
 func (options Options) Contains(option Option) bool {
 	for _, o := range options {
 		if o == option {
@@ -37,7 +37,7 @@ const (
 type Func func(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -70,8 +70,8 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("updating heartbeat for %s: %s", ip, err)
 		}
 	}
-	// unless anonymous browsing is allowed, check for authentication
-	if !h.options.Contains(OptionAllowAnonymous) && !cur.Authenticated() {
+	// unless anonymous browsing is allowed, check if anonymous and return Unauthorized
+	if !h.options.Contains(OptionAllowAnonymous) && cur.Anonymous() {
 		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		return
 	}

@@ -15,7 +15,7 @@ import (
 func loginHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -42,6 +42,9 @@ func loginHandler(
 			return err
 		}
 		return nil
+	case core.LoginResultEmailNotVerified:
+		// TODO: write a followup struct to the response
+		return nil
 	case core.LoginResultBadCredentials:
 		return errs.StatusUnauthorized
 	case core.LoginResult2FA:
@@ -63,7 +66,7 @@ func loginHandler(
 func sessionsHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -96,7 +99,7 @@ type SessionDetails struct {
 func logoutHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -114,7 +117,7 @@ func logoutHandler(
 func meHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,

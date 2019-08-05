@@ -49,14 +49,19 @@ type LoginRequest struct {
 type LoginResult int
 
 const (
-	LoginResultSuccess LoginResult = iota
-	LoginResultBadCredentials
-	LoginResultEmailNotVerified
-	LoginResult2FA
-	LoginResultChangePassword
-	LoginResultLockedOrDisabled
-	LoginResultError
+	LoginResultSuccess          LoginResult = iota // 0
+	LoginResultBadCredentials                      // 1
+	LoginResultEmailNotVerified                    // 2
+	LoginResult2FA                                 // 3
+	LoginResultChangePassword                      // 4
+	LoginResultLockedOrDisabled                    // 5
+	LoginResultError                               // 6
 )
+
+type LoginResultMessage struct {
+	LoginResult       LoginResult `json:"loginResult"`
+	IntermediateToken string      `json:"intermediateToken,omitempty"`
+}
 
 const (
 	// TODO: make max login attempts before lock configurable

@@ -18,7 +18,7 @@ import (
 func addUserHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -59,7 +59,7 @@ func addUserHandler(
 func removeUserHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -93,7 +93,7 @@ func removeUserHandler(
 func membersOfHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
@@ -120,7 +120,7 @@ func membersOfHandler(
 func groupsForHandler(
 	db *database.Database,
 	config configuration.Configuration,
-	cur *core.Current,
+	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
 	r *http.Request,
