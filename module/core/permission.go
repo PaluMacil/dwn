@@ -13,25 +13,18 @@ const (
 )
 
 const (
-	PermissionPostComments      = "POST_COMMENTS"
-	PermissionEditUserInfo      = "EDIT_USER_INFO"
-	PermissionUnlockUser        = "UNLOCK_USER"
-	PermissionViewUsers         = "VIEW_USERS"
-	PermissionEditGroups        = "EDIT_GROUPS"
-	PermissionViewGroups        = "VIEW_GROUPS"
-	PermissionEditAllVisitPages = "EDIT_ALL_VISIT_PAGES"
-	PermissionManageIOTDevices  = "MANAGE_IOT_DEVICES"
+	PermissionPostComments     = "POST_COMMENTS"
+	PermissionEditUserInfo     = "EDIT_USER_INFO"
+	PermissionUnlockUser       = "UNLOCK_USER"
+	PermissionViewUsers        = "VIEW_USERS"
+	PermissionEditGroups       = "EDIT_GROUPS"
+	PermissionViewGroups       = "VIEW_GROUPS"
+	PermissionManageIOTDevices = "MANAGE_IOT_DEVICES"
 )
 
 // Visit module
 const (
 	PermissionSetDefaultParty = "SET_DEFAULT_PARTY"
-)
-
-// Rental Module
-const (
-	PermissionViewAllTenantInfo = "VIEW_ALL_TENANT_INFO"
-	PermissionManageAllTenants  = "MANAGE_ALL_TENANTS"
 )
 
 // Projects Module
@@ -55,13 +48,9 @@ var Permissions = []string{
 	PermissionViewUsers,
 	PermissionEditGroups,
 	PermissionViewGroups,
-	PermissionEditAllVisitPages,
 	PermissionManageIOTDevices,
 
 	PermissionSetDefaultParty,
-
-	PermissionViewAllTenantInfo,
-	PermissionManageAllTenants,
 
 	PermissionListProjects,
 }

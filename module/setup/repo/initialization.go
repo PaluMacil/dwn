@@ -95,7 +95,6 @@ func (p InitializationRepo) EnsureDatabase() error {
 				core.PermissionViewUsers,
 				core.PermissionEditGroups,
 				core.PermissionViewGroups,
-				core.PermissionEditAllVisitPages,
 			},
 			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
@@ -109,35 +108,18 @@ func (p InitializationRepo) EnsureDatabase() error {
 			ModifiedDate: time.Now(),
 		},
 		{
-
 			Name:         core.BuiltInGroupFriend,
 			Permissions:  []string{},
 			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
-
-			Name:         core.BuiltInGroupLandlord,
-			Permissions:  []string{},
-			ModifiedBy:   setupUser.ID,
-			ModifiedDate: time.Now(),
-		},
-		{
-
-			Name:         core.BuiltInGroupTenant,
-			Permissions:  []string{},
-			ModifiedBy:   setupUser.ID,
-			ModifiedDate: time.Now(),
-		},
-		{
-
 			Name:         core.BuiltInGroupPowerUser,
 			Permissions:  []string{core.PermissionListProjects},
 			ModifiedBy:   setupUser.ID,
 			ModifiedDate: time.Now(),
 		},
 		{
-
 			Name:         core.BuiltInGroupUser,
 			Permissions:  []string{core.PermissionPostComments},
 			ModifiedBy:   setupUser.ID,

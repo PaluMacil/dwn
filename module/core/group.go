@@ -1,19 +1,19 @@
 package core
 
 import (
-	"time"
 	"github.com/PaluMacil/dwn/database/store"
+	"time"
 )
 
 const GroupPrefix = "GROUP:"
 
 type Group struct {
-	Name             string    `json:"name"`
-	Permissions      []string  `json:"permissions"`
-	Requires2FA      bool      `json:"requires2FA"`
-	RequiresVaultPIN bool      `json:"requiresVaultPIN"`
-	ModifiedBy       store.Identity    `json:"modifiedBy"`
-	ModifiedDate     time.Time `json:"modifiedDate"`
+	Name             string         `json:"name"`
+	Permissions      []string       `json:"permissions"`
+	Requires2FA      bool           `json:"requires2FA"`
+	RequiresVaultPIN bool           `json:"requiresVaultPIN"`
+	ModifiedBy       store.Identity `json:"modifiedBy"`
+	ModifiedDate     time.Time      `json:"modifiedDate"`
 }
 
 type GroupCreationRequest struct {
@@ -47,8 +47,6 @@ const (
 	BuiltInGroupSpouse    = "SPOUSE"
 	BuiltInGroupResident  = "RESIDENT"
 	BuiltInGroupFriend    = "FRIEND"
-	BuiltInGroupLandlord  = "LANDLORD"
-	BuiltInGroupTenant    = "TENANT"
 	BuiltInGroupPowerUser = "POWER_USER"
 	BuiltInGroupUser      = "USER"
 )
