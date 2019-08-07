@@ -2,7 +2,9 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/PaluMacil/dwn/database/store"
+	"github.com/PaluMacil/dwn/webserver/errs"
 	"net/http"
 	"sort"
 	"strings"
@@ -34,6 +36,29 @@ func usersHandler(
 	userInfo := core.Users(users).Info()
 
 	return json.NewEncoder(w).Encode(userInfo)
+}
+
+// DELETE /api/core/users
+func deleteUserHandler(
+	db *database.Database,
+	config configuration.Configuration,
+	cur core.Current,
+	vars map[string]string,
+	w http.ResponseWriter,
+	r *http.Request,
+) error {
+	if err := cur.Can(core.PermissionEditUserInfo); err != nil {
+		return err
+	}
+	id, err := store.StringToIdentity(vars["id"])
+	if err != nil {
+		return errs.StatusError{http.StatusBadRequest, errors.New("invalid userID")}
+	}
+	if err := db.Users.Delete(id); err != nil {
+		return err
+	}
+
+	return json.NewEncoder(w).Encode(true)
 }
 
 // GET /api/core/users/displayname?ids={2,3,4}

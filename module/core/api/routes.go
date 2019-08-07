@@ -19,6 +19,10 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 	rt.Path("/users").
 		Handler(factory.Handler(usersHandler)).
 		Methods("GET")
+	rt.Path("/users").
+		Handler(factory.Handler(deleteUserHandler)).
+		Methods("DELETE").
+		Queries("id", "{id}")
 	rt.Path("/users/displayname").
 		Handler(factory.Handler(userDisplayNameMapHandler)).
 		Methods("GET").
