@@ -23,6 +23,9 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 		Handler(factory.Handler(deleteUserHandler)).
 		Methods("DELETE").
 		Queries("id", "{id}")
+	rt.Path("/users/{statusField:locked|disabled}").
+		Handler(factory.Handler(unlockOrDisableUserHandler)).
+		Methods("PUT")
 	rt.Path("/users/displayname").
 		Handler(factory.Handler(userDisplayNameMapHandler)).
 		Methods("GET").

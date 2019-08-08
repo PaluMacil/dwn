@@ -20,12 +20,12 @@ func loginHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	var request core.LoginRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	var loginRequest core.LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&loginRequest); err != nil {
 		return err
 	}
 	ip := core.IP(r)
-	userInfo, session, result, err := request.Do(db.Providers, ip)
+	userInfo, session, result, err := loginRequest.Do(db.Providers, ip)
 	// TODO: add minimum wait delay
 	switch result {
 	case core.LoginResultSuccess:

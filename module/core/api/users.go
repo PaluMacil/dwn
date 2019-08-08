@@ -89,3 +89,42 @@ func userDisplayNameMapHandler(
 
 	return json.NewEncoder(w).Encode(idDisplayNameMap)
 }
+
+// PUT /api/core/users/locked|disabled
+func unlockOrDisableUserHandler(
+	db *database.Database,
+	config configuration.Configuration,
+	cur core.Current,
+	vars map[string]string,
+	w http.ResponseWriter,
+	r *http.Request,
+) error {
+	if err := cur.Can(core.PermissionUnlockUser); err != nil {
+		return err
+	}
+	var request UserStatusRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return err
+	}
+
+	user, err := db.Users.Get(request.UserID)
+	if db.IsKeyNotFoundErr(err) {
+		return errs.StatusNotFound
+	} else if err != nil {
+		return err
+	}
+
+	statusField := vars["statusField"]
+	if statusField == "locked" {
+		user.Locked = request.Status
+	} else if statusField == "disabled" {
+		user.Disabled = request.Status
+	}
+
+	return db.Users.Set(user)
+}
+
+type UserStatusRequest struct {
+	UserID store.Identity `json:"userID"`
+	Status bool           `json:"status"`
+}
