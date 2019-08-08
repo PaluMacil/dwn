@@ -1,6 +1,7 @@
 package registration
 
 import (
+	"fmt"
 	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/core"
 	"time"
@@ -25,6 +26,7 @@ func (req UserCreationRequest) Validate() []string {
 }
 
 func (req UserCreationRequest) User(id store.Identity) (core.User, error) {
+	displayName := core.DisplayName(fmt.Sprintf("%s %s", req.GivenName, req.FamilyName))
 	passwordHash, err := core.CreateHash(req.Password)
 	if err != nil {
 		return core.User{}, err
@@ -41,7 +43,8 @@ func (req UserCreationRequest) User(id store.Identity) (core.User, error) {
 				// VerificationCode: uuid.Must(uuid.NewV4()).String(),
 			},
 		},
-		//TODO: tag, displayName
+		//TODO: tag
+		DisplayName:  displayName,
 		PasswordHash: passwordHash,
 		GivenName:    req.GivenName,
 		FamilyName:   req.FamilyName,
