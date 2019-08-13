@@ -18,14 +18,10 @@ func RegisterRoutes(rt *mux.Router, factory handler.Factory) {
 		Methods("POST")
 	rt.Path("/email").
 		Handler(factory.Handler(deleteEmailHandler)).
-		Methods("DELETE").
-		Queries("userID", "{userID}").
-		Queries("email", "{email}")
+		Methods("DELETE")
 	rt.Path("/email").
 		Handler(factory.Handler(emailActionHandler)).
 		Methods("POST").
-		Queries("userID", "{userID}").
-		Queries("email", "{email}").
 		Queries("action", "{action}")
 	rt.Path("/users").
 		Handler(factory.Handler(usersHandler)).

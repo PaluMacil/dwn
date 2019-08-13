@@ -9,7 +9,6 @@ import (
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -22,25 +21,25 @@ func deleteEmailHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	userID, err := store.StringToIdentity(vars["userID"])
-	if err != nil {
+	var request ModifyEmailRecordRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return err
 	}
-	email := strings.ToLower(vars["email"])
+
 	// Must have permission to edit users unless editing oneself
-	if err := cur.Can(core.PermissionEditUserInfo); err != nil && cur.User.ID != userID {
+	if err := cur.Can(core.PermissionEditUserInfo); err != nil && cur.User.ID != request.UserID {
 		return err
 	}
-	user, err := db.Users.Get(userID)
+	user, err := db.Users.Get(request.UserID)
 	if db.IsKeyNotFoundErr(err) {
 		return errs.StatusNotFound
 	} else if err != nil {
 		return err
 	}
-	if email == user.PrimaryEmail {
+	if request.Email == user.PrimaryEmail {
 		return errs.StatusError{http.StatusBadRequest, errors.New("cannot delete primary email")}
 	}
-	updatedEmailList, err := deleteEmail(user.Emails, email)
+	updatedEmailList, err := deleteEmail(user.Emails, request.Email)
 	if err != nil {
 		return err
 	}
@@ -83,17 +82,16 @@ func emailActionHandler(
 	w http.ResponseWriter,
 	r *http.Request,
 ) error {
-	userID, err := store.StringToIdentity(vars["userID"])
-	if err != nil {
+	var request ModifyEmailRecordRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return err
 	}
-	email := strings.ToLower(vars["email"])
 	action := vars["action"]
 	// Must have permission to edit users unless editing oneself
-	if err := cur.Can(core.PermissionEditUserInfo); err != nil && cur.User.ID != userID {
+	if err := cur.Can(core.PermissionEditUserInfo); err != nil && cur.User.ID != request.UserID {
 		return err
 	}
-	user, err := db.Users.Get(userID)
+	user, err := db.Users.Get(request.UserID)
 	if db.IsKeyNotFoundErr(err) {
 		return errs.StatusNotFound
 	} else if err != nil {
@@ -103,13 +101,13 @@ func emailActionHandler(
 	// process actions
 	switch action {
 	case "setPrimary":
-		if !verifiedEmailExists(user.Emails, email) {
+		if !verifiedEmailExists(user.Emails, request.Email) {
 			return errs.StatusError{http.StatusBadRequest, errors.New("primary email must be verified")}
 		}
-		user.PrimaryEmail = email
+		user.PrimaryEmail = request.Email
 		user.ModifiedDate = time.Now()
 	case "addEmail":
-		exists, err := db.Users.EmailExists(email)
+		exists, err := db.Users.EmailExists(request.Email)
 		if err != nil {
 			return err
 		}
@@ -119,7 +117,7 @@ func emailActionHandler(
 		// TODO: set verification code
 		// TODO: send email, once implemented
 		record := core.Email{
-			Email:                email,
+			Email:                request.Email,
 			Verified:             false,
 			VerifiedDate:         time.Time{},
 			VerificationCode:     "",
@@ -143,4 +141,9 @@ func verifiedEmailExists(emails []core.Email, email string) bool {
 		}
 	}
 	return false
+}
+
+type ModifyEmailRecordRequest struct {
+	Email  string         `json:"email"`
+	UserID store.Identity `json:"userID"`
 }
