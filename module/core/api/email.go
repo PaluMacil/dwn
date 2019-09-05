@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// DELETE /api/core/email?userID=123&email=blah@example.com
+// DELETE /api/core/email
 func deleteEmailHandler(
 	db *database.Database,
 	config configuration.Configuration,
@@ -44,8 +44,11 @@ func deleteEmailHandler(
 		return err
 	}
 	user.Emails = updatedEmailList
+	if err = db.Users.Set(user); err != nil {
+		return err
+	}
 
-	return db.Users.Set(user)
+	return json.NewEncoder(w).Encode(user.Info())
 }
 
 func deleteEmail(emails []core.Email, email string) ([]core.Email, error) {
@@ -106,7 +109,7 @@ func emailActionHandler(
 		}
 		user.PrimaryEmail = request.Email
 		user.ModifiedDate = time.Now()
-	case "addEmail":
+	case "add":
 		exists, err := db.Users.EmailExists(request.Email)
 		if err != nil {
 			return err
