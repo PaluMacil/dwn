@@ -27,7 +27,7 @@ func deleteEmailHandler(
 	}
 
 	// Must have permission to edit users unless editing oneself
-	if err := cur.Can(core.PermissionEditUserInfo); err != nil && cur.User.ID != request.UserID {
+	if err := cur.Can(core.PermissionEditUserInfo); err != nil || cur.User.ID == request.UserID {
 		return err
 	}
 	user, err := db.Users.Get(request.UserID)
