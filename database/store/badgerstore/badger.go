@@ -13,7 +13,7 @@ import (
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
 
-	"github.com/dgraph-io/badger"
+	"github.com/dgraph-io/badger/v2"
 )
 
 const globalSequenceKey = "GLOBAL_SEQUENCE"

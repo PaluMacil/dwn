@@ -15,18 +15,19 @@ type Project struct {
 }
 
 type Link struct {
-	Text string `json:"name"`
-	Order int `json:"order"`
+	Text     string   `json:"name"`
+	Order    int      `json:"order"`
 	Audience UserType `json:"audience"`
-	External bool `json:"external"`
-	Ref string `json:"ref"`
+	External bool     `json:"external"`
+	Ref      string   `json:"ref"`
 }
 
 type UserType string
+
 const (
-	UserTypeOwner UserType = "OWNER"
+	UserTypeOwner       UserType = "OWNER"
 	UserTypeParticipant UserType = "USER"
-	UserTypePublic UserType = "PUBLIC"
+	UserTypePublic      UserType = "PUBLIC"
 )
 
 func (p Project) Key() []byte {
