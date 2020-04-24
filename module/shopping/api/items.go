@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/PaluMacil/dwn/configuration"
@@ -84,6 +86,9 @@ func listHandler(
 	if err != nil {
 		return err
 	}
+	sort.Slice(items, func(i, j int) bool {
+		return strings.ToLower(items[i].Name) < strings.ToLower(items[j].Name)
+	})
 
 	return json.NewEncoder(w).Encode(items)
 }
