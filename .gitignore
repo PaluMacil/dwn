@@ -1,5 +1,6 @@
 *.exe
 *.exe~
+/dwn
 
 # data
 *.db
