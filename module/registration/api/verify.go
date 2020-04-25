@@ -56,13 +56,14 @@ func adminVerifyHandler(
 		return err
 	}
 	userHasEmail := false
-	for _, email := range user.Emails {
+	for i, email := range user.Emails {
 		if email.Email == request.Email {
 			userHasEmail = true
-			email.Verified = true
-			email.VerifiedDate = time.Now()
-			email.VerificationCode = ""
-			email.VerificationCodeDate = time.Time{}
+			// set the email of the struct in the original user, not the loop instance copy
+			user.Emails[i].Verified = true
+			user.Emails[i].VerifiedDate = time.Now()
+			user.Emails[i].VerificationCode = ""
+			user.Emails[i].VerificationCodeDate = time.Time{}
 			if err := db.Users.Set(user); err != nil {
 				return err
 			}

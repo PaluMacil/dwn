@@ -26,6 +26,7 @@ func loginHandler(
 	}
 	ip := core.IP(r)
 	userInfo, session, result, err := loginRequest.Do(db.Providers, ip)
+	// TODO: this err is checked in LoginResultError which is at the bottom of the switch; fix this
 	// TODO: add minimum wait delay
 	switch result {
 	case core.LoginResultSuccess:
@@ -33,18 +34,24 @@ func loginHandler(
 		if err != nil {
 			return err
 		}
-		me := core.Me{
+		me := &core.Me{
 			User:    userInfo,
 			Session: session,
 			Groups:  groups,
 		}
-		if err := json.NewEncoder(w).Encode(me); err != nil {
-			return err
+		resp := core.LoginResponse{
+			LoginResult:       core.LoginResultSuccess,
+			IntermediateToken: nil,
+			Me:                me,
 		}
-		return nil
+		return json.NewEncoder(w).Encode(resp)
 	case core.LoginResultEmailNotVerified:
-		// TODO: write a followup struct to the response
-		return nil
+		resp := core.LoginResponse{
+			LoginResult:       core.LoginResultEmailNotVerified,
+			IntermediateToken: nil,
+			Me:                nil,
+		}
+		return json.NewEncoder(w).Encode(resp)
 	case core.LoginResultBadCredentials:
 		return errs.StatusUnauthorized
 	case core.LoginResult2FA:
@@ -54,7 +61,12 @@ func loginHandler(
 		// TODO: create and return a change password specialized token
 		return nil
 	case core.LoginResultLockedOrDisabled:
-		return errs.StatusLocked
+		resp := core.LoginResponse{
+			LoginResult:       core.LoginResultLockedOrDisabled,
+			IntermediateToken: nil,
+			Me:                nil,
+		}
+		return json.NewEncoder(w).Encode(resp)
 	case core.LoginResultError:
 		return err
 	}

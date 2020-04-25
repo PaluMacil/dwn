@@ -58,9 +58,10 @@ const (
 	LoginResultError                               // 6
 )
 
-type LoginResultMessage struct {
+type LoginResponse struct {
 	LoginResult       LoginResult `json:"loginResult"`
-	IntermediateToken string      `json:"intermediateToken,omitempty"`
+	IntermediateToken *string     `json:"intermediateToken,omitempty"`
+	Me                *Me         `json:"me,omitempty"`
 }
 
 const (
