@@ -32,7 +32,8 @@ func Config() configuration.Configuration {
 			InitialAdmin: os.Getenv("DWN_INITIAL_ADMIN"),
 		},
 		Database: configuration.DatabaseConfiguration{
-			DataDir: os.Getenv("DWN_DATA_DIR"),
+			DataDir:       os.Getenv("DWN_DATA_DIR"),
+			EncryptionKey: []byte(os.Getenv("DWN_MASTER_ENC_KEY")),
 		},
 		Auth: configuration.AuthConfiguration{
 			Google: &oauth2.Config{

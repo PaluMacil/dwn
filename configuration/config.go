@@ -26,7 +26,8 @@ type WebServerConfiguration struct {
 }
 
 type DatabaseConfiguration struct {
-	DataDir string `json:"dataDir"`
+	DataDir       string `json:"dataDir"`
+	EncryptionKey []byte `json:"-"`
 }
 
 func (ws WebServerConfiguration) HomePage() string {

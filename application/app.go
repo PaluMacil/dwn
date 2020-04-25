@@ -35,7 +35,7 @@ func New() (*App, error) {
 func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Database, error) {
 
 	// initialize store
-	store, err := badgerstore.New(config.DataDir)
+	store, err := badgerstore.New(config)
 	if err != nil {
 		return nil, fmt.Errorf(`initializing datastore in directory "%s": %s`, config.DataDir, err)
 	}

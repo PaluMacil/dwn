@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"github.com/PaluMacil/dwn/configuration"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,8 +25,8 @@ type BadgerStore struct {
 	seq      *badger.Sequence
 }
 
-func open(dir string) (*badger.DB, error) {
-	originalOpts := opts(dir)
+func open(config configuration.DatabaseConfiguration) (*badger.DB, error) {
+	originalOpts := opts(config)
 	bgr, err := badger.Open(originalOpts)
 	if err != nil {
 		if strings.Contains(err.Error(), "LOCK") {
@@ -49,8 +50,8 @@ func open(dir string) (*badger.DB, error) {
 	return bgr, nil
 }
 
-func New(dir string) (*BadgerStore, error) {
-	bgr, err := open(dir)
+func New(config configuration.DatabaseConfiguration) (*BadgerStore, error) {
+	bgr, err := open(config)
 	if err != nil {
 		return nil, fmt.Errorf("opening badger database: %s", err)
 	}

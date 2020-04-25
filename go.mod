@@ -1,7 +1,5 @@
 module github.com/PaluMacil/dwn
 
-go 1.14
-
 require (
 	github.com/blevesearch/bleve v1.0.7
 	github.com/dgraph-io/badger/v2 v2.0.3
@@ -11,4 +9,4 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
 
-go 1.13
+go 1.14
