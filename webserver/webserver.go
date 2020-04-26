@@ -10,8 +10,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module/configuration"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
 	dashboardapi "github.com/PaluMacil/dwn/module/dashboard/api"
 	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"

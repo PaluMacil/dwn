@@ -2,10 +2,11 @@ package application
 
 import (
 	"fmt"
+	configrepo "github.com/PaluMacil/dwn/module/configuration/repo"
 
-	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store/badgerstore"
+	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/webserver"
 
@@ -17,15 +18,17 @@ import (
 )
 
 func New(prod bool) (*App, error) {
-	config, err := configuration.New(prod)
+	configProvider := configrepo.NewConfigurationRepo()
+	config, err := configProvider.InitialConfiguration(prod)
 	if err != nil {
 		return nil, fmt.Errorf("creating new %t configuration: %w", prod, err)
 	}
-	db, err := defaultDatabase(config.Database)
+	db, store, err := defaultDatabase(config.Database)
 	if err != nil {
 		return nil, fmt.Errorf(`initializing default database: %w`, err)
 	}
 
+	configProvider.ConnectDatabase(store, db)
 	web := webserver.New(db, config)
 	return &App{
 		Config: config,
@@ -34,19 +37,19 @@ func New(prod bool) (*App, error) {
 	}, nil
 }
 
-func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Database, error) {
+func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Database, database.Storer, error) {
 
 	// initialize store
 	store, err := badgerstore.New(config)
 	if err != nil {
-		return nil, fmt.Errorf(`initializing datastore in directory "%s": %w`, config.DataDir, err)
+		return nil, nil, fmt.Errorf(`initializing datastore in directory "%s": %w`, config.DataDir, err)
 	}
 	db := database.New(store)
 
 	// initialize searchers from indexes
 	userIndex, err := search.NewUserIndex(db, config.DataDir)
 	if err != nil {
-		return nil, fmt.Errorf(`initializing user index with dataDir "%s": %w`, config.DataDir, err)
+		return nil, nil, fmt.Errorf(`initializing user index with dataDir "%s": %w`, config.DataDir, err)
 	}
 
 	// initialize providers from repo package
@@ -64,7 +67,7 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Dashboard.Board = dashboardrepo.NewDashboardRepo(store, db)
 	db.Dashboard.Projects = dashboardrepo.NewProjectRepo(store, db)
 
-	return db, nil
+	return db, store, nil
 }
 
 type App struct {

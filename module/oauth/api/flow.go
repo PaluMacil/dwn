@@ -7,8 +7,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/module/oauth"
 	"github.com/PaluMacil/dwn/webserver/errs"
@@ -25,7 +25,7 @@ func flowHandler(
 ) error {
 	switch step := vars["step"]; step {
 	case "login":
-		url := config.Auth.Google.AuthCodeURL(oauthStateString)
+		url := config.FS.Auth.Google.AuthCodeURL(oauthStateString)
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 		return nil
 	case "callback":
@@ -37,7 +37,7 @@ func flowHandler(
 		}
 
 		code := r.FormValue("code")
-		token, err := config.Auth.Google.Exchange(r.Context(), code)
+		token, err := config.FS.Auth.Google.Exchange(r.Context(), code)
 		if err != nil {
 			fmt.Printf("Code exchange failed with '%s'\n", err)
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)

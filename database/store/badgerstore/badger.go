@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"github.com/PaluMacil/dwn/configuration"
+	"github.com/PaluMacil/dwn/module/configuration"
 	"log"
 	"os"
 	"path/filepath"

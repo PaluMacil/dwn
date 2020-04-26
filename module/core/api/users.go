@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/PaluMacil/dwn/configuration"
 	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 )
 

@@ -3,7 +3,7 @@
 package badgerstore
 
 import (
-	"github.com/PaluMacil/dwn/configuration"
+	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/dgraph-io/badger/v2"
 )
 
