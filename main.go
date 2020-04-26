@@ -2,13 +2,19 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/PaluMacil/dwn/application"
 )
 
 func main() {
-	log.Printf("starting\n")
-	app, err := application.New()
+	prod := len(os.Args) == 2 && os.Args[1] == "prod"
+	if prod {
+		log.Printf("starting (prod mode)\n")
+	} else {
+		log.Printf("starting (dev mode)\n")
+	}
+	app, err := application.New(prod)
 	if err != nil {
 		log.Fatalln("could not start app:", err)
 	}

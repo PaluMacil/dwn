@@ -3,6 +3,7 @@ package webserver
 import (
 	"context"
 	"fmt"
+	"github.com/PaluMacil/dwn/module/echo"
 	"log"
 	"net/http"
 	"os"
@@ -44,16 +45,28 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 		Config:                config,
 		AssumeJSONContentType: false,
 	}
-	// TODO: refactor config and remove this check on the os args
-	prod := len(os.Args) == 2 && os.Args[1] == "prod"
 
 	// Set host subrouters
-	var dwnHost *mux.Router
-	if prod {
+	var dwnHost, echoHost, echoHistoryHost *mux.Router
+	if config.Prod {
 		dwnHost = ws.mux.Host("danwolf.net").Subrouter()
+		echoHost = ws.mux.Host("echo.danwolf.net").Subrouter()
+		echoHistoryHost = ws.mux.Host("echo-history.danwolf.net").Subrouter()
 	} else {
 		localhostMatchPattern := fmt.Sprintf("{host:localhost:(?:%s|%s)}", ws.Port, ws.UIProxyPort)
 		dwnHost = ws.mux.Host(localhostMatchPattern).Subrouter()
+		echoHost, echoHistoryHost = dwnHost, dwnHost
+	}
+
+	// subdomain subrouters
+	if config.Prod {
+		echoHost.PathPrefix("/").Handler(echo.NewEchoHandler())
+		echoHistoryHost.PathPrefix("/").Handler(echo.NewHistoryHandler())
+	} else {
+		echoHistoryHost.PathPrefix("/s/echo-history/").Handler(echo.NewHistoryHandler())
+		echoHost.PathPrefix("/s/echo/").Handler(echo.NewEchoHandler())
+		echoHistoryHost.Path("/s/echo-history").Handler(echo.NewHistoryHandler())
+		echoHost.Path("/s/echo").Handler(echo.NewEchoHandler())
 	}
 
 	// Set module subrouters
@@ -80,9 +93,6 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 	registrationapi.RegisterRoutes(registrationRouter, apiFactory)
 	// ...content roots
 	dwnHost.PathPrefix("/").Handler(spa.ContentRoot(config.WebServer.ContentRoot))
-
-	ws.mux.Host("echo.danwolf.net").Subrouter()
-	ws.mux.Host("echo-history.danwolf.net").Subrouter()
 
 	return ws
 }

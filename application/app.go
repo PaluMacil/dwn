@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/PaluMacil/dwn/configuration"
-	"github.com/PaluMacil/dwn/configuration/env"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store/badgerstore"
 	"github.com/PaluMacil/dwn/module/core/search"
@@ -17,11 +16,14 @@ import (
 	shoppingrepo "github.com/PaluMacil/dwn/module/shopping/repo"
 )
 
-func New() (*App, error) {
-	config := env.Config()
+func New(prod bool) (*App, error) {
+	config, err := configuration.New(prod)
+	if err != nil {
+		return nil, fmt.Errorf("creating new %t configuration: %w", prod, err)
+	}
 	db, err := defaultDatabase(config.Database)
 	if err != nil {
-		return nil, fmt.Errorf(`initializing default database: %s`, err)
+		return nil, fmt.Errorf(`initializing default database: %w`, err)
 	}
 
 	web := webserver.New(db, config)
@@ -37,14 +39,14 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	// initialize store
 	store, err := badgerstore.New(config)
 	if err != nil {
-		return nil, fmt.Errorf(`initializing datastore in directory "%s": %s`, config.DataDir, err)
+		return nil, fmt.Errorf(`initializing datastore in directory "%s": %w`, config.DataDir, err)
 	}
 	db := database.New(store)
 
 	// initialize searchers from indexes
 	userIndex, err := search.NewUserIndex(db, config.DataDir)
 	if err != nil {
-		return nil, fmt.Errorf(`initializing user index with dataDir "%s": %s`, config.DataDir, err)
+		return nil, fmt.Errorf(`initializing user index with dataDir "%s": %w`, config.DataDir, err)
 	}
 
 	// initialize providers from repo package
