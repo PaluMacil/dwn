@@ -29,7 +29,8 @@ type WebServer struct {
 	mux *mux.Router
 }
 
-func New(db *database.Database, config configuration.Configuration) *WebServer {
+func New(db *database.Database) *WebServer {
+	config := db.Config.Get()
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
 		mux:                    mux.NewRouter(),
@@ -37,12 +38,10 @@ func New(db *database.Database, config configuration.Configuration) *WebServer {
 
 	apiFactory := handler.Factory{
 		Db:                    db,
-		Config:                config,
 		AssumeJSONContentType: true,
 	}
 	genericFactory := handler.Factory{
 		Db:                    db,
-		Config:                config,
 		AssumeJSONContentType: false,
 	}
 

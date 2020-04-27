@@ -18,22 +18,22 @@ import (
 )
 
 func New(prod bool) (*App, error) {
-	configProvider := configrepo.NewConfigurationRepo()
-	config, err := configProvider.InitialConfiguration(prod)
+	configProvider, err := configrepo.NewConfigurationRepo(prod)
 	if err != nil {
-		return nil, fmt.Errorf("creating new %t configuration: %w", prod, err)
+		return nil, fmt.Errorf("creating new config repo: %w", err)
 	}
+	config := configProvider.Get()
 	db, store, err := defaultDatabase(config.Database)
 	if err != nil {
 		return nil, fmt.Errorf(`initializing default database: %w`, err)
 	}
 
 	configProvider.ConnectDatabase(store, db)
-	web := webserver.New(db, config)
+	db.Config.ConfigProvider = configProvider
+	web := webserver.New(db)
 	return &App{
-		Config: config,
-		Db:     db,
-		Web:    web,
+		Db:  db,
+		Web: web,
 	}, nil
 }
 

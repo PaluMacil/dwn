@@ -16,7 +16,6 @@ import (
 // api/server/info
 func handleInfo(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -34,6 +33,7 @@ func handleInfo(
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
+	config := db.Config.Get()
 	dataSize, _ := dirSize(config.Database.DataDir)
 
 	resp := InfoResponse{

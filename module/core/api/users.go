@@ -10,14 +10,12 @@ import (
 	"strings"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 )
 
 // GET /api/core/users
 func usersHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -41,7 +39,6 @@ func usersHandler(
 // DELETE /api/core/users
 func deleteUserHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -64,7 +61,6 @@ func deleteUserHandler(
 // GET /api/core/users/displayname?ids={2,3,4}
 func userDisplayNameMapHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -93,7 +89,6 @@ func userDisplayNameMapHandler(
 // PUT /api/core/users/locked|disabled
 func unlockOrDisableUserHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

@@ -1,10 +1,10 @@
 package configuration
 
 type Providers struct {
-	Config ConfigProvider
+	ConfigProvider
 }
 
 type ConfigProvider interface {
-	Get() (Configuration, error)
+	Get() Configuration
 	Set(config Configuration)
 }

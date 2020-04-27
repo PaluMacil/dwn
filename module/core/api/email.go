@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 // DELETE /api/core/email
 func deleteEmailHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -79,7 +77,6 @@ func deleteEmail(emails []core.Email, email string) ([]core.Email, error) {
 // POST /api/core/email?userID=123&email=blah@example.com&action=something
 func emailActionHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

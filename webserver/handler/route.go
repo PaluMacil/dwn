@@ -36,7 +36,6 @@ const (
 // HandlerFunc is the dwn-specific signature for handler functions
 type Func func(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -47,7 +46,6 @@ type Func func(
 type Handler struct {
 	Handler               Func
 	db                    *database.Database
-	config                configuration.Configuration
 	options               Options
 	assumeJSONContentType bool
 }
@@ -86,7 +84,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if h.assumeJSONContentType {
 		w.Header().Set("Content-Type", "application/json")
 	}
-	err = h.Handler(h.db, h.config, cur, mux.Vars(r), w, r)
+	err = h.Handler(h.db, cur, mux.Vars(r), w, r)
 	if err != nil {
 		switch e := err.(type) {
 		case errs.Error:
@@ -116,8 +114,7 @@ func (factory Factory) Handler(handler Func, options ...Option) Handler {
 	return Handler{
 		Handler:               handler,
 		db:                    factory.Db,
-		config:                factory.Config,
-		options:               Options(options),
+		options:               options,
 		assumeJSONContentType: factory.AssumeJSONContentType,
 	}
 }

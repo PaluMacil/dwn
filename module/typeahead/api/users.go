@@ -7,7 +7,6 @@ import (
 	"net/url"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -15,7 +14,6 @@ import (
 // GET /api/typeahead/users&query={query}
 func usersHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

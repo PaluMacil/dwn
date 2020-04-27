@@ -9,7 +9,6 @@ import (
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -17,7 +16,6 @@ import (
 // POST /api/core/usergroups
 func addUserHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -58,7 +56,6 @@ func addUserHandler(
 // DELETE /api/core/usergroups
 func removeUserHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -92,7 +89,6 @@ func removeUserHandler(
 // GET /api/core/usergroups/members-of/{group}
 func membersOfHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -119,7 +115,6 @@ func membersOfHandler(
 // GET /api/core/usergroups/groups-for/{userID}
 func groupsForHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

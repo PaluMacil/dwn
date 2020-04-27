@@ -8,20 +8,27 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"sync"
 
 	"golang.org/x/oauth2"
 )
 
 type ConfigurationRepo struct {
-	store database.Storer
-	db    *database.Database
+	store   database.Storer
+	db      *database.Database
+	current *configuration.Configuration
+	lock    sync.RWMutex
 }
 
-func NewConfigurationRepo() *ConfigurationRepo {
-	return &ConfigurationRepo{nil, nil}
+func NewConfigurationRepo(prod bool) (*ConfigurationRepo, error) {
+	config, err := initialConfiguration(prod)
+	if err != nil {
+		return nil, fmt.Errorf("creating initial %t configuration: %w", prod, err)
+	}
+	return &ConfigurationRepo{nil, nil, config, sync.RWMutex{}}, nil
 }
 
-func (cr ConfigurationRepo) InitialConfiguration(prod bool) (configuration.Configuration, error) {
+func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	mode := configuration.Mode{Prod: prod}
 	const devEncKey = "3d17618d4297f83665b32e28f9b1c23d"
 	var valProtocol, valHost, valPort, valUIProxyPort, valContentRoot, valInitialAdmin, valDataDir, valEncryptionKey = mode.Coalesce("DWN_PROTOCOL", "https", "http"),
@@ -35,7 +42,7 @@ func (cr ConfigurationRepo) InitialConfiguration(prod bool) (configuration.Confi
 		mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
 
 	if prod && valEncryptionKey == devEncKey {
-		return configuration.Configuration{}, fmt.Errorf("a encryption key must not be empty or the same as the dev key")
+		return nil, fmt.Errorf("a encryption key must not be empty or the same as the dev key")
 	}
 
 	ws := configuration.WebServerConfiguration{
@@ -47,11 +54,11 @@ func (cr ConfigurationRepo) InitialConfiguration(prod bool) (configuration.Confi
 	}
 	home, err := url.Parse(ws.HomePage())
 	if err != nil {
-		return configuration.Configuration{}, fmt.Errorf("cannot parse home URL: %w", err)
+		return nil, fmt.Errorf("cannot parse home URL: %w", err)
 	}
 	googleCallbackURL, err := url.Parse("oauth/google/callback")
 	if err != nil {
-		return configuration.Configuration{}, fmt.Errorf("cannot parse google callback URL: %w", err)
+		return nil, fmt.Errorf("cannot parse google callback URL: %w", err)
 	}
 	googleRedirect := home.ResolveReference(googleCallbackURL)
 	config := configuration.Configuration{
@@ -85,14 +92,26 @@ func (cr ConfigurationRepo) InitialConfiguration(prod bool) (configuration.Confi
 	if valSMTPSendGridKey != "" && valSMTPSendGridSecret != "" {
 		log.Println("setting SendGrid SMTP foreign system from environment")
 		config.FS.SMTP.SendGrid = &configuration.Credential{
-			Key:    valSMTPSendGridKey,
+			ID:     valSMTPSendGridKey,
 			Secret: valSMTPSendGridSecret,
 		}
 	}
 
-	return config, nil
+	return &config, nil
 }
 
 func (cr *ConfigurationRepo) ConnectDatabase(store database.Storer, db *database.Database) {
 	cr.store, cr.db = store, db
+}
+
+func (cr *ConfigurationRepo) Get() configuration.Configuration {
+	cr.lock.RLock()
+	defer cr.lock.RUnlock()
+	return *cr.current
+}
+
+func (cr *ConfigurationRepo) Set(config configuration.Configuration) {
+	cr.lock.Lock()
+	defer cr.lock.Unlock()
+	cr.current = &config
 }

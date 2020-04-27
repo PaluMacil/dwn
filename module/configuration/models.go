@@ -10,6 +10,11 @@ const (
 	CredentialPrefix = "CREDENTIAL:"
 )
 
+const (
+	ForeignSystemOAuthGoogle  = "AUTH:GOOGLE"
+	ForeignSystemSMTPSendGrid = "SMTP:SENDGRID"
+)
+
 type SetupConfiguration struct {
 	InitialAdmin string `json:"initialAdmin"`
 }
@@ -49,9 +54,18 @@ type AuthConfiguration struct {
 }
 
 type Credential struct {
-	Key      string `json:"key"`
-	Secret   string `json:"-"`
-	Readonly bool   `json:"readonly"`
+	ID     string `json:"id"`
+	Secret string `json:"-"`
+	Type   string `json:"type"`
+}
+
+func (c Credential) Key() []byte {
+	key := append(c.Prefix(), []byte(c.Type)...)
+	return append(key, []byte(c.ID)...)
+}
+
+func (c Credential) Prefix() []byte {
+	return []byte(CredentialPrefix)
 }
 
 type SMTPConfiguration struct {

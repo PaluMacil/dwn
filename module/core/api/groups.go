@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -14,7 +13,6 @@ import (
 // GET /api/core/groups
 func groupsHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -34,7 +32,6 @@ func groupsHandler(
 // GET /api/core/groups/{group}
 func groupHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -56,7 +53,6 @@ func groupHandler(
 // POST /api/core/groups
 func createGroupHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

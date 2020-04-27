@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 )
@@ -14,7 +13,6 @@ import (
 // POST /api/core/sessions/login
 func loginHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -77,7 +75,6 @@ func loginHandler(
 // GET /api/core/sessions
 func sessionsHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -110,7 +107,6 @@ type SessionDetails struct {
 // DELETE /api/core/sessions/logout/{token}
 func logoutHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -128,7 +124,6 @@ func logoutHandler(
 // GET /api/core/sessions/me
 func meHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

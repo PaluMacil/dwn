@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/module/shopping"
 	"github.com/PaluMacil/dwn/webserver/errs"
@@ -19,7 +18,6 @@ import (
 // POST api/shopping/items
 func addHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -49,7 +47,6 @@ func addHandler(
 // DELETE api/shopping/items
 func removeHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -71,7 +68,6 @@ func removeHandler(
 // GET api/shopping/items
 func listHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,

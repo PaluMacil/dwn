@@ -5,7 +5,6 @@ import (
 	"errors"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
-	"github.com/PaluMacil/dwn/module/configuration"
 	"github.com/PaluMacil/dwn/module/core"
 	"github.com/PaluMacil/dwn/webserver/errs"
 	"net/http"
@@ -15,7 +14,6 @@ import (
 // GET /api/registration/verify/{verificationMessage}
 func verifyHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
@@ -33,7 +31,6 @@ type VerificationRequest struct {
 // POST /api/registration/verify
 func adminVerifyHandler(
 	db *database.Database,
-	config configuration.Configuration,
 	cur core.Current,
 	vars map[string]string,
 	w http.ResponseWriter,
