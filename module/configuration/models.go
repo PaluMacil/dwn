@@ -10,9 +10,25 @@ const (
 	CredentialPrefix = "CREDENTIAL:"
 )
 
+type FSNames []string
+
+func (fs FSNames) Includes(fsName string) bool {
+	for _, n := range fs {
+		if n == fsName {
+			return true
+		}
+	}
+	return false
+}
+
+var (
+	WellKnownAuthProviderIDs = FSNames{"GOOGLE"}
+	WellKnownSMTPProviderIDs = FSNames{"SENDGRID"}
+)
+
 const (
-	ForeignSystemOAuthGoogle  = "AUTH:GOOGLE"
-	ForeignSystemSMTPSendGrid = "SMTP:SENDGRID"
+	ForeignSystemTypeAuth = "AUTH"
+	ForeignSystemTypeSMTP = "SMTP"
 )
 
 type SetupConfiguration struct {
@@ -54,13 +70,14 @@ type AuthConfiguration struct {
 }
 
 type Credential struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
 	ID     string `json:"id"`
 	Secret string `json:"-"`
-	Type   string `json:"type"`
 }
 
 func (c Credential) Key() []byte {
-	key := append(c.Prefix(), []byte(c.Type)...)
+	key := append(c.Prefix(), []byte(c.Type+":")...)
 	return append(key, []byte(c.ID)...)
 }
 

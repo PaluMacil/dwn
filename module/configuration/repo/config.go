@@ -36,7 +36,7 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 		mode.Coalesce("DWN_PORT", "3035", "3035"),
 		mode.Coalesce("DWN_UI_PROXY_PORT", "443", "4200"),
 		//TODO: get this last folder level generalized and usable per project
-		mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/dwn-ui/dist/dwn-ui", "/home/dan/repos/dwn-ui/dist/dwn-ui"),
+		mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/dwn-ui/dist/", "/home/dan/repos/dwn-ui/dist/"),
 		mode.Coalesce("DWN_INITIAL_ADMIN", "", "dcwolf@gmail.com"),
 		mode.Coalesce("DWN_DATA_DIR", "data", "data"),
 		mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
