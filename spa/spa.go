@@ -6,9 +6,13 @@ import (
 	"strings"
 )
 
-type ContentRoot string
+type Config struct {
+	Path    string
+	Project string
+}
 
-func (root ContentRoot) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (c Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	root := path.Join(c.Path, c.Project)
 	fs := http.FileServer(http.Dir(root))
 	pathParts := strings.Split(r.URL.Path, `/`)
 	lastPart := pathParts[len(pathParts)-1]
