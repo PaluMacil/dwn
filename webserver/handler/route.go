@@ -93,6 +93,11 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("HTTP %d - %s", e.Status(), e)
 			http.Error(w, e.Error(), e.Status())
 		default:
+			// look for database errors and mark these as a 404
+			if h.db.IsKeyNotFoundErr(err) {
+				http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+				return
+			}
 			// Any error types we don't specifically look out for default
 			// to serving a HTTP 500
 			log.Printf("HTTP 500 - %s", e)

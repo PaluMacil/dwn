@@ -93,15 +93,15 @@ func sessionsHandler(
 		if err != nil {
 			return err
 		}
-		details[i].Session = s
+		details[i].Session = s.Info()
 		details[i].User = u
 	}
 	return json.NewEncoder(w).Encode(details)
 }
 
 type SessionDetails struct {
-	User    core.User    `json:"user"`
-	Session core.Session `json:"session"`
+	User    core.User        `json:"user"`
+	Session core.SessionInfo `json:"session"`
 }
 
 // DELETE /api/core/sessions/logout/{token}

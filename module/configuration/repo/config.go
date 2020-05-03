@@ -101,6 +101,7 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 }
 
 func (cr *ConfigurationRepo) ConnectDatabase(store database.Storer, db *database.Database) {
+	// TODO: get the env creds here, get end user id, and update the creds from db storage
 	cr.store, cr.db = store, db
 }
 

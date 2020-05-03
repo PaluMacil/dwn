@@ -100,7 +100,7 @@ func (p UserRepo) PurgeAll() error {
 		return err
 	}
 	for _, u := range users {
-		p.Delete(u.ID)
+		err = p.Delete(u.ID)
 		if err != nil {
 			return err
 		}

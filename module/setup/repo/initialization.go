@@ -81,6 +81,25 @@ func (p InitializationRepo) EnsureDatabase() error {
 		return err
 	}
 
+	envUserID, err := p.db.NextID()
+	if err != nil {
+		return err
+	}
+	envUser := core.User{
+		ID:          envUserID,
+		DisplayName: core.DisplayName("(ENV)"),
+		Emails: []core.Email{
+			{
+				Email:    "(ENV)",
+				Verified: true,
+			},
+		},
+		Locked: true,
+	}
+	if err := p.db.Users.Set(envUser); err != nil {
+		return err
+	}
+
 	builtinGroups := []core.Group{
 		{
 			Name:         core.BuiltInGroupAdmin,
@@ -136,6 +155,8 @@ func (p InitializationRepo) EnsureDatabase() error {
 	err = p.Set(setup.Initialization{
 		DatabaseInitDate: time.Now(),
 		WizardComplete:   false,
+		SetupUserID:      setupUserID,
+		EnvUserID:        envUserID,
 	})
 	if err != nil {
 		return err

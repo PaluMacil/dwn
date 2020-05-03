@@ -2,7 +2,6 @@ package application
 
 import (
 	"fmt"
-	configrepo "github.com/PaluMacil/dwn/module/configuration/repo"
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store/badgerstore"
@@ -10,6 +9,7 @@ import (
 	"github.com/PaluMacil/dwn/module/core/search"
 	"github.com/PaluMacil/dwn/webserver"
 
+	configrepo "github.com/PaluMacil/dwn/module/configuration/repo"
 	"github.com/PaluMacil/dwn/module/core/repo"
 	dashboardrepo "github.com/PaluMacil/dwn/module/dashboard/repo"
 	logutilrepo "github.com/PaluMacil/dwn/module/logutil/repo"
@@ -58,6 +58,7 @@ func defaultDatabase(config configuration.DatabaseConfiguration) (*database.Data
 	db.Groups = repo.NewGroupRepo(store, db)
 	db.UserGroups = repo.NewUserGroupRepo(store, db)
 
+	db.Config.Credential = configrepo.NewCredentialRepo(store, db)
 	db.Shopping.Items = shoppingrepo.NewItemRepo(store, db)
 	db.Log.Config = logutilrepo.NewLogConfigRepo(store, db)
 	//db.Log.Writer = repo.NewEntryRepo(store, db)

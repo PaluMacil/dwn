@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/module/configuration"
+	configurationapi "github.com/PaluMacil/dwn/module/configuration/api"
 	coreapi "github.com/PaluMacil/dwn/module/core/api"
 	dashboardapi "github.com/PaluMacil/dwn/module/dashboard/api"
 	oauthapi "github.com/PaluMacil/dwn/module/oauth/api"
@@ -84,6 +85,9 @@ func New(db *database.Database) *WebServer {
 	// ...server
 	serverRouter := dwnHost.PathPrefix("/api/server/").Subrouter()
 	serverapi.RegisterRoutes(serverRouter, apiFactory)
+	// ...configuration
+	configurationRouter := dwnHost.PathPrefix("/api/configuration/").Subrouter()
+	configurationapi.RegisterRoutes(configurationRouter, apiFactory)
 	// ...dashboard
 	dashboardRouter := dwnHost.PathPrefix("/api/dashboard/").Subrouter()
 	dashboardapi.RegisterRoutes(dashboardRouter, apiFactory)

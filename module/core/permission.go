@@ -6,6 +6,7 @@ const (
 	PermissionSetAdmin            = "SET_ADMIN"
 	PermissionProxyAsUser         = "PROXY_AS_USER"
 	PermissionViewAppSettings     = "VIEW_APP_SETTINGS"
+	PermissionChangeAppSettings   = "CHANGE_APP_SETTINGS"
 	PermissionManageAppDeployment = "MANAGE_APP_DEPLOYMENT"
 	PermissionStopServer          = "STOP_SERVER"
 	PermissionManageIndexes       = "MANAGE_INDEXES"
@@ -37,6 +38,7 @@ var Permissions = []string{
 	PermissionSetAdmin,
 	PermissionProxyAsUser,
 	PermissionViewAppSettings,
+	PermissionChangeAppSettings,
 	PermissionManageAppDeployment,
 	PermissionStopServer,
 	PermissionManageIndexes,

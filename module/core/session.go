@@ -29,6 +29,22 @@ func (s Session) Prefix() []byte {
 	return []byte(SessionPrefix)
 }
 
+func (s Session) Info() SessionInfo {
+	return SessionInfo{
+		IP:          s.IP,
+		Proxy:       s.Proxy,
+		CreatedDate: s.CreatedDate,
+		Heartbeat:   s.Heartbeat,
+	}
+}
+
+type SessionInfo struct {
+	IP          string    `json:"ip"`
+	Proxy       bool      `json:"proxy"`
+	CreatedDate time.Time `json:"createdDate"`
+	Heartbeat   time.Time `json:"heartbeat"`
+}
+
 func IP(r *http.Request) string {
 	ip := r.RemoteAddr
 	forwardForIP := r.Header.Get("X-Forwarded-For")

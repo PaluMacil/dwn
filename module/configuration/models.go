@@ -2,8 +2,10 @@ package configuration
 
 import (
 	"fmt"
+	"github.com/PaluMacil/dwn/database/store"
 	"golang.org/x/oauth2"
 	"os"
+	"time"
 )
 
 const (
@@ -26,10 +28,31 @@ var (
 	WellKnownSMTPProviderIDs = FSNames{"SENDGRID"}
 )
 
+type ForeignSystemType string
+
+func (t ForeignSystemType) Bytes() []byte {
+	return []byte(t)
+}
+
 const (
-	ForeignSystemTypeAuth = "AUTH"
-	ForeignSystemTypeSMTP = "SMTP"
+	ForeignSystemTypeAuth ForeignSystemType = "AUTH"
+	ForeignSystemTypeSMTP ForeignSystemType = "SMTP"
 )
+
+var ValidForeignSystemTypes = ForeignSystemTypes{
+	ForeignSystemTypeAuth, ForeignSystemTypeSMTP,
+}
+
+type ForeignSystemTypes []ForeignSystemType
+
+func (t ForeignSystemTypes) Includes(fsType ForeignSystemType) bool {
+	for _, n := range t {
+		if n == fsType {
+			return true
+		}
+	}
+	return false
+}
 
 type SetupConfiguration struct {
 	InitialAdmin string `json:"initialAdmin"`
@@ -70,14 +93,17 @@ type AuthConfiguration struct {
 }
 
 type Credential struct {
-	Name   string `json:"name"`
-	Type   string `json:"type"`
-	ID     string `json:"id"`
-	Secret string `json:"-"`
+	Name        string            `json:"name"`
+	Type        ForeignSystemType `json:"type"`
+	ID          string            `json:"id"`
+	Secret      string            `json:"-"`
+	CreatedBy   store.Identity    `json:"createdBy"`
+	CreatedDate time.Time         `json:"createdDate"`
 }
 
 func (c Credential) Key() []byte {
 	key := append(c.Prefix(), []byte(c.Type+":")...)
+	key = append(key, []byte(c.Name+":")...)
 	return append(key, []byte(c.ID)...)
 }
 
