@@ -95,11 +95,12 @@ func New(db *database.Database) *WebServer {
 	registrationRouter := dwnHost.PathPrefix("/api/registration/").Subrouter()
 	registrationapi.RegisterRoutes(registrationRouter, apiFactory)
 	// ...content roots
-	dwnHost.PathPrefix("/").Handler(
-		spa.Config{
-			Path:    config.WebServer.ContentRoot,
-			Project: "dwn-ui",
-		})
+	dwnuiSPA := spa.Config{
+		Path:    config.WebServer.ContentRoot,
+		Project: "dwn-ui",
+	}
+	dwnHost.PathPrefix("/").Handler(dwnuiSPA)
+	log.Printf("serving SPA dwn-ui from %s\n", dwnuiSPA)
 
 	return ws
 }

@@ -11,8 +11,12 @@ type Config struct {
 	Project string
 }
 
+func (c Config) String() string {
+	return path.Join(c.Path, c.Project)
+}
+
 func (c Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	root := path.Join(c.Path, c.Project)
+	root := c.String()
 	fs := http.FileServer(http.Dir(root))
 	pathParts := strings.Split(r.URL.Path, `/`)
 	lastPart := pathParts[len(pathParts)-1]
