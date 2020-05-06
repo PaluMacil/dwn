@@ -3,6 +3,8 @@ package repo
 import (
 	"errors"
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/module/shopping"
@@ -25,6 +27,9 @@ func (p ItemRepo) All() ([]shopping.Item, error) {
 	for i, v := range items {
 		shoppingItems[i] = v.(shopping.Item)
 	}
+	sort.Slice(shoppingItems, func(i, j int) bool {
+		return strings.ToLower(shoppingItems[i].Name) < strings.ToLower(shoppingItems[j].Name)
+	})
 
 	return shoppingItems, err
 }
