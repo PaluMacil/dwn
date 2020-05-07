@@ -34,14 +34,14 @@ func open(config configuration.DatabaseConfiguration) (*badger.DB, error) {
 
 			lockPath := filepath.Join(originalOpts.Dir, "LOCK")
 			if err = os.Remove(lockPath); err != nil {
-				return nil, fmt.Errorf(`removing "LOCK": %s`, err)
+				return nil, fmt.Errorf(`removing "LOCK": %w`, err)
 			}
 			retryOpts := originalOpts
 			retryOpts.Truncate = true
 			log.Println("attempting to unlock database, truncating value log")
 			bgr, err = badger.Open(retryOpts)
 			if err != nil {
-				return nil, fmt.Errorf("could not unlock database: %s", err)
+				return nil, fmt.Errorf("could not unlock database: %w", err)
 			}
 			return bgr, nil
 		}
@@ -53,14 +53,14 @@ func open(config configuration.DatabaseConfiguration) (*badger.DB, error) {
 func New(config configuration.DatabaseConfiguration) (*BadgerStore, error) {
 	bgr, err := open(config)
 	if err != nil {
-		return nil, fmt.Errorf("opening badger database: %s", err)
+		return nil, fmt.Errorf("opening badger database: %w", err)
 	}
 
 	log.Println("db open... starting tickers and sequences")
 	gcTicker := time.NewTicker(10 * time.Minute)
 	seq, err := bgr.GetSequence([]byte(globalSequenceKey), 100)
 	if err != nil {
-		return nil, fmt.Errorf("getting badger sequence: %s", err)
+		return nil, fmt.Errorf("getting badger sequence: %w", err)
 	}
 	bs := &BadgerStore{
 		bgr:      bgr,
@@ -130,7 +130,7 @@ func (bs *BadgerStore) Get(obj database.Item) (database.Item, error) {
 		return nil
 	})
 	if err != nil {
-		return obj, fmt.Errorf(`getting "%s" (%T): %s`, string(obj.Key()), obj, err)
+		return obj, fmt.Errorf(`getting "%s" (%T): %w`, string(obj.Key()), obj, err)
 	}
 	var buf bytes.Buffer
 	_, err = buf.Write(rawBytes)
@@ -155,7 +155,7 @@ func (bs *BadgerStore) Set(obj database.Item) error {
 	return bs.bgr.Update(func(txn *badger.Txn) error {
 		err := txn.Set(obj.Key(), buf.Bytes())
 		if err != nil {
-			return fmt.Errorf(`setting "%s" (%T): %s`, string(obj.Key()), obj, err)
+			return fmt.Errorf(`setting "%s" (%T): %w`, string(obj.Key()), obj, err)
 		}
 		return nil
 	})

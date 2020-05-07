@@ -55,7 +55,8 @@ func (t ForeignSystemTypes) Includes(fsType ForeignSystemType) bool {
 }
 
 type SetupConfiguration struct {
-	InitialAdmin string `json:"initialAdmin"`
+	InitialAdmin    string `json:"initialAdmin"`
+	InitialPassword string `json:"-"`
 }
 
 type Configuration struct {

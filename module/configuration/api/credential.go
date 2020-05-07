@@ -33,7 +33,7 @@ func getCredentialHandler(
 	credType := configuration.ForeignSystemType(vars["credType"])
 
 	if credType == "" {
-		return errs.StatusError{http.StatusBadRequest, errors.New("credential query must specify type")}
+		return errs.StatusBadRequest("credential query must specify type")
 	}
 
 	// handle requests for a list of credentials

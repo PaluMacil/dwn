@@ -59,10 +59,10 @@ func NewUserIndex(db *database.Database, dataDir string) (*UserIndex, error) {
 		mapping := bleve.NewIndexMapping()
 		index, err = bleve.New(indexPath, mapping)
 		if err != nil {
-			return nil, fmt.Errorf(`creating user index: %s`, err)
+			return nil, fmt.Errorf(`creating user index: %w`, err)
 		}
 	} else if err != nil {
-		return nil, fmt.Errorf(`opening user index: %s`, err)
+		return nil, fmt.Errorf(`opening user index: %w`, err)
 	}
 	return &UserIndex{index, db}, nil
 }

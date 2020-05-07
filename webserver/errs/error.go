@@ -3,6 +3,7 @@ package errs
 import (
 	"errors"
 	"net/http"
+	"strings"
 )
 
 // The following error handling is inspired by Matt Silverlock's blog, with the switch
@@ -65,3 +66,11 @@ var (
 	StatusNotFound     = StatusError{http.StatusNotFound, errors.New(http.StatusText(http.StatusNotFound))}
 	StatusLocked       = StatusError{http.StatusLocked, errors.New(http.StatusText(http.StatusLocked))}
 )
+
+func StatusBadRequest(problems ...string) StatusError {
+	errorString := strings.Join(problems, ";")
+	return StatusError{
+		Code: http.StatusBadRequest,
+		Err:  errors.New(errorString),
+	}
+}
