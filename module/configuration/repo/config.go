@@ -31,13 +31,13 @@ func NewConfigurationRepo(prod bool) (*ConfigurationRepo, error) {
 func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	mode := configuration.Mode{Prod: prod}
 	const devEncKey = "3d17618d4297f83665b32e28f9b1c23d"
-	var valProtocol, valHost, valPort, valUIProxyPort, valContentRoot, valInitialAdmin, valDataDir, valEncryptionKey = mode.Coalesce("DWN_PROTOCOL", "https", "http"),
+	var valProtocol, valHost, valPort, valUIProxyPort, valContentRoot, valInitialAdmin, valInitialPassword, valDataDir, valEncryptionKey = mode.Coalesce("DWN_PROTOCOL", "https", "http"),
 		mode.Coalesce("DWN_HOST", "danwolf.net", "localhost"),
 		mode.Coalesce("DWN_PORT", "3035", "3035"),
 		mode.Coalesce("DWN_UI_PROXY_PORT", "443", "4200"),
-		//TODO: get this last folder level generalized and usable per project
 		mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/ui/", "/home/dan/repos/dwn-ui/dist/"),
 		mode.Coalesce("DWN_INITIAL_ADMIN", "", "dcwolf@gmail.com"),
+		mode.Coalesce("DWN_INITIAL_PASSWORD", "", ""),
 		mode.Coalesce("DWN_DATA_DIR", "data", "data"),
 		mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
 

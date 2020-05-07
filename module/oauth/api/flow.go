@@ -69,7 +69,12 @@ func flowHandler(
 				}
 				user = claims.CreateUser(id, displayName)
 				if claims.Email == config.Setup.InitialAdmin {
-					//TODO: handle err below and add other users to User group
+					if config.Setup.InitialPassword != "" {
+						user.PasswordHash, err = core.CreateHash(config.Setup.InitialAdmin)
+						if err != nil {
+							return err
+						}
+					}
 					err = db.UserGroups.Set(core.UserGroup{
 						UserID:    id,
 						GroupName: core.BuiltInGroupAdmin,
