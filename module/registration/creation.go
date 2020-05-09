@@ -21,7 +21,7 @@ type UserCreationRequest struct {
 // of validation errors or an empty slice if the request is valid
 func (req UserCreationRequest) Validate() []string {
 	validationErrors := make([]string, 0)
-	//TODO: check for restricted fields, bad pw choice, cetc
+	//TODO: check for restricted fields, bad pw choice, etc and probably make this a real error type
 	return validationErrors
 }
 

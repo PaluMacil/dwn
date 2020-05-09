@@ -9,7 +9,7 @@ import (
 // The following error handling is inspired by Matt Silverlock's blog, with the switch
 // statement on the error type being used in the handler wrapper. I have added to the
 // original example with additional error types.
-// TODO: add validation error type
+
 // https://blog.questionable.services/article/http-handler-error-handling-revisited/
 // His snippets are MIT licensed. See bottom of this file for license text.
 
