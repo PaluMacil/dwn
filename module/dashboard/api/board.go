@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/PaluMacil/dwn/database"
@@ -21,7 +22,7 @@ func boardHandler(
 	}
 	board, err := db.Dashboard.Board.Get()
 	if err != nil {
-		return err
+		return fmt.Errorf("getting dashboard: %w", err)
 	}
 
 	return json.NewEncoder(w).Encode(board)

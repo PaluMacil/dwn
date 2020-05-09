@@ -16,5 +16,5 @@ func NewDashboardRepo(store database.Storer, db *database.Database) *DashboardRe
 
 func (r DashboardRepo) Get() (dashboard.Dashboard, error) {
 	projects, err := r.db.Dashboard.Projects.All()
-	return dashboard.Dashboard{projects}, err
+	return dashboard.Dashboard{Projects: projects}, err
 }

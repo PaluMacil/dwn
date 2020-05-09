@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -27,14 +28,18 @@ func handleInfo(
 
 	info, err := db.Setup.Initialization.Get()
 	if err != nil {
-		return err
+		return fmt.Errorf("getting setup information: %w", err)
 	}
 
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 
 	config := db.Config.Get()
-	dataSize, _ := dirSize(config.Database.DataDir)
+	dirName := config.Database.DataDir
+	dataSize, err := dirSize(dirName)
+	if err != nil {
+		return fmt.Errorf("getting size of data directory, %s: %w", dirName, err)
+	}
 
 	resp := InfoResponse{
 		Config:          config,

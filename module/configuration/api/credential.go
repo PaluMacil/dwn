@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
 	"github.com/PaluMacil/dwn/module/configuration"
@@ -28,7 +28,7 @@ func getCredentialHandler(
 	var credentialList []configuration.Credential
 	credName, err := url.QueryUnescape(vars["credName"])
 	if err != nil {
-		return err
+		return fmt.Errorf("unescaping credName: %w", err)
 	}
 	credType := configuration.ForeignSystemType(vars["credType"])
 
@@ -42,7 +42,7 @@ func getCredentialHandler(
 			var err error
 			credentialList, err = db.Config.Credential.AllOf(credType)
 			if err != nil {
-				return err
+				return fmt.Errorf("getting all credentials of type %s: %w", credType, err)
 			}
 			return json.NewEncoder(w).Encode(credentialList)
 		}
@@ -52,7 +52,7 @@ func getCredentialHandler(
 	// handle requests for a specific credential
 	credential, err = db.Config.Credential.Get(credName, credType)
 	if err != nil {
-		return err
+		return fmt.Errorf("getting credential %s of type %s: %w", credName, credType, err)
 	}
 
 	return json.NewEncoder(w).Encode(credential)
@@ -89,7 +89,7 @@ func postCredentialHandler(
 	}
 	var request CredentialCreationRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return err
+		return fmt.Errorf("decoding credential creation request: %w", err)
 	}
 	credential := request.Credential(cur.User.ID)
 

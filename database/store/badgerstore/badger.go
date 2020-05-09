@@ -3,6 +3,7 @@ package badgerstore
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"github.com/PaluMacil/dwn/module/configuration"
 	"log"
@@ -105,7 +106,7 @@ func (bs BadgerStore) IsKeyNotFoundErr(err error) bool {
 	if err == nil {
 		return false
 	}
-	return strings.Contains(err.Error(), badger.ErrKeyNotFound.Error())
+	return errors.Is(err, badger.ErrKeyNotFound)
 }
 
 func (bs BadgerStore) KeyNotFoundErr() error {

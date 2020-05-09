@@ -23,6 +23,6 @@ func (c Config) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(lastPart, ".") {
 		fs.ServeHTTP(w, r)
 	} else {
-		http.ServeFile(w, r, path.Join(string(root), "index.html"))
+		http.ServeFile(w, r, path.Join(root, "index.html"))
 	}
 }

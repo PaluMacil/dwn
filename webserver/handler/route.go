@@ -57,7 +57,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("dwn-token")
 	cur, err := core.GetCurrent(token, h.db.Providers)
 	if err != nil {
-		log.Printf("couldn't get current user with token %s requesting %s", token, r.URL.Path)
+		log.Printf("couldn't get current user with token %s requesting %s: %s", token, r.URL.Path, err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}

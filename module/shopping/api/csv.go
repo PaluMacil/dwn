@@ -29,7 +29,7 @@ func importCSVHandler(
 	}
 	file, _, err := r.FormFile("file")
 	if err != nil {
-		return err
+		return fmt.Errorf("getting file with form key 'file': %w", err)
 	}
 	defer file.Close()
 	rdr := csv.NewReader(file)
@@ -39,7 +39,7 @@ func importCSVHandler(
 			break
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("reading record %d: %w", i, err)
 		}
 		if i == 0 {
 			continue
@@ -57,21 +57,22 @@ func importCSVHandler(
 				Err:  fmt.Errorf("parsing csv upload: expected numeric quantity field, got %s", record[2]),
 			}
 		}
+		name, note := record[0], record[1]
 		item := shopping.Item{
-			Name:     record[0],
+			Name:     name,
 			Quantity: quantity,
-			Note:     record[1],
+			Note:     note,
 			AddedBy:  cur.User.DisplayName,
 			Added:    time.Now(),
 		}
 		err = db.Shopping.Items.Set(item)
 		if err != nil {
-			return err
+			return fmt.Errorf("setting shopping item %s: %w", name, err)
 		}
 	}
 	items, err := db.Shopping.Items.All()
 	if err != nil {
-		return err
+		return fmt.Errorf("getting list of all shopping items: %w", err)
 	}
 
 	return json.NewEncoder(w).Encode(items)

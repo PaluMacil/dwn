@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"time"
@@ -78,7 +79,7 @@ func listHandler(
 	}
 	items, err := db.Shopping.Items.All()
 	if err != nil {
-		return err
+		return fmt.Errorf("getting list of all shopping items: %w", err)
 	}
 
 	return json.NewEncoder(w).Encode(items)

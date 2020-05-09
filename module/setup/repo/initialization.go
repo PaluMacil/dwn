@@ -44,6 +44,7 @@ func (p InitializationRepo) Set(initialization setup.Initialization) error {
 	return p.store.Set(&initialization)
 }
 
+// EnsureDatabase checks that the database has been set up. If it hasn't been, it performs initialization
 func (p InitializationRepo) EnsureDatabase() error {
 	complete, err := p.dbInitCompleted()
 	if err != nil {

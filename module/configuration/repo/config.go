@@ -64,7 +64,8 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	config := configuration.Configuration{
 		WebServer: ws,
 		Setup: configuration.SetupConfiguration{
-			InitialAdmin: valInitialAdmin,
+			InitialAdmin:    valInitialAdmin,
+			InitialPassword: valInitialPassword,
 		},
 		Database: configuration.DatabaseConfiguration{
 			DataDir:       valDataDir,

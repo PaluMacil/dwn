@@ -45,14 +45,14 @@ func flowHandler(
 
 		response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 		if err != nil {
-			return err
+			return fmt.Errorf("getting access_token: %w", err)
 		}
 
 		defer response.Body.Close()
 		claims := &oauth.GoogleClaims{}
 		err = json.NewDecoder(response.Body).Decode(claims)
 		if err != nil {
-			return err
+			return fmt.Errorf("decoding oauth claims: %w", err)
 		}
 
 		if claims.VerifiedEmail {
@@ -61,18 +61,18 @@ func flowHandler(
 			if db.IsKeyNotFoundErr(err) {
 				displayName, err := generateDisplayName(claims.GivenName)
 				if err != nil {
-					return err
+					return fmt.Errorf("generating new displayname for oauth user: %w", err)
 				}
 				id, err := db.NextID()
 				if err != nil {
-					return err
+					return fmt.Errorf("getting new ID for new oauth user: %w", err)
 				}
 				user = claims.CreateUser(id, displayName)
 				if claims.Email == config.Setup.InitialAdmin {
 					if config.Setup.InitialPassword != "" {
 						user.PasswordHash, err = core.CreateHash(config.Setup.InitialAdmin)
 						if err != nil {
-							return err
+							return fmt.Errorf("hashing password of initial admin: %w", err)
 						}
 					}
 					err = db.UserGroups.Set(core.UserGroup{
@@ -80,26 +80,26 @@ func flowHandler(
 						GroupName: core.BuiltInGroupAdmin,
 					})
 					if err != nil {
-						return err
+						return fmt.Errorf("saving initial admin user to admin group: %w", err)
 					}
 				}
 			} else if err != nil {
-				return err
+				return fmt.Errorf("getting user by email during oauth login: %w", err)
 			}
 			user.LastLogin = time.Now()
 			err = db.Users.Set(user)
 			if err != nil {
-				return err
+				return fmt.Errorf("creating user from oauth flow: %w", err)
 			}
 			ip := core.IP(r)
 			session := db.Sessions.GenerateFor(user.ID, ip)
 			err = db.Sessions.Set(session)
 			if err != nil {
-				return err
+				return fmt.Errorf("creating session from oauth flow: %w", err)
 			}
 			tmpl, err := template.New("login").Parse(loginCallbackPage)
 			if err != nil {
-				return err
+				return fmt.Errorf("parsing login callback page during oath flow: %w", err)
 			}
 			return tmpl.Execute(w,
 				loginCallbackData{
