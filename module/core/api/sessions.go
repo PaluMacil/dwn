@@ -23,7 +23,7 @@ func loginHandler(
 		return err
 	}
 	ip := core.IP(r)
-	userInfo, session, result, err := loginRequest.Do(db.Providers, ip)
+	userInfo, session, result, err := db.Sessions.DoLogin(loginRequest, ip)
 	// TODO: this err is checked in LoginResultError which is at the bottom of the switch; fix this
 	// TODO: add minimum wait delay
 	switch result {

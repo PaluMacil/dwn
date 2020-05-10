@@ -15,16 +15,17 @@ you must set and encryption key and cannot use the default dev key.
 
 ### Core Settings
 
-| setting               | env                | prod                 | dev                              |
-|-----------------------|--------------------|----------------------|----------------------------------|
-| protocol              | DWN_PROTOCOL       | https                | http                             |
-| host                  | DWN_HOST           | danwolf.net          | localhost                        |
-| port (api/server)     | DWN_PORT           | 3035                 | 3035                             |
-| ui port               | DWN_UI_PROXY_PORT  | 443                  | 4200                             |
-| content root (ui)     | DWN_CONTENT_ROOT   | /opt/danwolf.net/ui  | /home/dan/repos/dwn-ui/dist      |
-| initial admin         | DWN_INITIAL_ADMIN  | (none configured)    | dcwolf@gmail.com                 |
-| data directory        | DWN_DATA_DIR       | data                 | data                             |
-| master encryption key | DWN_MASTER_ENC_KEY | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
+| setting               | env                  | prod                 | dev                              |
+|-----------------------|----------------------|----------------------|----------------------------------|
+| protocol              | DWN_PROTOCOL         | https                | http                             |
+| host                  | DWN_HOST             | danwolf.net          | localhost                        |
+| port (api/server)     | DWN_PORT             | 3035                 | 3035                             |
+| ui port               | DWN_UI_PROXY_PORT    | 443                  | 4200                             |
+| content root (ui)     | DWN_CONTENT_ROOT     | /opt/danwolf.net/ui  | /home/dan/repos/dwn-ui/dist      |
+| initial admin         | DWN_INITIAL_ADMIN    | (none configured)    | dcwolf@gmail.com                 |
+| initial password      | DWN_INITIAL_PASSWORD | (none configured)    | (none configured)                |
+| data directory        | DWN_DATA_DIR         | data                 | data                             |
+| master encryption key | DWN_MASTER_ENC_KEY   | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
 
 Note that if you are developing on **Windows**, encyption is disabled (along with memory-mapped files since Windows uses 
 disk IO instead of memory mapped files). You will also need to set your own content root if you are using Windows or 
@@ -35,7 +36,8 @@ user registration. This user will not have a default password, so setting up an 
 Google will also be required unless you also set an initial password. Once this user logs in, this environmental 
 variable should be removed. The initial password is an option if you don't want to use an auth provider for the initial 
 admin. This will be hashed as soon as the user is created, and at that point you should remove the variable and restart 
-the server.
+the server. If created from the registration form instead of the oauth flow, be sure to register with a password 
+matching the configured initial password or the user will not be added to the admin group. 
 
 The **ui port** is used for building URLs for things like OAuth2 redirects. This is the port which will be used to 
 access the website. The **port** setting, on the other hand, represents the port the server application is listening to. 

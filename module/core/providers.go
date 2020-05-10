@@ -42,6 +42,7 @@ type SessionProvider interface {
 	Delete(token string) error
 	PurgeAll() error
 	UpdateHeartbeat(session *Session, ip string) error
+	DoLogin(req LoginRequest, ip string) (UserInfo, Session, LoginResult, error)
 }
 
 type UserGroupProvider interface {
