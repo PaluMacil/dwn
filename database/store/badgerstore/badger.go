@@ -94,8 +94,10 @@ again:
 }
 
 func (bs BadgerStore) Close() error {
+	log.Println("stopping database gc ticker and running last collection")
 	bs.gcTicker.Stop()
 	bs.runGC()
+	log.Println("releasing sequences")
 	if err := bs.seq.Release(); err != nil {
 		log.Println("could not release badger sequence")
 	}
