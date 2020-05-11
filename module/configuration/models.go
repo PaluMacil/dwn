@@ -98,14 +98,14 @@ type Credential struct {
 	Type        ForeignSystemType `json:"type"`
 	ID          string            `json:"id"`
 	Secret      string            `json:"-"`
+	FromEnv     bool              `json:"fromEnv"`
 	CreatedBy   store.Identity    `json:"createdBy"`
 	CreatedDate time.Time         `json:"createdDate"`
 }
 
 func (c Credential) Key() []byte {
 	key := append(c.Prefix(), []byte(c.Type+":")...)
-	key = append(key, []byte(c.Name+":")...)
-	return append(key, []byte(c.ID)...)
+	return append(key, []byte(c.Name+":")...)
 }
 
 func (c Credential) Prefix() []byte {
