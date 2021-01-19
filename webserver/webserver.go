@@ -59,13 +59,11 @@ func New(db *database.Database) *WebServer {
 	}
 
 	// subdomain subrouters
+	echo.RegisterRoutes(echoHistoryHost, apiFactory)
 	if config.Prod {
 		echoHost.PathPrefix("/").Handler(echo.NewEchoHandler())
-		echoHistoryHost.PathPrefix("/").Handler(echo.NewHistoryHandler())
 	} else {
-		echoHistoryHost.PathPrefix("/s/echo-history/").Handler(echo.NewHistoryHandler())
 		echoHost.PathPrefix("/s/echo/").Handler(echo.NewEchoHandler())
-		echoHistoryHost.Path("/s/echo-history").Handler(echo.NewHistoryHandler())
 		echoHost.Path("/s/echo").Handler(echo.NewEchoHandler())
 	}
 

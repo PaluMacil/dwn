@@ -3,6 +3,8 @@ package echo
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/PaluMacil/dwn/database"
+	"github.com/PaluMacil/dwn/module/core"
 	"net/http"
 	"sort"
 	"sync"
@@ -59,4 +61,26 @@ func (mod HistoryModule) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "%v", err)
 	}
+}
+
+func (mod HistoryModule) historyHandler(
+	db *database.Database,
+	cur core.Current,
+	vars map[string]string,
+	w http.ResponseWriter,
+	r *http.Request,
+) error {
+	if err := cur.Can(core.PermissionViewEchoHistory); err != nil {
+		return err
+	}
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		return nil
+	} else if r.Method != "GET" {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return nil
+	}
+	return mod.history.write(w)
 }

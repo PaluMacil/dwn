@@ -30,7 +30,8 @@ const (
 
 // Projects Module
 const (
-	PermissionListProjects = "LIST_PROJECTS"
+	PermissionListProjects    = "LIST_PROJECTS"
+	PermissionViewEchoHistory = "VIEW_ECHO_HISTORY"
 )
 
 var Permissions = []string{
@@ -55,4 +56,5 @@ var Permissions = []string{
 	PermissionSetDefaultParty,
 
 	PermissionListProjects,
+	PermissionViewEchoHistory,
 }
