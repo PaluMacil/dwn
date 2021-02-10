@@ -56,7 +56,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// get the current session information
 	token := r.Header.Get("dwn-token")
 	cur, err := core.GetCurrent(token, h.db.Providers)
-	if err != nil {
+	if err != nil { //TODO: if session not found, 401 Unauthorized is more appropriate
 		log.Printf("couldn't get current user with token %s requesting %s: %s", token, r.URL.Path, err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
