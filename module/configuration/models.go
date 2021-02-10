@@ -98,7 +98,6 @@ type Credential struct {
 	Type        ForeignSystemType `json:"type"`
 	ID          string            `json:"id"`
 	Secret      string            `json:"-"`
-	FromEnv     bool              `json:"fromEnv"`
 	CreatedBy   store.Identity    `json:"createdBy"`
 	CreatedDate time.Time         `json:"createdDate"`
 }
