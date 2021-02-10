@@ -6,16 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PaluMacil/dwn/module/configuration"
+	"github.com/dgraph-io/badger/v3"
 	"log"
-	"os"
-	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/PaluMacil/dwn/database"
 	"github.com/PaluMacil/dwn/database/store"
-
-	"github.com/dgraph-io/badger/v2"
 )
 
 const globalSequenceKey = "GLOBAL_SEQUENCE"
@@ -27,25 +23,9 @@ type BadgerStore struct {
 }
 
 func open(config configuration.DatabaseConfiguration) (*badger.DB, error) {
-	originalOpts := opts(config)
+	originalOpts := opts(config).WithIndexCacheSize(100)
 	bgr, err := badger.Open(originalOpts)
 	if err != nil {
-		if strings.Contains(err.Error(), "LOCK") {
-			log.Println("database locked, probably due to improper shutdown")
-
-			lockPath := filepath.Join(originalOpts.Dir, "LOCK")
-			if err = os.Remove(lockPath); err != nil {
-				return nil, fmt.Errorf(`removing "LOCK": %w`, err)
-			}
-			retryOpts := originalOpts
-			retryOpts.Truncate = true
-			log.Println("attempting to unlock database, truncating value log")
-			bgr, err = badger.Open(retryOpts)
-			if err != nil {
-				return nil, fmt.Errorf("could not unlock database: %w", err)
-			}
-			return bgr, nil
-		}
 		return nil, err
 	}
 	return bgr, nil

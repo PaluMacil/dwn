@@ -2,8 +2,7 @@ package badgerstore
 
 import (
 	"github.com/PaluMacil/dwn/module/configuration"
-	"github.com/dgraph-io/badger/v2"
-	"github.com/dgraph-io/badger/v2/options"
+	"github.com/dgraph-io/badger/v3/options"
 )
 
 func opts(config configuration.DatabaseConfiguration) badger.Options {
