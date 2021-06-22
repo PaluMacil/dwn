@@ -70,7 +70,7 @@ func flowHandler(
 				user = claims.CreateUser(id, displayName)
 				if claims.Email == config.Setup.InitialAdmin {
 					if config.Setup.InitialPassword != "" {
-						user.PasswordHash, err = core.CreateHash(config.Setup.InitialAdmin)
+						user.PasswordHash, err = core.CreateHash(config.Setup.InitialPassword)
 						if err != nil {
 							return fmt.Errorf("hashing password of initial admin: %w", err)
 						}
