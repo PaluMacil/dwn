@@ -6,7 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PaluMacil/dwn/module/configuration"
-	"github.com/dgraph-io/badger/v3"
+	"github.com/dgraph-io/badger/v2"
+	"github.com/dgraph-io/badger/v2/options"
 	"log"
 	"time"
 
@@ -24,6 +25,16 @@ type BadgerStore struct {
 
 func open(config configuration.DatabaseConfiguration) (*badger.DB, error) {
 	originalOpts := opts(config).WithIndexCacheSize(100)
+	if config.FileIO {
+		log.Println("using FileIO and related settings for small RAM devices")
+		originalOpts.TableLoadingMode = options.FileIO
+		originalOpts.ValueLogLoadingMode = options.FileIO
+		originalOpts.MaxTableSize = 1 << 20
+		originalOpts.NumMemtables = 1
+		originalOpts.KeepL0InMemory = false
+		originalOpts.LoadBloomsOnOpen = false
+	}
+
 	bgr, err := badger.Open(originalOpts)
 	if err != nil {
 		return nil, err

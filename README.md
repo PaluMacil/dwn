@@ -15,17 +15,18 @@ you must set and encryption key and cannot use the default dev key.
 
 ### Core Settings
 
-| setting               | env                  | prod                 | dev                              |
-|-----------------------|----------------------|----------------------|----------------------------------|
-| protocol              | DWN_PROTOCOL         | https                | http                             |
-| host                  | DWN_HOST             | danwolf.net          | localhost                        |
-| port (api/server)     | DWN_PORT             | 3035                 | 3035                             |
-| ui port               | DWN_UI_PROXY_PORT    | 443                  | 4200                             |
-| content root (ui)     | DWN_CONTENT_ROOT     | /opt/danwolf.net/ui  | /home/dan/repos/dwn-ui/dist      |
-| initial admin         | DWN_INITIAL_ADMIN    | (none configured)    | dcwolf@gmail.com                 |
-| initial password      | DWN_INITIAL_PASSWORD | (none configured)    | (none configured)                |
-| data directory        | DWN_DATA_DIR         | data                 | data                             |
-| master encryption key | DWN_MASTER_ENC_KEY   | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
+| setting                | env                  | prod                 | dev                              |
+|------------------------|----------------------|----------------------|----------------------------------|
+| protocol               | DWN_PROTOCOL         | https                | http                             |
+| host                   | DWN_HOST             | danwolf.net          | localhost                        |
+| port (api/server)      | DWN_PORT             | 3035                 | 3035                             |
+| ui port                | DWN_UI_PROXY_PORT    | 443                  | 4200                             |
+| content root (ui)      | DWN_CONTENT_ROOT     | /opt/danwolf.net/ui  | /home/dan/repos/dwn-ui/dist      |
+| initial admin          | DWN_INITIAL_ADMIN    | (none configured)    | dcwolf@gmail.com                 |
+| initial password       | DWN_INITIAL_PASSWORD | (none configured)    | (none configured)                |
+| data directory         | DWN_DATA_DIR         | data                 | data                             |
+| master encryption key  | DWN_MASTER_ENC_KEY   | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
+| use FileIO / small RAM | DWN_DATA_FILE_IO     | false                | false                            |
 
 Note that if you are developing on **Windows**, encyption is disabled (along with memory-mapped files since Windows uses 
 disk IO instead of memory mapped files). You will also need to set your own content root if you are using Windows or 
@@ -115,9 +116,15 @@ docker run -d \
   dwn-server
 ```
 
+### Low RAM / Raspberry Pi
+
+DWN_DATA_FILE_IO might need to be set to true on a Raspberry Pi due to memory map issues in badger. This is not 
+available in badger version 3.
+
 ## Licensing
 
-The license for this project is MIT but some dependencies might have Apache or similar licenses. General reuse isn't necessarily intended and APIs might break, but it is permissible.
+The license for this project is MIT but some dependencies might have Apache or similar licenses. General reuse isn't 
+necessarily intended and APIs might break, but it is permissible.
 
 ## Roadmap
 
@@ -142,6 +149,6 @@ The license for this project is MIT but some dependencies might have Apache or s
 
 Improve:
 - get from env config: `TokenName:   "dwn-token"`
-- Make sure certain keys (e.g. email) are not case sensitive
+- Make sure certain keys (e.g. email) are not case-sensitive
 - document use of environmental variables
 - when routing, first trim off base url (if base url isn't '/', then currently routing will be misaligned when split and break)

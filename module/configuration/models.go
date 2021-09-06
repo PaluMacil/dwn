@@ -77,6 +77,7 @@ type WebServerConfiguration struct {
 
 type DatabaseConfiguration struct {
 	DataDir       string `json:"dataDir"`
+	FileIO        bool   `json:"fileIO"`
 	EncryptionKey []byte `json:"-"`
 }
 

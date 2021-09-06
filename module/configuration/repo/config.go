@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"strconv"
 	"sync"
 
 	"golang.org/x/oauth2"
@@ -31,15 +32,21 @@ func NewConfigurationRepo(prod bool) (*ConfigurationRepo, error) {
 func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	mode := configuration.Mode{Prod: prod}
 	const devEncKey = "3d17618d4297f83665b32e28f9b1c23d"
-	var valProtocol, valHost, valPort, valUIProxyPort, valContentRoot, valInitialAdmin, valInitialPassword, valDataDir, valEncryptionKey = mode.Coalesce("DWN_PROTOCOL", "https", "http"),
-		mode.Coalesce("DWN_HOST", "danwolf.net", "localhost"),
-		mode.Coalesce("DWN_PORT", "3035", "3035"),
-		mode.Coalesce("DWN_UI_PROXY_PORT", "443", "4200"),
-		mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/ui/", "/home/dan/repos/dwn-ui/dist/"),
-		mode.Coalesce("DWN_INITIAL_ADMIN", "", "dcwolf@gmail.com"),
-		mode.Coalesce("DWN_INITIAL_PASSWORD", "", ""),
-		mode.Coalesce("DWN_DATA_DIR", "data", "data"),
-		mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
+
+	valProtocol := mode.Coalesce("DWN_PROTOCOL", "https", "http")
+	valHost := mode.Coalesce("DWN_HOST", "danwolf.net", "localhost")
+	valPort := mode.Coalesce("DWN_PORT", "3035", "3035")
+	valUIProxyPort := mode.Coalesce("DWN_UI_PROXY_PORT", "443", "4200")
+	valContentRoot := mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/ui/", "/home/dan/repos/dwn-ui/dist/")
+	valInitialAdmin := mode.Coalesce("DWN_INITIAL_ADMIN", "", "dcwolf@gmail.com")
+	valInitialPassword := mode.Coalesce("DWN_INITIAL_PASSWORD", "", "")
+	valDataDir := mode.Coalesce("DWN_DATA_DIR", "data", "data")
+	valEncryptionKey := mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
+	fileIO, err := strconv.ParseBool(mode.Coalesce("DWN_DATA_FILE_IO", "false", "false"))
+	if err != nil {
+		log.Printf("could not parse DWN_DATA_FILE_IO bool from environment: %s\n", err)
+		fileIO = false
+	}
 
 	if prod && valEncryptionKey == devEncKey {
 		return nil, fmt.Errorf("a encryption key must not be empty or the same as the dev key")
@@ -69,6 +76,7 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 		},
 		Database: configuration.DatabaseConfiguration{
 			DataDir:       valDataDir,
+			FileIO:        fileIO,
 			EncryptionKey: []byte(valEncryptionKey),
 		},
 		Prod: prod,
