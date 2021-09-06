@@ -111,6 +111,7 @@ docker run -d \
   --name dwn \
   --add-host=host.docker.internal:host-gateway \
   --env-file SECRETS.txt \
+  -v ${pwd}/../dwn-ui/dist/dwn-ui:/opt/danwolf.net/ui
   dwn-server
 ```
 

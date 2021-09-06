@@ -3,7 +3,7 @@ ADD . /go/src/dwn
 WORKDIR /go/src/dwn
 RUN go build -o dwn-server
 
-FROM alpine
-COPY --from=build-server /go/src/dwn/dwn-server .
+FROM ubuntu
+COPY --from=build-server /go/src/dwn/dwn-server /opt/dwn/dwn-server
 
-CMD ["dwn-server", "prod"]
+CMD ["/opt/dwn/dwn-server", "prod"]
