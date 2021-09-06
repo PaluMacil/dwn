@@ -86,6 +86,34 @@ For development defaults, leave off the prod subcommand:
 To run the UI (dev mode only--prod mode serves its own files), use the command `ng serve` which depends upon 
 [Node](https://nodejs.org/) and the [Angular CLI](https://angular.io/).
 
+### Docker
+
+#### Build
+```
+docker build -t dwn-server .
+```
+Also, build dwn-ui with `ng build` and populate a SECRETS.txt. If you instead want to copy locally built files, you can
+use scp with `scp -r dist p3:/home/pi/dwn-ui/dist`. This might be necessary in low RAM environments.
+
+#### SECRETS.txt
+
+Use a SECRETS.txt file to pass environmental variables to Docker. Separate keys and values with an `=` and do **not** 
+enclose values in quotes like you might do ion other configuration systems.
+
+#### Run
+You can run the image with the following command. The `--add-host` flag [adds a custom host-to-IP mapping](https://docs.docker.com/engine/reference/commandline/run/#add-entries-to-container-hosts-file---add-host).
+This means you can access localhost of the Docker host as if it was the localhost of the image. This simplifies local 
+testing where every service is likely to be running on the same machine.
+```
+docker run -d \
+  --restart unless-stopped \
+  -p 3035:3035 \
+  --name dwn \
+  --add-host=host.docker.internal:host-gateway \
+  --env-file SECRETS.txt \
+  dwn-server
+```
+
 ## Licensing
 
 The license for this project is MIT but some dependencies might have Apache or similar licenses. General reuse isn't necessarily intended and APIs might break, but it is permissible.

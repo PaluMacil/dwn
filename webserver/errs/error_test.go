@@ -3,7 +3,7 @@ package errs_test
 import (
 	"errors"
 	"github.com/PaluMacil/dwn/webserver/errs"
-	"github.com/dgraph-io/badger/v2"
+	"github.com/dgraph-io/badger/v3"
 	"net/http"
 	"testing"
 )
