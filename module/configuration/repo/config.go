@@ -37,7 +37,7 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	valHost := mode.Coalesce("DWN_HOST", "danwolf.net", "localhost")
 	valPort := mode.Coalesce("DWN_PORT", "3035", "3035")
 	valUIProxyPort := mode.Coalesce("DWN_UI_PROXY_PORT", "443", "4200")
-	valContentRoot := mode.Coalesce("DWN_CONTENT_ROOT", "/opt/danwolf.net/ui/", "/home/dan/repos/dwn-ui/dist/")
+	valContentRoot := mode.Coalesce("DWN_CONTENT_ROOT", "/opt/dwn/ui/", "/home/dan/repos/dwn-ui/dist/")
 	valInitialAdmin := mode.Coalesce("DWN_INITIAL_ADMIN", "", "dcwolf@gmail.com")
 	valInitialPassword := mode.Coalesce("DWN_INITIAL_PASSWORD", "", "")
 	valDataDir := mode.Coalesce("DWN_DATA_DIR", "data", "data")

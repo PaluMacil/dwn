@@ -30,7 +30,7 @@ type WebServer struct {
 	mux *mux.Router
 }
 
-func New(db *database.Database) *WebServer {
+func New(db *database.Database) (*WebServer, error) {
 	config := db.Config.Get()
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
@@ -92,15 +92,15 @@ func New(db *database.Database) *WebServer {
 	// ...registration
 	registrationRouter := dwnHost.PathPrefix("/api/registration/").Subrouter()
 	registrationapi.RegisterRoutes(registrationRouter, apiFactory)
+
 	// ...content roots
-	dwnuiSPA := spa.Config{
-		Path:    config.WebServer.ContentRoot,
-		Project: "dwn-ui",
+	dwnuiSPA, err := spa.New(config.WebServer.ContentRoot, "dwn-ui")
+	if err != nil {
+		return nil, fmt.Errorf("creating new SPA for dwn-ui: %w", err)
 	}
 	dwnHost.PathPrefix("/").Handler(dwnuiSPA)
-	log.Printf("serving SPA dwn-ui from %s\n", dwnuiSPA)
 
-	return ws
+	return ws, nil
 }
 
 func (ws *WebServer) Serve() {

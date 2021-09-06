@@ -30,7 +30,10 @@ func New(prod bool) (*App, error) {
 
 	configProvider.ConnectDatabase(store, db)
 	db.Config.ConfigProvider = configProvider
-	web := webserver.New(db)
+	web, err := webserver.New(db)
+	if err != nil {
+		return nil, fmt.Errorf("creating webserver: %w", err)
+	}
 	return &App{
 		Db:  db,
 		Web: web,

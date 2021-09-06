@@ -21,7 +21,7 @@ you must set and encryption key and cannot use the default dev key.
 | host                   | DWN_HOST             | danwolf.net          | localhost                        |
 | port (api/server)      | DWN_PORT             | 3035                 | 3035                             |
 | ui port                | DWN_UI_PROXY_PORT    | 443                  | 4200                             |
-| content root (ui)      | DWN_CONTENT_ROOT     | /opt/danwolf.net/ui  | /home/dan/repos/dwn-ui/dist      |
+| content root (ui)      | DWN_CONTENT_ROOT     | /opt/dwn/ui          | /home/dan/repos/dwn-ui/dist      |
 | initial admin          | DWN_INITIAL_ADMIN    | (none configured)    | dcwolf@gmail.com                 |
 | initial password       | DWN_INITIAL_PASSWORD | (none configured)    | (none configured)                |
 | data directory         | DWN_DATA_DIR         | data                 | data                             |
@@ -112,7 +112,7 @@ docker run -d \
   --name dwn \
   --add-host=host.docker.internal:host-gateway \
   --env-file SECRETS.txt \
-  -v ${pwd}/../dwn-ui/dist/dwn-ui:/opt/danwolf.net/ui
+  -v ${pwd}/../dwn-ui/dist/dwn-ui:/opt/dwn/ui/dwn-ui
   dwn-server
 ```
 
