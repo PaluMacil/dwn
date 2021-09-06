@@ -53,6 +53,9 @@ func New(path, project string) (Config, error) {
 		return Config{}, fmt.Errorf("folder for project %s does not exist: %w", config.Project, err)
 	}
 	log.Printf("serving SPA dwn-ui from %s\n", config)
+	if _, err := os.Stat(config.Index()); os.IsNotExist(err) {
+		return Config{}, fmt.Errorf("index.html for project %s does not exist: %w", config.Project, err)
+	}
 
 	return config, nil
 }
