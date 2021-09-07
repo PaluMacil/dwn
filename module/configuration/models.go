@@ -68,11 +68,12 @@ type Configuration struct {
 }
 
 type WebServerConfiguration struct {
-	Protocol    string `json:"protocol"`
-	Host        string `json:"host"`
-	Port        string `json:"port"`
-	UIProxyPort string `json:"uiProxyPort"`
-	ContentRoot string `json:"contentRoot"`
+	Protocol             string `json:"protocol"`
+	Host                 string `json:"host"`
+	Port                 string `json:"port"`
+	UIProxyPort          string `json:"uiProxyPort"`
+	ContentRoot          string `json:"contentRoot"`
+	Status404HandlerName string `json:"status404HandlerName"`
 }
 
 type DatabaseConfiguration struct {

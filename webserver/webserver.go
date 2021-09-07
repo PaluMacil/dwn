@@ -32,9 +32,10 @@ type WebServer struct {
 
 func New(db *database.Database) (*WebServer, error) {
 	config := db.Config.Get()
+	globalMux := mux.NewRouter()
 	ws := &WebServer{
 		WebServerConfiguration: config.WebServer,
-		mux:                    mux.NewRouter(),
+		mux:                    globalMux,
 	}
 
 	apiFactory := handler.Factory{
@@ -100,8 +101,13 @@ func New(db *database.Database) (*WebServer, error) {
 	}
 	dwnHost.PathPrefix("/").Handler(dwnuiSPA)
 
+	// ...error status routes
+	globalMux.NotFoundHandler = handler.Status404Handler(config.WebServer.Status404HandlerName)
+
 	return ws, nil
 }
+
+
 
 func (ws *WebServer) Serve() {
 	srv := &http.Server{

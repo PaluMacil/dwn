@@ -11,13 +11,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// HandlerOption is a type for option constants
+// Option is a type for option constants
 type Option int
 
-// HandlerOptions is a type representing multiple options and providing a Contains method.
+// Options is a type representing multiple options and providing a Contains method.
 type Options []Option
 
-// Contains returns whether an instance of HandlerOptions contains a specific option.
+// Contains returns whether an instance of Options contains a specific Option.
 func (options Options) Contains(option Option) bool {
 	for _, o := range options {
 		if o == option {
@@ -33,7 +33,7 @@ const (
 	OptionVaultPINRequired
 )
 
-// HandlerFunc is the dwn-specific signature for handler functions
+// Func is the dwn-specific signature for handler functions
 type Func func(
 	db *database.Database,
 	cur core.Current,

@@ -42,6 +42,7 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	valInitialPassword := mode.Coalesce("DWN_INITIAL_PASSWORD", "", "")
 	valDataDir := mode.Coalesce("DWN_DATA_DIR", "data", "data")
 	valEncryptionKey := mode.Coalesce("DWN_MASTER_ENC_KEY", devEncKey, devEncKey)
+	valStatus404Handler := mode.Coalesce("DWN_STATUS_404_HANDLER", "DEFAULT", "DETAILED")
 	fileIO, err := strconv.ParseBool(mode.Coalesce("DWN_DATA_FILE_IO", "false", "false"))
 	if err != nil {
 		log.Printf("could not parse DWN_DATA_FILE_IO bool from environment: %s\n", err)
@@ -53,11 +54,12 @@ func initialConfiguration(prod bool) (*configuration.Configuration, error) {
 	}
 
 	ws := configuration.WebServerConfiguration{
-		Protocol:    valProtocol,
-		Host:        valHost,
-		Port:        valPort,
-		UIProxyPort: valUIProxyPort,
-		ContentRoot: valContentRoot,
+		Protocol:             valProtocol,
+		Host:                 valHost,
+		Port:                 valPort,
+		UIProxyPort:          valUIProxyPort,
+		ContentRoot:          valContentRoot,
+		Status404HandlerName: valStatus404Handler,
 	}
 	home, err := url.Parse(ws.HomePage())
 	if err != nil {
