@@ -15,20 +15,21 @@ you must set and encryption key and cannot use the default dev key.
 
 ### Core Settings
 
-| setting                | env                  | prod                 | dev                              |
-|------------------------|----------------------|----------------------|----------------------------------|
-| protocol               | DWN_PROTOCOL         | https                | http                             |
-| host                   | DWN_HOST             | danwolf.net          | localhost                        |
-| port (api/server)      | DWN_PORT             | 3035                 | 3035                             |
-| ui port                | DWN_UI_PROXY_PORT    | 443                  | 4200                             |
-| content root (ui)      | DWN_CONTENT_ROOT     | /opt/dwn/ui          | /home/dan/repos/dwn-ui/dist      |
-| initial admin          | DWN_INITIAL_ADMIN    | (none configured)    | dcwolf@gmail.com                 |
-| initial password       | DWN_INITIAL_PASSWORD | (none configured)    | (none configured)                |
-| data directory         | DWN_DATA_DIR         | data                 | data                             |
-| master encryption key  | DWN_MASTER_ENC_KEY   | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
-| use FileIO / small RAM | DWN_DATA_FILE_IO     | false                | false                            |
+| setting                | env                    | prod                 | dev                              |
+|------------------------|------------------------|----------------------|----------------------------------|
+| protocol               | DWN_PROTOCOL           | https                | http                             |
+| host                   | DWN_HOST               | danwolf.net          | localhost                        |
+| port (api/server)      | DWN_PORT               | 3035                 | 3035                             |
+| ui port                | DWN_UI_PROXY_PORT      | 443                  | 4200                             |
+| content root (ui)      | DWN_CONTENT_ROOT       | /opt/dwn/ui          | /home/dan/repos/dwn-ui/dist      |
+| initial admin          | DWN_INITIAL_ADMIN      | (none configured)    | dcwolf@gmail.com                 |
+| initial password       | DWN_INITIAL_PASSWORD   | (none configured)    | (none configured)                |
+| data directory         | DWN_DATA_DIR           | data                 | data                             |
+| master encryption key  | DWN_MASTER_ENC_KEY     | (must configure!)    | 3d17618d4297f83665b32e28f9b1c23d |
+| use FileIO / small RAM | DWN_DATA_FILE_IO       | false                | false                            |
+| specify 404 handler    | DWN_STATUS_404_HANDLER | DEFAULT              | DETAILED
 
-Note that if you are developing on **Windows**, encyption is disabled (along with memory-mapped files since Windows uses 
+Note that if you are developing on **Windows**, encryption is disabled (along with memory-mapped files since Windows uses 
 disk IO instead of memory mapped files). You will also need to set your own content root if you are using Windows or 
 your username isn't *dan*.
 
@@ -107,13 +108,13 @@ This means you can access localhost of the Docker host as if it was the localhos
 testing where every service is likely to be running on the same machine.
 ```
 docker run -d \
-  --restart unless-stopped \
-  -p 3035:3035 \
-  --name dwn \
-  --add-host=host.docker.internal:host-gateway \
-  --env-file SECRETS.txt \
-  -v ${PWD}/../dwn-ui/dist/dwn-ui:/opt/dwn/ui/dwn-ui
-  dwn-server
+ --restart unless-stopped \
+ -p 3035:3035 \
+ --name dwn \
+ --add-host=host.docker.internal:host-gateway \
+ --env-file SECRETS.txt \
+ -v /home/pi/dwn-ui/dist/dwn-ui:/opt/dwn/ui/dwn-ui \
+ dwn-server
 ```
 
 ### Low RAM / Raspberry Pi
